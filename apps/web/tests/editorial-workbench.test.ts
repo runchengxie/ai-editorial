@@ -11,6 +11,8 @@ let web: WebServer;
 let browser: Browser;
 let signedIn = true;
 let stale = false;
+let delaySave = false;
+let releaseSave: () => void = () => {};
 const id = "e2a6e43b-71c2-4b19-8112-70f06cb049ec";
 let topic: any = {
   id,
@@ -75,6 +77,12 @@ const api = fakeApi(async (url, res, req) => {
   assert.equal(req.headers["x-csrf-token"], "fixture-csrf");
   const chunks: Buffer[] = [];
   for await (const c of req) chunks.push(c);
+  if (delaySave) {
+    delaySave = false;
+    await new Promise<void>((resolve) => {
+      releaseSave = resolve;
+    });
+  }
   const body = JSON.parse(Buffer.concat(chunks).toString() || "{}");
   if (req.method === "POST" && url.pathname.endsWith("/topics")) return topic;
   if (stale) {
@@ -128,7 +136,13 @@ test("editor imports, edits evidence and draft, handles conflict, reviews and ex
     await page.getByRole("button", { name: "Import topic" }).click();
     await expect(page.getByLabel("Private notes")).toBeVisible();
     await page.getByLabel("Private notes").fill("PRIVATE_TEST_NOTE");
+    delaySave = true;
     await page.getByRole("button", { name: "Save topic", exact: true }).click();
+    await expect(page.getByLabel("Private notes")).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "Verify review" }),
+    ).toBeDisabled();
+    releaseSave();
     await expect(page.getByRole("status")).toHaveText("Saved");
     await page.getByLabel("Claim").fill("Extracts tables");
     await page.getByLabel("Limitations").fill("Vendor claim");

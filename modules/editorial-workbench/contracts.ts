@@ -69,6 +69,7 @@ export interface TopicFilter {
   cursor?: string;
 }
 export interface EvidenceInput {
+  expectedRevision?: number;
   articleId: string;
   claim: string;
   limitations: string;

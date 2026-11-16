@@ -98,6 +98,7 @@ test("review needs checked evidence and a completed draft; evidence edits revoke
       limitations: "Only a vendor announcement",
       kind: "official_claim",
       checked: true,
+      expectedRevision: topic.evidence[0].revision,
     },
     "editor",
   );
@@ -150,6 +151,7 @@ test("review needs checked evidence and a completed draft; evidence edits revoke
       limitations: "Only tested on one file",
       kind: "independent_test",
       checked: true,
+      expectedRevision: topic.evidence[0].revision,
     },
     "editor",
   );
@@ -212,6 +214,7 @@ test("source changes and withdrawals invalidate human review without exposing no
       limitations: "One sample",
       kind: "independent_test",
       checked: true,
+      expectedRevision: topic.evidence[0].revision,
     },
     "editor",
   );
@@ -253,4 +256,91 @@ test("source changes and withdrawals invalidate human review without exposing no
     exportDraft(topic).markdown.includes("SECRET_SOURCE_CHANGE"),
     false,
   );
+});
+
+async function reviewedTopic() {
+  let topic = await createTopic(
+    { articleId: await article(), audiences: ["development"] },
+    "editor",
+  );
+  topic = await addEvidence(
+    topic.id,
+    topic.version,
+    {
+      articleId: topic.evidence[0].articleId,
+      claim: "Checked claim",
+      limitations: "One sample",
+      kind: "independent_test",
+      checked: true,
+      expectedRevision: topic.evidence[0].revision,
+    },
+    "editor",
+  );
+  topic = await saveDraft(
+    topic.id,
+    topic.version,
+    {
+      ...prepareDraft(topic),
+      audienceImpact: "Useful",
+      verificationQuestions: [],
+    },
+    "editor",
+  );
+  return verifyTopic(topic.id, topic.version, "editor");
+}
+test("stale viewed source revision cannot be checked", async () => {
+  let topic = await reviewedTopic();
+  const evidence = topic.evidence[0];
+  await sql`UPDATE articles SET revision=revision+1 WHERE id=${evidence.articleId}`;
+  await assert.rejects(
+    addEvidence(
+      topic.id,
+      topic.version,
+      {
+        articleId: evidence.articleId,
+        claim: "Old claim",
+        limitations: "Old context",
+        kind: "official_claim",
+        checked: true,
+        expectedRevision: evidence.revision,
+      },
+      "editor",
+    ),
+    /changed/i,
+  );
+  topic = (await getTopic(topic.id))!;
+  topic = await addEvidence(
+    topic.id,
+    topic.version,
+    {
+      articleId: evidence.articleId,
+      claim: "New claim",
+      limitations: "New context",
+      kind: "official_claim",
+      checked: true,
+      expectedRevision: topic.evidence[0].revision,
+    },
+    "editor",
+  );
+  assert.equal(topic.evidence[0].checked, true);
+});
+test("published links cannot be cleared", async () => {
+  let topic = await reviewedTopic();
+  topic = await updateTopic(
+    topic.id,
+    topic.version,
+    { status: "published", publicationUrl: "https://example.com/post" },
+    "editor",
+  );
+  await assert.rejects(
+    updateTopic(topic.id, topic.version, { publicationUrl: null }, "editor"),
+    /publication/i,
+  );
+});
+test("board and detail agree on review invalidation after a source change", async () => {
+  const topic = await reviewedTopic();
+  await sql`UPDATE articles SET revision=revision+1 WHERE id=${topic.evidence[0].articleId}`;
+  const listed = (await listTopics({})).rows.find((t) => t.id === topic.id)!;
+  assert.equal(listed.reviewStatus, "needs_changes");
+  assert.equal(listed.reviewStatus, (await getTopic(topic.id))!.reviewStatus);
 });

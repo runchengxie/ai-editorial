@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BEIJING_TIMEZONE } from "@aihot/contracts/time";
 import { data, Link } from "react-router";
 import {
   adminPageGet,
@@ -101,7 +102,11 @@ function Editor({ initial, csrf }: { initial: TopicDetail; csrf: string }) {
     mark("evidence-" + index);
   }
   return (
-    <div className="space-y-6" lang={locale}>
+    <fieldset
+      disabled={command.busy}
+      className="min-w-0 space-y-6"
+      lang={locale}
+    >
       <header className="flex flex-wrap justify-between gap-4">
         <div>
           <Link to="/admin/editorial" className="text-sm text-accent">
@@ -119,7 +124,7 @@ function Editor({ initial, csrf }: { initial: TopicDetail; csrf: string }) {
       {command.error && (
         <div
           role="alert"
-          className="rounded-lg border border-red-300 p-3 text-sm"
+          className="rounded-control border border-red-300 p-3 text-sm"
         >
           {command.error}{" "}
           <a href={"/admin/editorial/" + topic.id} className="underline">
@@ -231,7 +236,7 @@ function Editor({ initial, csrf }: { initial: TopicDetail; csrf: string }) {
                   ? new Intl.DateTimeFormat(locale, {
                       dateStyle: "medium",
                       timeStyle: "short",
-                      timeZone: "Asia/Shanghai",
+                      timeZone: BEIJING_TIMEZONE,
                     }).format(new Date(e.publishedAt))
                   : t("unknownDate")}
               </p>
@@ -298,6 +303,7 @@ function Editor({ initial, csrf }: { initial: TopicDetail; csrf: string }) {
                     limitations: e.limitations,
                     kind: e.kind,
                     checked: e.checked,
+                    expectedRevision: e.revision,
                   },
                 })
               }
@@ -412,6 +418,6 @@ function Editor({ initial, csrf }: { initial: TopicDetail; csrf: string }) {
           </a>
         </div>
       </section>
-    </div>
+    </fieldset>
   );
 }

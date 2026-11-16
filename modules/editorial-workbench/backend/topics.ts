@@ -39,6 +39,7 @@ export const patchSchema = z
   .strict();
 export const evidenceSchema = z
   .object({
+    expectedRevision: z.number().int().positive().optional(),
     articleId: z.string().min(1).max(80),
     claim: z.string().max(10000),
     limitations: z.string().max(10000),
@@ -157,7 +158,12 @@ export async function listTopics(
   (${f.cursor ?? null}::uuid IS NULL OR id<${f.cursor ?? null}::uuid)
   ORDER BY id DESC LIMIT 51`;
   return {
-    rows: rows.slice(0, 50).map(topicRow),
+    rows: await Promise.all(
+      rows.slice(0, 50).map(async (r) => {
+        const detail = await getTopic(r.id);
+        return detail ?? topicRow(r);
+      }),
+    ),
     nextCursor: rows.length > 50 ? rows[49].id : null,
   };
 }
@@ -189,6 +195,8 @@ export async function updateTopic(
   const p = patchSchema.parse(patch);
   return edit(id, version, actor, "updated", async (db, t) => {
     const next = { ...t, ...p };
+    if (next.status === "published" && !next.publicationUrl)
+      throw fail("A publication URL is required for published topics.");
     if (
       p.status === "published" &&
       t.status !== "published" &&
@@ -217,8 +225,11 @@ export async function addEvidence(
 ) {
   const e = evidenceSchema.parse(input);
   return edit(id, version, actor, "evidence", async (db, t) => {
-    const [a] = await db`SELECT revision FROM articles WHERE id=${e.articleId}`;
+    const [a] =
+      await db`SELECT revision FROM articles WHERE id=${e.articleId} FOR SHARE`;
     if (!a) throw fail("Article not found", "not_found");
+    if (e.checked && e.expectedRevision !== a.revision)
+      throw fail("Source changed. Reload and check the current revision.");
     await db`INSERT INTO editorial_evidence(topic_id,article_id,claim,limitations,kind,checked,revision) VALUES(${id},${e.articleId},${e.claim},${e.limitations},${e.kind},${e.checked},${a.revision}) ON CONFLICT(topic_id,article_id) DO UPDATE SET claim=excluded.claim,limitations=excluded.limitations,kind=excluded.kind,checked=excluded.checked,revision=excluded.revision`;
     await db`UPDATE editorial_topics SET review_status=${t.reviewStatus === "unreviewed" ? "unreviewed" : "needs_changes"} WHERE id=${id}`;
   });

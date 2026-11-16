@@ -18,10 +18,10 @@ export function useLocale() {
   return { locale, choose, t: (key: MessageKey) => message(locale, key) };
 }
 export const input =
-  "w-full rounded-lg border border-line bg-surface px-3 py-2 text-ink";
+  "w-full rounded-control border border-line bg-surface px-3 py-2 text-ink";
 export const button =
-  "rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:border-accent disabled:opacity-50";
-export const panel = "rounded-xl border border-line bg-surface p-4 sm:p-6";
+  "rounded-control border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:border-accent disabled:opacity-50";
+export const panel = "rounded-card border border-line bg-surface p-4 sm:p-6";
 export function Field({
   label,
   children,
@@ -46,7 +46,7 @@ export function Language({
   t: (k: MessageKey) => string;
 }) {
   return (
-    <label className="flex items-center gap-2 text-sm">
+    <label className="flex items-center gap-2 whitespace-nowrap text-sm">
       {t("language")}
       <select
         aria-label={t("language")}
