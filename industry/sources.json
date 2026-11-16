@@ -1,5 +1,5 @@
 {
-  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里新建、修改和暂停。字段说明见 docs/customize.md。",
+  "$comment": "Verified free/low-cost editorial source pack. Existing administrator settings are never overwritten by scripts/seed.ts. Core sources are enabled; optional sources are paused. See docs/editorial-sources.md for access, cost and verification limits.",
   "sources": [
     {
       "id": "rss-openai-news",
@@ -8,13 +8,13 @@
       "config": {
         "feedUrl": "https://openai.com/news/rss.xml",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": "openai",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方"
       ],
@@ -28,13 +28,13 @@
       "config": {
         "feedUrl": "https://deepmind.google/blog/rss.xml",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": "google",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方"
       ],
@@ -48,13 +48,13 @@
       "config": {
         "feedUrl": "https://research.google/blog/rss/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": "google",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方",
         "研究"
@@ -69,13 +69,13 @@
       "config": {
         "feedUrl": "https://huggingface.co/blog/feed.xml",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": "hugging-face",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方",
         "开源"
@@ -90,13 +90,13 @@
       "config": {
         "feedUrl": "https://www.microsoft.com/en-us/research/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": "microsoft",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方",
         "研究"
@@ -111,13 +111,13 @@
       "config": {
         "feedUrl": "https://blogs.nvidia.com/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": "nvidia",
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方"
       ],
@@ -131,13 +131,13 @@
       "config": {
         "feedUrl": "https://aws.amazon.com/blogs/machine-learning/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方",
         "教程"
@@ -152,13 +152,13 @@
       "config": {
         "feedUrl": "https://github.blog/ai-and-ml/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方"
       ],
@@ -172,13 +172,13 @@
       "config": {
         "feedUrl": "https://mistral.ai/news/rss",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "官方"
       ],
@@ -192,13 +192,13 @@
       "config": {
         "feedUrl": "https://bair.berkeley.edu/blog/feed.xml",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 240,
       "tags": [
         "研究"
       ],
@@ -212,13 +212,13 @@
       "config": {
         "feedUrl": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
+      "interval_minutes": 240,
       "tags": [
         "媒体"
       ],
@@ -232,13 +232,13 @@
       "config": {
         "feedUrl": "https://techcrunch.com/category/artificial-intelligence/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
+      "interval_minutes": 240,
       "tags": [
         "媒体"
       ],
@@ -252,13 +252,13 @@
       "config": {
         "feedUrl": "https://arstechnica.com/ai/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
+      "interval_minutes": 240,
       "tags": [
         "媒体"
       ],
@@ -272,13 +272,13 @@
       "config": {
         "feedUrl": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "媒体"
       ],
@@ -292,13 +292,13 @@
       "config": {
         "feedUrl": "https://the-decoder.com/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
+      "interval_minutes": 240,
       "tags": [
         "媒体"
       ],
@@ -312,13 +312,13 @@
       "config": {
         "feedUrl": "https://simonwillison.net/atom/everything/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 240,
       "tags": [
         "个人"
       ],
@@ -332,13 +332,13 @@
       "config": {
         "feedUrl": "https://importai.substack.com/feed",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 240,
       "tags": [
         "个人",
         "周刊"
@@ -353,18 +353,912 @@
       "config": {
         "feedUrl": "https://www.latent.space/feed",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 240,
       "tags": [
         "个人"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "web-anthropic-news",
+      "name": "Anthropic News",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.anthropic.com/news",
+        "itemSelector": "main article:has(h3), main li:has(h3)",
+        "linkSelector": "a:has(h3), h3 a",
+        "titleSelector": "h3",
+        "publishedAtSelector": "time",
+        "publishedAtUtcOffset": "+00:00",
+        "allowUrlPrefixes": [
+          "https://www.anthropic.com/news/",
+          "https://www.anthropic.com/research/",
+          "https://www.anthropic.com/engineering/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": "anthropic",
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "web-anthropic-engineering",
+      "name": "Anthropic Engineering",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.anthropic.com/engineering",
+        "itemSelector": "main article:has(h3), main li:has(h3)",
+        "linkSelector": "a:has(h3), h3 a",
+        "titleSelector": "h3",
+        "publishedAtSelector": "time",
+        "publishedAtUtcOffset": "+00:00",
+        "allowUrlPrefixes": [
+          "https://www.anthropic.com/news/",
+          "https://www.anthropic.com/research/",
+          "https://www.anthropic.com/engineering/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": "anthropic",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方",
+        "教程"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-duckdb-blog",
+      "name": "DuckDB Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://duckdb.org/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-microsoft-excel",
+      "name": "Microsoft Excel Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://techcommunity.microsoft.com/t5/s/gxcuf89792/rss/board?board.id=ExcelBlog",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": "microsoft",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-microsoft-python",
+      "name": "Microsoft Python Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://devblogs.microsoft.com/python/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": "microsoft",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-cursor-changelog",
+      "name": "Cursor Changelog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cursor.com/changelog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-mcp-blog",
+      "name": "Model Context Protocol Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.modelcontextprotocol.io/index.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-one-useful-thing",
+      "name": "One Useful Thing",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.oneusefulthing.org/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "个人"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-eugene-yan",
+      "name": "Eugene Yan",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://eugeneyan.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "个人",
+        "教程"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-chip-huyen",
+      "name": "Chip Huyen",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://huyenchip.com/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "个人",
+        "教程"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-hamel-husain",
+      "name": "Hamel Husain",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hamel.dev/index.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "个人",
+        "教程"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-qbitai",
+      "name": "量子位",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.qbitai.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 360,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-lilian-weng",
+      "name": "Lilian Weng",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://lilianweng.github.io/index.xml",
+        "allowUrlPrefixes": [
+          "https://lilianweng.github.io/posts/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "个人"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "rss-ahead-of-ai",
+      "name": "Ahead of AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://magazine.sebastianraschka.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "个人"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-claude-code-releases",
+      "name": "Claude Code releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/anthropics/claude-code/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": "anthropic",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-codex-releases",
+      "name": "OpenAI Codex releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/openai/codex/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": "openai",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-pydantic-ai-releases",
+      "name": "Pydantic AI releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/pydantic/pydantic-ai/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-langgraph-releases",
+      "name": "LangGraph releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/langchain-ai/langgraph/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-litellm-releases",
+      "name": "LiteLLM releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/BerriAI/litellm/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-pandas-releases",
+      "name": "pandas releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/pandas-dev/pandas/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-docling-releases",
+      "name": "Docling releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/docling-project/docling/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-markitdown-releases",
+      "name": "Microsoft MarkItDown releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/microsoft/markitdown/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": "microsoft",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-unstructured-releases",
+      "name": "Unstructured releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/Unstructured-IO/unstructured/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-mcp-python-releases",
+      "name": "MCP Python SDK releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/modelcontextprotocol/python-sdk/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-llamaindex-releases",
+      "name": "LlamaIndex releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/run-llama/llama_index/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-streamlit-releases",
+      "name": "Streamlit releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/streamlit/streamlit/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-vscode-releases",
+      "name": "Visual Studio Code releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/microsoft/vscode/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": "microsoft",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
     }
   ]
 }

@@ -8,6 +8,7 @@
 
 ## 从这里开始
 
+- [免费信源目录](docs/editorial-sources.zh-CN.md)：45 个来源、默认与备选清单、成本控制。
 - [本地运行](docs/editorial-setup.zh-CN.md)：Node.js、PostgreSQL、关闭外部操作及本地验证。
 - [数据和配置约定](docs/editorial-data-contract.md)：源码、私有配置、运行数据和评测输出的位置。
 - [验证记录](docs/editorial-release-validation.md)：已测版本、检查结果及限制。
