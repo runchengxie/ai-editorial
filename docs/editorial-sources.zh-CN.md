@@ -69,6 +69,6 @@ node --env-file=<private-backend-env-file> scripts/seed.ts
 
 ## 验证与排除项
 
-45 个配置源在经过各自过滤后，都解析出了非空标题、HTTP(S) 链接和可用的原始发布时间。原有 18 个信源的地址身份不变。公开响应通过实际的 RSS、网页列表、JSON 列表和入选过滤代码回放，回放时禁止连接外网。原始响应与完整报告保存在 DATA_ROOT/ai-editorial/evaluations/free-sources-20261116，不进入 Git。这项验证检查列表提取，不代表事实准确性、正文提取或持续运行质量。
+45 个配置源在经过各自过滤后，都解析出了非空标题、HTTP(S) 链接和可用的原始发布时间。原有 18 个信源的地址身份不变。公开响应通过实际的 RSS、网页列表、JSON 列表和入选过滤代码回放，回放时禁止连接外网。原始响应与完整报告保存在 DATA_ROOT/ai-editorial/evaluations/free-sources-20261116，不进入 Git。隔离导入验证新增了 45 个信源，采集 30 个、跳过 15 个，接纳 58 条资料，付费请求记录为 0；每个信源首次导入均不超过两条。重复执行导入保留了手工修改的设置。Chip Huyen 更新较少，列表解析正常，但没有条目落在默认初始历史窗口内。本地必需检查已通过：1173 项后端测试、67 项浏览器测试、类型检查、网页构建、迁移安全和冒烟检查；独立评审没有发现问题。这项验证检查列表提取，不代表事实准确性、正文提取或持续运行质量。
 
 排除的地址变体包括 LlamaIndex 博客 RSS（404）、本次测试的 LangChain RSS 和 Cursor 博客 RSS（实际返回网页）、Streamlit 博客（403）、Jupyter 旧订阅（404）、本次测试的 Polars 订阅路径（404）、机器之心的测试地址（返回网页），以及两次有限尝试都响应截断的 Google Workspace 订阅。LlamaIndex 和 Streamlit 改为提供已核验的备选版本接口；MCP 和 Hamel 使用可用的 index.xml。Lilian Weng 限定 /posts/，排除没有有效日期的 FAQ。
