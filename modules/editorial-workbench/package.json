@@ -1,0 +1,13 @@
+{
+  "name": "@aihot/editorial-workbench",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./*.ts"
+  },
+  "dependencies": {
+    "@aihot/backend": "*",
+    "@aihot/contracts": "*",
+    "zod": "4.6.6"
+  }
+}
