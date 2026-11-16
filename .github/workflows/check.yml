@@ -1,5 +1,6 @@
 # Checks on GitHub-hosted runners: install, typecheck, web build, the web and backend tests on a fresh
 # PostgreSQL, the built site's smoke check on the empty database, and the Docker image brought up with docker compose.
+# The editorial workbench is validated alongside the inherited engine.
 # Only GitHub-owned actions, pinned to a full commit SHA.
 name: Check
 
