@@ -10,6 +10,7 @@ Find source material, import topics, record claims and limitations, prepare edit
 
 - [Local setup](docs/editorial-setup.md): Node.js, PostgreSQL, disabled external actions and local validation.
 - [Data and configuration contract](docs/editorial-data-contract.md): source, private configuration, runtime data and evaluation outputs.
+- [Validation record](docs/editorial-release-validation.md): tested revisions, checks and limitations.
 - [Pilot workflow](docs/editorial-pilot.md): editor acceptance and source/quality assessment.
 - [Design](docs/superpowers/specs/2026-11-16-editorial-workbench-design.md) and [implementation plan](docs/superpowers/plans/2026-11-16-editorial-workbench.md).
 - [Inherited engine guide](README.en.md) and [architecture](docs/architecture.md).

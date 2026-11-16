@@ -1,6 +1,6 @@
 # AI Editorial: Internal Workbench Design
 
-Status: product design approved in conversation on 2026-11-16; implementation plan awaiting review.
+Status: product design and native implementation approved in conversation on 2026-11-16; implemented for internal pilot. See `docs/editorial-release-validation.md` for validation evidence and limitations.
 
 ## Purpose
 

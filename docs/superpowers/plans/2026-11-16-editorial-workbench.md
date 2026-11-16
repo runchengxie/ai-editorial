@@ -1,6 +1,6 @@
 # AI Editorial Workbench Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. This plan proposes native execution; the user has not selected an execution method yet.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. The user selected native execution on 2026-11-16. This is the historical implementation checklist; actual results are recorded in `docs/editorial-release-validation.md`.
 
 **Goal:** Give one editor a private, evidence-backed AI topic board and manually exportable drafts for financial-research and development audiences.
 

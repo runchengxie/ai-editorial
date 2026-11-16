@@ -10,6 +10,7 @@
 
 - [本地运行](docs/editorial-setup.zh-CN.md)：Node.js、PostgreSQL、关闭外部操作及本地验证。
 - [数据和配置约定](docs/editorial-data-contract.md)：源码、私有配置、运行数据和评测输出的位置。
+- [验证记录](docs/editorial-release-validation.md)：已测版本、检查结果及限制。
 - [试用流程](docs/editorial-pilot.zh-CN.md)：编辑验收和信源、质量评估。
 - [设计](docs/superpowers/specs/2026-11-16-editorial-workbench-design.md)及[开发计划](docs/superpowers/plans/2026-11-16-editorial-workbench.md)。
 - [上游引擎英文指南](README.en.md)及[架构说明](docs/architecture.md)。
