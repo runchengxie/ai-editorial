@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Editorial editions v1",
+  "description": "Cross-field source references, publication windows, source health, freshness and uniqueness are specified in daily-brief-v1.md and enforced by the consumer validator.",
+  "type": "array",
+  "minItems": 1,
+  "maxItems": 30,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "date",
+      "generatedAt",
+      "windowDays",
+      "sources",
+      "items"
+    ],
+    "properties": {
+      "date": {
+        "type": "string",
+        "format": "date"
+      },
+      "generatedAt": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+      },
+      "windowDays": {
+        "const": 7
+      },
+      "sources": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sourceId",
+            "sourceName",
+            "ok"
+          ],
+          "properties": {
+            "sourceId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "sourceName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "ok": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "title",
+            "url",
+            "publishedAt",
+            "sourceId",
+            "sourceName",
+            "audience"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https?://",
+              "maxLength": 4000
+            },
+            "publishedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "sourceId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 150
+            },
+            "sourceName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            "audience": {
+              "enum": [
+                "finance",
+                "development",
+                "general"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

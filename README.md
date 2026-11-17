@@ -1,6 +1,6 @@
 # AI Editorial
 
-Read the [automatic daily website](https://runchengxie.github.io/ai-editorial/) · [RSS](https://runchengxie.github.io/ai-editorial/feed.xml). See [daily publication and its current limits](docs/daily-pages.md).
+Read the [automatic daily website](https://runchengxie.github.io/ai-editorial-pages/) · [RSS](https://runchengxie.github.io/ai-editorial-pages/feed.xml). See [daily publication and its current limits](docs/daily-pages.md).
 
 [简体中文](README.zh-CN.md)
 
@@ -20,7 +20,7 @@ Find source material, import topics, record claims and limitations, prepare edit
 
 After local setup, open `/admin/editorial`. The new workbench supports English and Chinese; inherited engine pages remain primarily Chinese. Draft preparation assembles an evidence packet without model calls; polished AI prose generation is not implemented.
 
-This release is internal-only. The inherited anonymous site, RSS, API and MCP endpoints still exist, so protect the entire service with loopback binding or an authenticated perimeter. Membership, payments, gated subscriptions, live-provider configuration and public deployment are not included. Final branding and public legal text remain pending.
+The dynamic application and workbench remain internal; the separate [ai-editorial-pages](https://github.com/runchengxie/ai-editorial-pages) repository owns the public reader. The inherited anonymous site, RSS, API and MCP endpoints still exist, so protect the entire service with loopback binding or an authenticated perimeter. Membership, payments, gated subscriptions, live model-provider configuration and public deployment of the dynamic application are not included. Final branding and public legal text remain pending.
 
 ## Attribution
 

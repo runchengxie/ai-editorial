@@ -1,36 +1,23 @@
-# 每日自动公开简报
+# 每日数据发布
 
 [English](daily-pages.md)
 
-访问[每日网页](https://runchengxie.github.io/ai-editorial/)，或订阅 [RSS](https://runchengxie.github.io/ai-editorial/feed.xml)。默认英文，可切换中文并记住明确选择；文章标题保留原文。
+阅读网站和 RSS 已独立到 [ai-editorial-pages](https://github.com/runchengxie/ai-editorial-pages)，访问[新网站](https://runchengxie.github.io/ai-editorial-pages/)。本仓库负责免费信源采集、筛选、内部采编后台和[公开 v1 数据格式](daily-brief-v1.md)。原有动态应用不作为这个公开静态网站。
 
-## 当前能力
+## 引擎运行
 
-首版从过去七天的资讯中自动选取最多八条链接，每个信源最多两条。排序参考投研与财务工作流、开发与数据关键词，以及信源等级和发布时间。标签来自规则，不是模型判断。每条保留原始发布时间、信源和链接；不导出正文、内部笔记或采编草稿。本版没有模型调用、自动撰写的解读、事实核验或产品实测，网页会明确说明。
+`Daily Data`（`.github/workflows/daily-pages.yml`）每天 UTC 00:17，即北京时间 08:17 采集启用的免费 RSS/HTML 信源，也可在 main 手动运行。每次都要求对应 main 提交的 push 检查成功。保留现有工作流文件名、并发组和 `daily-public-state` 产物名，以继续读取真实发布历史。源码检查成功不再自动发布数据，便于先合并引擎、再迁移网站，不提前切换旧入口。
 
-只采集 `industry/sources.json` 中启用的 RSS 和免费 HTML 列表；暂停的可选源保持暂停。此独立定时任务读取仓库默认配置，不读取后台数据库里的管理员覆盖设置；调整公开信源需要修改并评审仓库配置。任务不依赖或暴露内部 API 和 PostgreSQL，内部采编后台继续独立使用。
+`node scripts/daily-brief/build.ts --out <仓库外目录>` 输出 `editions.json`、`latest.json`，以及旧首页、语言页、历史地址的最小跳转页和指向新 RSS 的迁移通知。不包含阅读模板、CSS 或界面语言目录；网页和 RSS 的功能开发只在新仓库进行。不要发布 `--fixture` 样例输出。
 
-## 发布机制
+最近一次成功数据任务的产物用于恢复历史，最多保留 30 个日期版本且不超过 30 天，产物保存 90 天。可用信源少于一半，或没有日期有效的链接时，在部署前失败；已发布历史产物丢失也会明确报错。每期从七天内资讯选最多八条，每个信源最多两条，按主题关键词、信源等级和时间排序，不宣称模型摘要或人工事实核验。
 
-`.github/workflows/daily-pages.yml` 计划每天 UTC 00:17，即北京时间 08:17 执行，GitHub 排期可能延迟。main 的 `Check` 成功后也会触发，可在 main 手动运行。每种入口都会核对当前 main 提交的 push 检查已经成功。无需人工内容审核。
+生产状态保存在 GitHub Actions 产物中，JSON 发布在引擎的 Pages 数据入口。本地保留的评测放在 DATA_ROOT/ai-editorial/evaluations/<任务编号>/，不提交 Git。任务不读取内部采编记录，也不需要长期 GitHub 令牌或模型密钥。
 
-公开仓库连续 60 天没有活动时，GitHub 可能停用定时工作流。例行维护时应检查工作流是否启用，必要时重新启用；也可手动运行。参见 [GitHub 定时任务说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)。
+## 迁移与验证
 
-GitHub Pages 使用 Actions 发布源，通过 `github-pages` 环境和 GitHub 临时令牌部署。构建产物只有公开字段和静态资源；工作流不需要 PAT 或模型密钥。
+先合并引擎 PR，保持已有部署。新网页使用已经上线的 v1 接口完成部署；确认新网站可用后，再手动运行 Daily Data 发布数据和旧地址跳转，随后运行网页发布验证完整链路。生产网页不能依赖尚未合并的引擎分支。
 
-若返回列表的信源少于启用信源的一半，或没有日期有效、安全的候选资讯，则在部署前失败，保留已有网站。页面显示信源状态和实际生成时间。采集成功不等于事实已核验。七天窗口不会把旧文章写成今日发布；晚于生成时间的条目不会入选。
+执行根目录类型检查、引擎与网页原有检查，以及 `node scripts/daily-brief/daily.test.ts`、`node scripts/daily-brief/output.test.ts`。使用新网页的独立校验器验证引擎输出，记录两边测试的提交版本。
 
-每次只从最近一次成功 Daily Pages 运行的 `daily-public-state` 产物恢复历史，保留最多 30 个日期版本，且不保留超过 30 天的期数。产物保存 90 天。若已发布历史产物丢失或到期，恢复会明确失败，避免无提示丢失历史；需通过经过评审的维护变更，用已验证的公开 `editions.json` 恢复。首次发布不需要历史。生成文件保存在 runner 临时目录，不提交 Git；本地需要留存的评测记录放在 DATA_ROOT/ai-editorial/evaluations/<任务编号>/。
-
-## 本地检查
-
-```sh
-npm ci --no-audit --no-fund
-node scripts/daily-pages/daily.test.ts
-node scripts/daily-pages/browser.test.ts
-node scripts/daily-pages/build.ts --fixture --out /tmp/ai-editorial-preview
-# 实际读取免费列表，不调用付费服务或模型：
-node scripts/daily-pages/build.ts --out /tmp/ai-editorial-live
-```
-
-`--state <外部文件>` 恢复经过验证的公开历史，移除未知字段。输出目录必须在仓库之外。不要发布样例构建。同步上游时仍需执行原有引擎和模块检查。
+GitHub 定时任务可能延迟，公开仓库连续 60 天没有活动时可能停用；例行维护时应检查启用状态。参见 [GitHub 定时说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)。仍可手动运行。

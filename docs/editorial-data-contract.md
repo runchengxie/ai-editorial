@@ -9,3 +9,5 @@
 - Local test scratch files may use a task-specific temporary directory. Tests must refuse authoritative database names.
 
 Do not update shared `latest`/`current` pointers implicitly. Inventory existing files, links, running jobs and downstream references before changing any existing data. Source articles and editorial history are separate: discarding a topic does not delete its evidence. Internal notes are never included in exported drafts or upstream publication records.
+
+- Public daily v1 metadata: produced by this repository, retained in its successful `daily-public-state` workflow artifacts and served at the existing Pages data endpoint. The separate ai-editorial-pages repository consumes this published contract; it does not own or copy authoritative raw source inputs. Reader build outputs/evaluations belong under DATA_ROOT/ai-editorial-pages/.

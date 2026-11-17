@@ -1,6 +1,6 @@
 # AI Editorial
 
-访问[每日自动简报](https://runchengxie.github.io/ai-editorial/) · [RSS 订阅](https://runchengxie.github.io/ai-editorial/feed.xml)。参见[自动发布机制与当前能力](docs/daily-pages.zh-CN.md)。
+访问[每日自动简报](https://runchengxie.github.io/ai-editorial-pages/) · [RSS 订阅](https://runchengxie.github.io/ai-editorial-pages/feed.xml)。参见[自动发布机制与当前能力](docs/daily-pages.zh-CN.md)。
 
 [English](README.md)
 
@@ -20,7 +20,7 @@
 
 完成本地配置后访问 `/admin/editorial`。新增采编界面支持中英切换，上游引擎页面仍以中文为主。草稿功能目前整理证据资料包，不调用模型，尚未实现 AI 成稿写作。
 
-第一版仅供内部使用。上游的匿名网页、RSS、API、MCP 入口仍然存在，需要将整个服务绑定回环地址，或放在统一身份验证后。会员、支付、受限订阅、真实接口配置和公开部署均不包含在此版本中。正式品牌与对外法律文本尚待确认。
+动态应用和采编后台仍供内部使用；公开阅读网站由独立的 [ai-editorial-pages](https://github.com/runchengxie/ai-editorial-pages) 仓库维护。上游的匿名网页、RSS、API、MCP 入口仍然存在，需要将整个服务绑定回环地址，或放在统一身份验证后。会员、支付、受限订阅、真实模型接口配置和动态应用的公开部署均不包含在此版本中。正式品牌与对外法律文本尚待确认。
 
 ## 来源说明
 

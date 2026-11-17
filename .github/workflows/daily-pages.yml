@@ -1,13 +1,9 @@
-name: Daily Pages
+name: Daily Data
 
 on:
   schedule:
     - cron: '17 0 * * *'
   workflow_dispatch:
-  workflow_run:
-    workflows: [Check]
-    branches: [main]
-    types: [completed]
 
 permissions:
   contents: read
@@ -18,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.repository == 'runchengxie/ai-editorial' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    if: github.repository == 'runchengxie/ai-editorial' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -65,8 +61,8 @@ jobs:
             echo 'No publication archive found within the search bound; refusing to drop history'
             exit 1
           fi
-      - name: Generate public brief from free listings
-        run: node scripts/daily-pages/build.ts --out "$RUNNER_TEMP/public" --state "$RUNNER_TEMP/previous/editions.json"
+      - name: Generate public data from free listings
+        run: node scripts/daily-brief/build.ts --out "$RUNNER_TEMP/public" --state "$RUNNER_TEMP/previous/editions.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: daily-public-state

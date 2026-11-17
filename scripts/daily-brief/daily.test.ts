@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { selectEdition, restoreEditions } from '../../packages/backend/src/publication/daily.ts';
-import { renderPage, renderRss } from './render.ts';
 const now = new Date('2026-11-17T00:17:00Z');
 const entry = (url='https://example.org/a', title='Python financial data tools', date='2026-11-16T10:00:00Z') => ({url,title,publishedAt:new Date(date), privateNotes:'NEVER EXPORT',excerpt:'COPYRIGHT BODY'});
 const result = (id='one', entries=[entry()]) => ({sourceId:id,sourceName:id,tier:'T1',ok:true,candidates:entries});
@@ -19,13 +18,6 @@ test('source diversity, maximum eight and stable output',()=>{
  const a=selectEdition(rows,now);assert.equal(a.items.length,8);
  for(const row of rows)assert.ok(a.items.filter(i=>i.sourceId===row.sourceId).length<=2);
  assert.deepEqual(a,selectEdition(rows,now));
-});
-test('HTML/XML escape untrusted titles; no private data in downloads',()=>{
- const e=selectEdition([result('one',[entry('https://example.org/?a=1&b=2','<script>alert(1)</script>')])],now);
- assert.ok(renderPage(e,[e],'en').includes('&lt;script&gt;'));
- assert.ok(!renderPage(e,[e],'en').includes('<script>alert(1)</script>'));
- assert.ok(renderRss(e,'https://example.org/ai-editorial/').includes('&lt;script&gt;'));
- assert.ok(renderPage(e,[e],'zh-CN').includes('未经人工审核'));
 });
 test('archive restore strips fields and refuses corrupt/unsafe state',()=>{
  const e=selectEdition([result()],now);
