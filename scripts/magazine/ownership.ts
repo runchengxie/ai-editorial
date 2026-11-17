@@ -10,3 +10,6 @@ export async function needsClusterInitialization(dir:string):Promise<boolean>{
 export async function markOwnedCluster(dir:string):Promise<void>{await writeFile(path.join(dir,marker),JSON.stringify({project:'ai-editorial-magazine',version:1})+'\n',{mode:0o600});}
 export const databaseOwnershipComment='ai-editorial-magazine:owned';
 export function assertDatabaseOwnership(comment:string):void{if(comment.trim()!==databaseOwnershipComment)throw new Error('Refusing to migrate an unowned existing database');}
+
+// postgres.js reads socket hosts from PGHOST, not the libpq host query parameter.
+export function socketDatabaseEnvironment(socket:string){return {DATABASE_URL:'postgres:///ai_editorial',PGHOST:socket,PGPORT:'21850'};}

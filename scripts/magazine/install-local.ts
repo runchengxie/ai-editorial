@@ -1,7 +1,7 @@
 // Installs only this project's checked release and user units. Credentials remain in their existing homes.
 import {execFile} from 'node:child_process';import {promisify,parseEnv} from 'node:util';import {mkdir,readFile,writeFile,access,chmod,readdir} from 'node:fs/promises';import path from 'node:path';import os from 'node:os';
 import {setTimeout as delay} from 'node:timers/promises';
-import {needsClusterInitialization,markOwnedCluster,assertDatabaseOwnership,databaseOwnershipComment} from './ownership.ts';
+import {needsClusterInitialization,markOwnedCluster,assertDatabaseOwnership,databaseOwnershipComment,socketDatabaseEnvironment} from './ownership.ts';
 const exec=promisify(execFile);process.umask(0o077);
 const required=(key:string)=>{const value=process.env[key];if(!value||!path.isAbsolute(value))throw new Error(`${key} must be an explicitly resolved absolute path`);return value;};
 const code=required('CODE_ROOT'),data=required('DATA_ROOT'),config=required('CONFIG_ROOT'),pgBin=required('MAGAZINE_PG_BIN'),pgLib=required('MAGAZINE_PG_LIB');
@@ -30,8 +30,8 @@ const units=path.join(os.homedir(),'.config/systemd/user');await mkdir(units,{re
 const marker='# Managed by ai-editorial magazine installer.\n';
 async function unit(name:string,body:string){const file=path.join(units,name);try{const old=await readFile(file,'utf8');if(!old.startsWith(marker))throw new Error('Refusing to replace unmanaged unit '+name);}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}await writeFile(file,marker+body,{mode:0o600});}
 await unit('ai-editorial-postgres.service',`[Unit]\nDescription=AI Editorial magazine receipt database\nConditionPathExists=${pgData}/PG_VERSION\n[Service]\nType=simple\nRuntimeDirectory=ai-editorial-postgres\nRuntimeDirectoryMode=0700\nEnvironment=LD_LIBRARY_PATH=${pgLib}\nExecStart=${pgBin}/postgres -D ${pgData} -k ${socket} -h '' -p 21850\nRestart=on-failure\nTimeoutStopSec=60\n[Install]\nWantedBy=default.target\n`);
-const databaseUrl=`postgres://${encodeURIComponent(os.userInfo().username)}@localhost:21850/ai_editorial?host=${encodeURIComponent(socket)}`;
-const values={...previous,CODE_ROOT:code,DATA_ROOT:data,CONFIG_ROOT:config,DATABASE_URL:databaseUrl,AIHOT_DATA_DIR:path.join(base,'runtime'),AIHOT_CREDENTIALS_DIR:privateDir,
+const database=socketDatabaseEnvironment(socket);
+const values={...previous,CODE_ROOT:code,DATA_ROOT:data,CONFIG_ROOT:config,...database,AIHOT_DATA_DIR:path.join(base,'runtime'),AIHOT_CREDENTIALS_DIR:privateDir,
  MODEL_CALLS_ENABLED:previous.MODEL_CALLS_ENABLED||'true',COLLECT_ENABLED:'false',MAGAZINE_RELEASE:release,MAGAZINE_DATA_DIR:path.join(base,'magazine'),MAGAZINE_WORK_DIR:path.join(base,'magazine/codex'),MAGAZINE_PRODUCER_REVISION:revision,
  CODEX_HOME:previous.CODEX_HOME||process.env.CODEX_HOME||path.join(os.homedir(),'.codex'),CODEX_BINARY:previous.CODEX_BINARY||process.env.CODEX_BINARY||'codex',CODEX_MODEL:previous.CODEX_MODEL||'gpt-6.1-sol',
  GH_BINARY:gh,MAGAZINE_GITHUB_TOKEN_FILE:tokenFile,PATH:[path.dirname(process.execPath),path.join(code,'.runtime/bin'),path.join(os.homedir(),'.local/bin'),'/usr/local/bin','/usr/bin','/bin'].join(':')};
