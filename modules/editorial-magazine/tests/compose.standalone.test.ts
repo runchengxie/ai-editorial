@@ -49,3 +49,9 @@ test('explicit long-range roadmap dates are allowed and retain planned wording',
  draft.outlook=[{date:'2027-03-30',text:{en:'The next release is planned for 2027-03-30.',zh:'下一版本计划于2027-03-30发布。',anchors:[{id:'ev-one',quote:'The next release is planned for 2027-03-30.'}]}}];
  assert.equal(projectIssue(draft,packet).outlook[0].date,'2027-03-30');
 });
+
+test('percentage ranges carry the percent unit to both endpoints across languages',()=>{
+ const packet=samplePacket();packet.evidence[0].text+=' Reported cost reductions were 18.4–30.9%.';const draft=sampleDraft();
+ draft.stories[0].paragraphs[0]={en:'Reported reductions were 18.4–30.9%.',zh:'报告称成本下降18.4%至30.9%。',anchors:[{id:'ev-one',quote:'Reported cost reductions were 18.4–30.9%.'}]};
+ assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].paragraphs[0].zh='报告称成本下降18.5%至30.9%。';assert.throws(()=>projectIssue(draft,packet),/number/);
+});

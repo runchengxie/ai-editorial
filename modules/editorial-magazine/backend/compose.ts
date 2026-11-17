@@ -7,7 +7,7 @@ export function periodFor(kind:Packet['kind'],now:Date){
  return {start:range.start,end:range.end,coverageStart:beijingMidnight(range.start).toISOString(),coverageEnd:beijingMidnight(addDays(range.end,1)).toISOString()};
 }
 const normalized=(s:string)=>s.replace(/\s+/g,' ').trim();
-const numbers=(s:string)=>(s.match(/\d+(?:[.,]\d+)*(?:\s*(?:thousand|million|billion|trillion)\b|万|亿|千|百)?(?:%|％)?/gi)??[]).map(value=>{
+const numbers=(s:string)=>(s.replace(/(\d+(?:[.,]\d+)*)\s*[–—-]\s*(\d+(?:[.,]\d+)*)([%％])/g,'$1$3 $2$3').match(/\d+(?:[.,]\d+)*(?:\s*(?:thousand|million|billion|trillion)\b|万|亿|千|百)?(?:%|％)?/gi)??[]).map(value=>{
  const n=value.replace(/,/g,'').match(/^(\d+(?:\.\d+)?)(.*)$/)!;
  const suffix=n[2].trim().toLowerCase(),scale=/trillion/.test(suffix)?1e12:/billion/.test(suffix)?1e9:/million/.test(suffix)?1e6:/thousand/.test(suffix)?1e3:/亿/.test(suffix)?1e8:/万/.test(suffix)?1e4:/千/.test(suffix)?1e3:/百/.test(suffix)?100:1;
  return String(Number(n[1])*scale)+(/[%％]/.test(suffix)?'%':'');
