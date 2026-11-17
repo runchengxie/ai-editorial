@@ -26,7 +26,7 @@ export function publicUrl(value: string): string | null {
 export function editionDate(now: Date): string {
   return beijingDate(now);
 }
-function audience(title: string): DailyItem['audience'] {
+export function audience(title: string): DailyItem['audience'] {
   if (/data cent(?:er|re)|nuclear|electricity|\bsues\b|lawsuit|antitrust|brings together|数据中心|起诉/i.test(title)) return 'general';
   if (/financ|earnings|spreadsheet|excel|财报|投研|金融|财务/i.test(title)) return 'finance';
   if (/\b(api|sdk|code|coding|python|sql|dataset|analytics|agent|mcp|eval|developer|duckdb|pandas)\b|data (?:analysis|processing|automation)|开发|数据处理|数据分析|编程/i.test(title)) return 'development';

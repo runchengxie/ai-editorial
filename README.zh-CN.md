@@ -10,6 +10,7 @@
 
 ## 从这里开始
 
+- [文章式日报与周报](docs/magazine.zh-CN.md)：本机 Codex 生成、证据、额度回执和自动发布。
 - [免费信源目录](docs/editorial-sources.zh-CN.md)：45 个来源、默认与备选清单、成本控制。
 - [本地运行](docs/editorial-setup.zh-CN.md)：Node.js、PostgreSQL、关闭外部操作及本地验证。
 - [数据和配置约定](docs/editorial-data-contract.md)：源码、私有配置、运行数据和评测输出的位置。

@@ -11,3 +11,5 @@
 Do not update shared `latest`/`current` pointers implicitly. Inventory existing files, links, running jobs and downstream references before changing any existing data. Source articles and editorial history are separate: discarding a topic does not delete its evidence. Internal notes are never included in exported drafts or upstream publication records.
 
 - Public daily v1 metadata: produced by this repository, retained in its successful `daily-public-state` workflow artifacts and served at the existing Pages data endpoint. The separate ai-editorial-pages repository consumes this published contract; it does not own or copy authoritative raw source inputs. Reader build outputs/evaluations belong under DATA_ROOT/ai-editorial-pages/.
+
+- Magazine worker: DATA_ROOT/ai-editorial/magazine/ (private evidence packets, public library, CLI diagnostics); immutable runtime source releases under DATA_ROOT/ai-editorial/releases/<revision>/; dedicated persistent PostgreSQL under DATA_ROOT/ai-editorial/postgres/. Local worker configuration remains under CONFIG_ROOT/projects/ai-editorial/. Public v2 assets live in the project release container, separate from Git source history.

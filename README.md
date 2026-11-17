@@ -10,6 +10,7 @@ Find source material, import topics, record claims and limitations, prepare edit
 
 ## Start here
 
+- [Article daily/weekly magazine](docs/magazine.md): local Codex generation, evidence, quota receipts and publication.
 - [Free source catalog](docs/editorial-sources.md): 45 configured sources, core/optional selection and cost controls.
 - [Local setup](docs/editorial-setup.md): Node.js, PostgreSQL, disabled external actions and local validation.
 - [Data and configuration contract](docs/editorial-data-contract.md): source, private configuration, runtime data and evaluation outputs.
