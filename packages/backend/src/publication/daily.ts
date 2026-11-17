@@ -1,4 +1,5 @@
 // Public-only, unreviewed listing digest. Never reads internal topics, drafts or source bodies.
+import { beijingDate } from '@aihot/contracts/time';
 import type { Candidate } from '../sources/types.ts';
 export interface DailySource {
   sourceId: string; sourceName: string; tier: string; ok: boolean; candidates: Candidate[];
@@ -23,7 +24,7 @@ export function publicUrl(value: string): string | null {
   } catch { return null; }
 }
 export function editionDate(now: Date): string {
-  return new Date(now.getTime() + 8 * 3_600_000).toISOString().slice(0, 10);
+  return beijingDate(now);
 }
 function audience(title: string): DailyItem['audience'] {
   if (/data cent(?:er|re)|nuclear|electricity|\bsues\b|lawsuit|antitrust|brings together|数据中心|起诉/i.test(title)) return 'general';
