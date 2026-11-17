@@ -14,6 +14,8 @@ Only enabled RSS and free HTML listings in `industry/sources.json` participate. 
 
 `.github/workflows/daily-pages.yml` targets 00:17 UTC / 08:17 Asia/Shanghai each day. GitHub schedules may be delayed. Successful main `Check` runs also trigger publication; manual dispatch is available on main. All routes require a successful push `Check` on the exact main revision. No human content approval is required.
 
+GitHub may disable scheduled workflows after 60 days without repository activity. Check the workflow state during routine maintenance and re-enable it if disabled; manual dispatch is also available. See [GitHub schedule behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
 GitHub Pages must use the Actions publishing source. Build artifacts contain only whitelisted public metadata and static assets. Pages deployment uses the `github-pages` environment and GitHub's temporary token; no PAT or model secret belongs in the workflow.
 
 If fewer than half of enabled sources return entries, or no safe dated entry is eligible, generation fails before deploy and the previous site remains. Source health and actual generation time are visible. A successful source read is not fact verification. The seven-day window avoids presenting an old article as today's release. Publication dates after generation are excluded.

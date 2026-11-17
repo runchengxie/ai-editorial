@@ -14,6 +14,8 @@
 
 `.github/workflows/daily-pages.yml` 计划每天 UTC 00:17，即北京时间 08:17 执行，GitHub 排期可能延迟。main 的 `Check` 成功后也会触发，可在 main 手动运行。每种入口都会核对当前 main 提交的 push 检查已经成功。无需人工内容审核。
 
+公开仓库连续 60 天没有活动时，GitHub 可能停用定时工作流。例行维护时应检查工作流是否启用，必要时重新启用；也可手动运行。参见 [GitHub 定时任务说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)。
+
 GitHub Pages 使用 Actions 发布源，通过 `github-pages` 环境和 GitHub 临时令牌部署。构建产物只有公开字段和静态资源；工作流不需要 PAT 或模型密钥。
 
 若返回列表的信源少于启用信源的一半，或没有日期有效、安全的候选资讯，则在部署前失败，保留已有网站。页面显示信源状态和实际生成时间。采集成功不等于事实已核验。七天窗口不会把旧文章写成今日发布；晚于生成时间的条目不会入选。
