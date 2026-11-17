@@ -70,6 +70,10 @@ jobs:
         run: npm run build -w @aihot/web
       - name: Browser test engines
         run: npx playwright install --with-deps chromium webkit
+      - name: Daily public brief tests
+        run: |
+          node scripts/daily-pages/daily.test.ts
+          node scripts/daily-pages/browser.test.ts
       - name: Web tests
         run: npm run test:web
 

@@ -1,5 +1,7 @@
 # AI Editorial
 
+访问[每日自动简报](https://runchengxie.github.io/ai-editorial/) · [RSS 订阅](https://runchengxie.github.io/ai-editorial/feed.xml)。参见[自动发布机制与当前能力](docs/daily-pages.zh-CN.md)。
+
 [English](README.md)
 
 一个供编辑自用的 AI 资讯采编工作台，服务于用 AI 做投研、财报分析、数据处理和开发的人。基于 [AIHOT](https://github.com/KKKKhazix/AIHOT) Fork，采编功能放在独立模块中。

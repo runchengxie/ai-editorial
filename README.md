@@ -1,5 +1,7 @@
 # AI Editorial
 
+Read the [automatic daily website](https://runchengxie.github.io/ai-editorial/) · [RSS](https://runchengxie.github.io/ai-editorial/feed.xml). See [daily publication and its current limits](docs/daily-pages.md).
+
 [简体中文](README.zh-CN.md)
 
 An internal AI news workbench for an editor serving people who use AI in financial research, financial statements, data processing and software development. Built as a fork of [AIHOT](https://github.com/KKKKhazix/AIHOT), with an isolated editorial module.

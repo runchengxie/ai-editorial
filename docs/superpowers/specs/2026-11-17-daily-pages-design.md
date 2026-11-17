@@ -1,0 +1,9 @@
+# Automatic daily public brief
+
+The user authorized upstream integration and automatic public deployment without human review on 2026-11-17. Keep the internal workbench private. Publish a separate static, bilingual reading site on GitHub Pages at the repository path; no administrator API, credentials, notes or draft packets are exported.
+
+First release uses the configured enabled free RSS/HTML listings and the existing guarded collectors. No database, paid provider, model credential or persistent server is required. Publish source titles, dates and links, with explicit rule-based topic classification and automatic/unreviewed disclosure. Do not invent summaries or claim AI analysis when no model runs. Limit to eight entries, two per source, within seven days; show the actual time window and source health. Fail publication if fewer than half the enabled sources succeed or no eligible entries exist, preserving the last deployed edition.
+
+Daily target: 08:17 Asia/Shanghai (00:17 UTC); GitHub scheduling may delay execution. Also support manual dispatch and publish after successful main CI. Retain up to 30 dated editions through successful-run artifacts, not source commits; display available editions and update time. English default, explicit persistent Chinese selection. Source article titles stay original. RSS provides source links and attribution, not copied full text.
+
+Approaches: exposing the dynamic AIHOT site requires a persistent database/server and a separate public approval boundary; exporting only manually reviewed topics contradicts the user's latest instruction. Chosen: separate automatic static source brief, keeping the workbench and future model processing independent. Tradeoff: initial version is a transparent source digest, not a model-written editorial newsletter.

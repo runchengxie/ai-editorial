@@ -1,0 +1,92 @@
+name: Daily Pages
+
+on:
+  schedule:
+    - cron: '17 0 * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Check]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-pages-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'runchengxie/ai-editorial' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require successful checks on this main revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/check.yml/runs?head_sha=$GITHUB_SHA&branch=main&status=success&event=push" --jq '.workflow_runs | length')
+          test "$count" -gt 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --no-audit --no-fund
+      - name: Restore only a successful publication archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/previous"
+          runs=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/daily-pages.yml/runs?status=success&branch=main&per_page=100" --jq '.workflow_runs[].id')
+          restored=false
+          for previous in $runs; do
+            # All-skipped workflow_run events can be marked successful; they have no state artifact.
+            artifact=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$previous/artifacts" --jq '.artifacts[] | select(.name == "daily-public-state") | .id')
+            if [ -n "$artifact" ]; then
+              gh run download "$previous" --name daily-public-state --dir "$RUNNER_TEMP/previous"
+              restored=true
+              break
+            fi
+            deployed=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$previous/jobs" --jq '[.jobs[] | select(.name == "deploy" and .conclusion == "success")] | length')
+            if [ "$deployed" -gt 0 ]; then
+              echo 'A published edition has lost its archive; refusing to drop history'
+              exit 1
+            fi
+          done
+          count=$(printf '%s\n' "$runs" | sed '/^$/d' | wc -l)
+          if [ "$restored" = false ] && [ "$count" -ge 100 ]; then
+            echo 'No publication archive found within the search bound; refusing to drop history'
+            exit 1
+          fi
+      - name: Generate public brief from free listings
+        run: node scripts/daily-pages/build.ts --out "$RUNNER_TEMP/public" --state "$RUNNER_TEMP/previous/editions.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: daily-public-state
+          path: ${{ runner.temp }}/public/editions.json
+          retention-days: 90
+          if-no-files-found: error
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+        with:
+          path: ${{ runner.temp }}/public
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy public static artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
