@@ -6,7 +6,7 @@
 
 ## 引擎运行
 
-`Daily Data`（`.github/workflows/daily-pages.yml`）每天 UTC 00:17，即北京时间 08:17 采集启用的免费 RSS/HTML 信源，也可在 main 手动运行。每次都要求对应 main 提交的 push 检查成功。保留现有工作流文件名、并发组和 `daily-public-state` 产物名，以继续读取真实发布历史。源码检查成功不再自动发布数据，便于先合并引擎、再迁移网站，不提前切换旧入口。
+`Daily Data`（`.github/workflows/daily-pages.yml`）只在 main 明确手动运行时采集启用的免费 RSS/HTML 信源。定时采集暂停，工作流不含 cron 触发。每次都要求对应 main 提交的 push 检查成功。保留现有工作流文件名、并发组和 `daily-public-state` 产物名，以继续读取真实发布历史。源码检查成功不再自动发布数据，便于先合并引擎、再迁移网站，不提前切换旧入口。
 
 `node scripts/daily-brief/build.ts --out <仓库外目录>` 输出 `editions.json`、`latest.json`，以及旧首页、语言页、历史地址的最小跳转页和指向新 RSS 的迁移通知。不包含阅读模板、CSS 或界面语言目录；网页和 RSS 的功能开发只在新仓库进行。不要发布 `--fixture` 样例输出。
 
@@ -20,4 +20,4 @@
 
 执行根目录类型检查、引擎与网页原有检查，以及 `node scripts/daily-brief/daily.test.ts`、`node scripts/daily-brief/output.test.ts`。使用新网页的独立校验器验证引擎输出，记录两边测试的提交版本。
 
-GitHub 定时任务可能延迟，公开仓库连续 60 天没有活动时可能停用；例行维护时应检查启用状态。参见 [GitHub 定时说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)。仍可手动运行。
+探索阶段保持手动。参见[手动探索与以后恢复](magazine.zh-CN.md#手动探索自动化暂停)。源码检查不会触发此工作流。

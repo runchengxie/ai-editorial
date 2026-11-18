@@ -14,20 +14,55 @@ Calls use the existing PostgreSQL receipts and `codex-cli` budget. Initial deplo
 
 `modules/editorial-magazine` owns the implementation. Raw packets, quote anchors and CLI diagnostics stay under DATA_ROOT/ai-editorial/magazine and PostgreSQL. Only the projected public library is published. Source-linked prose is paraphrased; screenshots and artwork from the reference article are not copied. Dates in outlook require exact dated source evidence, retain planned wording, and may extend at most365days beyond the issue period.
 
+## Manual evaluation (automation paused)
+
+Scheduled generation and publication are paused by owner request. The local magazine timer must remain disabled; both repositories keep manual GitHub workflows, with no cron or successful-check publication trigger. Existing Pages content remains available. A CI check does not collect news, call Codex or deploy new content. Installing a worker does not enable its timer.
+
+The reusable scripts are committed here; private inputs, receipts and results stay outside Git. Resolve `CODE_ROOT`, `DATA_ROOT` and `CONFIG_ROOT` using the workspace launcher before these commands.
+
+```sh
+# Pause/check the local scheduler; pausing does not stop an already running job.
+systemctl --user disable --now ai-editorial-magazine.timer
+systemctl --user is-active ai-editorial-magazine.service
+
+# Free collection only: does not generate prose, modify the public library or publish.
+# The existing env file optionally supplies the designated GitHub token-file path.
+node --env-file="$CONFIG_ROOT/projects/ai-editorial/magazine.env" scripts/magazine/inspect.ts --kind both
+
+# Explicitly generate both editions using the installed stable worker and existing quota.
+# Writes the saved private library, but does not publish it or enable automation.
+node scripts/magazine/manual.ts generate
+
+# A separate explicit action publishes the saved library and dispatches the reader.
+node scripts/magazine/manual.ts publish
+```
+
+`inspect.ts` defaults to both editions; `--kind daily|weekly` narrows it and `--at <ISO timestamp with timezone>` permits a historical selection window. It writes dated, private packets and `summary.json` under `DATA_ROOT/ai-editorial/evaluations/magazine-inspect-*/`, including actual usable evidence counts, sources, audiences, evidence levels and titles. This is a network collection operation, not a mock or a prediction of final story counts. Raw packets must not be committed or uploaded as website content. The script never imports model generation or publication.
+
+`manual.ts` shows help without arguments. It reads the existing authoritative config and launches the installed immutable release, never production code from the current worktree. Generation consumes the existing Codex budget; exhausted, pending or uncertain receipts must be investigated rather than bypassed. If generation fails, do not publish an assumed new result: inspect the receipt and the saved library timestamps. Publishing also requires fresh v1 compatibility data: manually dispatch `daily-pages.yml` in the engine on checked main first when needed; it does not use a model. Then publish the magazine, or manually dispatch `pages.yml` in the reader. Data freshness and exact-main checks still apply, so reactivation after a long pause needs fresh data before deployment.
+
+Only after an explicit decision to resume scheduled operations:
+
+```sh
+systemctl --user enable --now ai-editorial-magazine.timer
+systemctl --user list-timers ai-editorial-magazine.timer
+```
+
+The retained timer definition targets 08:27 Shanghai; `Persistent=true` may immediately catch up a missed run when enabled. These commands are instructions for later, not part of setup or this evaluation. Cloud refreshes remain manual unless their schedules are deliberately restored in a reviewed code change. To keep everything paused, do not run `enable`, `generate`, `publish` or dispatch a publication workflow.
+
+### Free collection check, 18 November 2026
+
+Using source revision `c74fe431e3b6e14782b8926a11f4d62940ab8cd4`, the real collector returned 23 usable daily evidence items from 15 sources, and 47 weekly items from 26 sources. The published editions had been generated from only 8 and 13 items respectively. These are evidence counts, not new generated stories: this inspection made zero model calls and published nothing. The daily audience classification was 1 finance / 10 development / 12 general; weekly was 0 / 29 / 18. Some overseas feeds timed out on this host; explicitly probing the existing shell proxy also failed for three sampled feeds, so no production proxy settings were changed. Before promising a finance-focused digest, improve actual financial-workflow coverage and validate a generated draft. Do not fill the gap with irrelevant release patches. Private packets and the timestamped summary remain in the external evaluation directory, outside Git.
+
 ## Local scheduled worker
 
 The stable source release is DATA_ROOT/ai-editorial/releases/<checked-main-sha>/. Authoritative configuration is CONFIG_ROOT/projects/ai-editorial/magazine.env, mode0600; it refers to the designated existing GitHub credential file and Codex home, without duplicating either credential. PostgreSQL uses a separate project data directory and owner-only Unix socket with peer authentication, not the disposable evaluation cluster.
 
 After exact-main CI passes, run `scripts/magazine/install-local.ts` from the clean primary engine checkout with explicitly resolved CODE_ROOT, DATA_ROOT, CONFIG_ROOT, MAGAZINE_PG_BIN and MAGAZINE_PG_LIB (stable PostgreSQL18 paths). The installer verifies the main checks, archives an immutable release, installs dependencies, migrates a dedicated database, sets an initial quota budget and creates only `ai-editorial-postgres.service`, `ai-editorial-magazine.service` and `ai-editorial-magazine.timer`. Existing unmanaged units/nonempty unknown databases are refused.
 
-Start the magazine service once and verify its publication before enabling the timer. The timer targets08:27Shanghai daily and catches up after a missed run while the user service manager is available. It creates a daily issue and the latest complete weekly issue when needed. This machine must be running with the data drive mounted and a valid Codex login. The website remains on GitHub Pages when the machine is offline; generation dates stay visible and invalid/stale builds preserve the previous site.
+The following describes the retained scheduling mechanism, not a setup instruction to activate it. Keep it disabled during evaluation. If scheduled operation is explicitly resumed later, verify a one-shot publication before enabling the timer. The timer targets08:27Shanghai daily and catches up after a missed run while the user service manager is available. It creates a daily issue and the latest complete weekly issue when needed. This machine must be running with the data drive mounted and a valid Codex login. The website remains on GitHub Pages when the machine is offline; generation dates stay visible and invalid/stale builds preserve the previous site.
 
-```sh
-systemctl --user start ai-editorial-magazine.service
-systemctl --user status ai-editorial-magazine.service
-journalctl --user -u ai-editorial-magazine.service -n80
-systemctl --user enable --now ai-editorial-magazine.timer
-```
+For current manual operations and later activation, use the explicit commands in [manual evaluation](#manual-evaluation-automation-paused).
 
 Do not release unknown receipts automatically. Inspect the private response/receipt first and use the project's existing recovery conventions. To stop generation, disable the timer or set MODEL_CALLS_ENABLED=false in the authoritative worker configuration. Never run production from a task worktree or temporary PostgreSQL binary. Back up the dedicated PostgreSQL/data directory before replacing its runtime; restoring a lost receipt ledger must not blindly resubmit uncertain calls.
 

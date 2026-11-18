@@ -6,7 +6,7 @@ The reading website and RSS now belong to [ai-editorial-pages](https://github.co
 
 ## Producer operations
 
-`Daily Data` (`.github/workflows/daily-pages.yml`) collects enabled free RSS/HTML sources at 00:17 UTC / 08:17 Shanghai daily, or by manual dispatch on main. Every run requires successful push checks on the exact main revision. The existing workflow filename, concurrency group and `daily-public-state` artifact name are retained to preserve real publication history. Successful source-code checks do not publish data automatically; this permits provider-first migration without switching the old website early.
+`Daily Data` (`.github/workflows/daily-pages.yml`) collects enabled free RSS/HTML sources only by explicit manual dispatch on main. Scheduled collection is paused; the workflow has no cron trigger. Every run requires successful push checks on the exact main revision. The existing workflow filename, concurrency group and `daily-public-state` artifact name are retained to preserve real publication history. Successful source-code checks do not publish data automatically; this permits provider-first migration without switching the old website early.
 
 `node scripts/daily-brief/build.ts --out <external-directory>` writes `editions.json`, `latest.json`, minimal redirects for the old home/language/archive URLs and an RSS migration notice linking the new feed. It contains no reader templates, CSS or locale catalogs. New website/RSS development happens only in the reader repository. Never publish `--fixture` output.
 
@@ -20,4 +20,4 @@ Merge the provider PR first, leaving the existing deployment in place. Deploy th
 
 Run root typecheck, engine/web checks, `node scripts/daily-brief/daily.test.ts` and `node scripts/daily-brief/output.test.ts`. Validate the producer output with the reader's independent validator and record both revisions.
 
-GitHub schedules can be delayed or disabled after 60 inactive days in public repositories; check the active workflow state during routine maintenance. See [GitHub schedule behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule). Manual dispatch remains available.
+Keep collection manual during evaluation. See [manual evaluation and later reactivation](magazine.md#manual-evaluation-automation-paused). Source checks do not dispatch this workflow.

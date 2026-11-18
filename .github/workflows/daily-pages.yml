@@ -1,8 +1,7 @@
 name: Daily Data
 
 on:
-  schedule:
-    - cron: '17 0 * * *'
+  # Manual-only while the editorial pipeline is being evaluated.
   workflow_dispatch:
 
 permissions:

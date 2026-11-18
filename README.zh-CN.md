@@ -1,6 +1,6 @@
 # AI Editorial
 
-访问[每日自动简报](https://runchengxie.github.io/ai-editorial-pages/) · [RSS 订阅](https://runchengxie.github.io/ai-editorial-pages/feed.xml)。参见[自动发布机制与当前能力](docs/daily-pages.zh-CN.md)。
+访问[AI 资讯简报](https://runchengxie.github.io/ai-editorial-pages/) · [RSS 订阅](https://runchengxie.github.io/ai-editorial-pages/feed.xml)。参见[自动发布机制与当前能力](docs/daily-pages.zh-CN.md)。
 
 [English](README.md)
 
@@ -8,10 +8,12 @@
 
 可以搜索原始资料、导入选题、记录关键说法与限制、整理可编辑的草稿资料包、人工审核，并导出 Markdown 后手动发布。内部备注不会进入导出内容，证据变化后需要重新审核。
 
+定时生成和发布已暂停，参见[手动采集、生成与发布](docs/magazine.zh-CN.md#手动探索自动化暂停)。既有网站继续在线。
+
 ## 从这里开始
 
 - [文章式日报与周报](docs/magazine.zh-CN.md)：本机 Codex 生成、证据、额度回执和自动发布。
-- [免费信源目录](docs/editorial-sources.zh-CN.md)：45 个来源、默认与备选清单、成本控制。
+- [免费信源目录](docs/editorial-sources.zh-CN.md)：71 个来源（66 个启用）、默认与备选清单、成本控制。
 - [本地运行](docs/editorial-setup.zh-CN.md)：Node.js、PostgreSQL、关闭外部操作及本地验证。
 - [数据和配置约定](docs/editorial-data-contract.md)：源码、私有配置、运行数据和评测输出的位置。
 - [验证记录](docs/editorial-release-validation.md)：已测版本、检查结果及限制。
@@ -19,7 +21,7 @@
 - [设计](docs/superpowers/specs/2026-11-16-editorial-workbench-design.md)及[开发计划](docs/superpowers/plans/2026-11-16-editorial-workbench.md)。
 - [上游引擎英文指南](README.en.md)及[架构说明](docs/architecture.md)。
 
-完成本地配置后访问 `/admin/editorial`。新增采编界面支持中英切换，上游引擎页面仍以中文为主。草稿功能目前整理证据资料包，不调用模型，尚未实现 AI 成稿写作。
+完成本地配置后访问 `/admin/editorial`。新增采编界面支持中英切换，上游引擎页面仍以中文为主。草稿功能目前整理证据资料包，不调用模型，独立刊物任务已支持模型辅助成稿。
 
 动态应用和采编后台仍供内部使用；公开阅读网站由独立的 [ai-editorial-pages](https://github.com/runchengxie/ai-editorial-pages) 仓库维护。上游的匿名网页、RSS、API、MCP 入口仍然存在，需要将整个服务绑定回环地址，或放在统一身份验证后。会员、支付、受限订阅、真实模型接口配置和动态应用的公开部署均不包含在此版本中。正式品牌与对外法律文本尚待确认。
 

@@ -14,20 +14,55 @@ Codex 使用本机现有 ChatGPT 登录，以非交互、只读模式运行，�
 
 实现位于 `modules/editorial-magazine`。原始资料、私有引用片段和诊断信息留在 DATA_ROOT/ai-editorial/magazine 与数据库；公开数据只包含整理后的文章和来源信息。不复用参考文章的截图或图片。前瞻日期必须有明确原文依据，保留“计划”等限定，最远不超过本期结束后365天。
 
+## 手动探索（自动化暂停）
+
+按使用者要求，暂不定时生成或发布。本机刊物定时器保持禁用；两个仓库只保留手动运行的 GitHub 发布工作流，不再按时钟或源码检查成功自动发布。已经上线的网页继续可读。CI 检查不会采集新闻、调用 Codex 或部署新内容。安装任务也不会启用定时器。
+
+可复用脚本保存在项目中；私有材料、回执及结果留在 Git 之外。执行前用工作区启动器解析 `CODE_ROOT`、`DATA_ROOT` 和 `CONFIG_ROOT`。
+
+```sh
+# 暂停并检查本机调度；停用定时器不会中断已经运行的任务。
+systemctl --user disable --now ai-editorial-magazine.timer
+systemctl --user is-active ai-editorial-magazine.service
+
+# 仅免费采集检查：不写文章、不修改公开刊物库、不发布。
+# 既有配置文件可提供指定 GitHub 凭据文件的路径。
+node --env-file="$CONFIG_ROOT/projects/ai-editorial/magazine.env" scripts/magazine/inspect.ts --kind both
+
+# 明确手动生成两种刊物，使用已安装的稳定版本和既有额度。
+# 保存私有刊物库，但不发布、不启用自动化。
+node scripts/magazine/manual.ts generate
+
+# 另一步明确发布已保存刊物，并触发阅读网站更新。
+node scripts/magazine/manual.ts publish
+```
+
+`inspect.ts` 默认检查两种刊物，`--kind daily|weekly` 可只查一种，`--at <带时区的 ISO 时间>` 可检查历史时间窗口。私有材料和 `summary.json` 写入 `DATA_ROOT/ai-editorial/evaluations/magazine-inspect-*/`，记录实际可用证据数、来源数、受众、材料完整程度及标题。这是真实联网采集，不是模拟结果，也不能据此保证成稿篇数。原始材料不能提交或作为网页内容上传。脚本不导入模型生成或发布模块。
+
+`manual.ts` 不带参数时只显示帮助；读取既有权威配置后，执行已安装的固定代码版本，不把当前 worktree 当作生产目录。生成消耗既有 Codex 额度；额度耗尽或回执处于未完成、未知状态时应检查原因，不能绕过。生成失败后不要假定新内容已保存，发布前检查回执和刊物库时间。发布还要求 v1 兼容数据足够新：需要时先在引擎已通过检查的 main 手动运行 `daily-pages.yml`，该任务不调用模型；再发布刊物，或在网页仓库手动运行 `pages.yml`。数据新鲜度与准确 main 检查仍然生效，长期暂停后须先刷新数据才能部署。
+
+以后明确决定恢复定时运行时，再执行：
+
+```sh
+systemctl --user enable --now ai-editorial-magazine.timer
+systemctl --user list-timers ai-editorial-magazine.timer
+```
+
+保留的定时器定义为北京时间 08:27，`Persistent=true` 意味着启用时可能立即补跑错过的任务。上述恢复命令供以后使用，不属于本次安装或探索步骤。云端刷新仍保持手动；若要恢复定时，应通过代码评审明确加回计划。保持暂停时，不执行 `enable`、`generate`、`publish`，也不手动触发发布工作流。
+
+### 2026 年 11 月 18 日免费采集检查
+
+使用信源版本 `c74fe431e3b6e14782b8926a11f4d62940ab8cd4`，真实采集得到日报 23 条可用证据、15 个来源，周报 47 条、26 个来源；已发布旧刊物的生成输入分别只有 8 条、13 条。这是证据条数，不是新成稿篇数：检查没有调用模型，也没有发布。日报受众分类为投研 1 / 开发 10 / 综合 12，周报为 0 / 29 / 18。本机部分海外来源超时；用既有命令行代理单独探测的三个样本也失败，因此没有修改生产代理配置。要做投研导向的简报，还需补足真实财务工作流材料，再验收模型成稿，不能用无关补丁版本凑数。带时间戳的私有材料及汇总保留在仓库外的评测目录。
+
 ## 本机定时任务
 
 稳定代码版本位于 DATA_ROOT/ai-editorial/releases/<已通过检查的 main 提交>/。权威配置放在 CONFIG_ROOT/projects/ai-editorial/magazine.env，权限0600，只引用已有 GitHub 凭据文件和 Codex home，不复制凭据。数据库使用独立目录和仅所有者可用的 Unix socket，以系统用户身份认证，不复用评测数据库。
 
 在准确 main 提交的 CI 通过后，从干净的引擎主检出执行 `scripts/magazine/install-local.ts`，显式提供 CODE_ROOT、DATA_ROOT、CONFIG_ROOT、MAGAZINE_PG_BIN 和 MAGAZINE_PG_LIB（稳定 PostgreSQL18路径）。安装器核对检查结果，归档固定代码版本、安装依赖、迁移独立数据库、初始化额度预算，仅创建本项目的 `ai-editorial-postgres.service`、`ai-editorial-magazine.service`、`ai-editorial-magazine.timer`。不会替换非本项目管理的同名服务，也不会初始化已有不明内容的数据库目录。
 
-先运行一次服务并确认发布，再启用定时器。计划每天北京时间08:27执行，用户服务管理器可用时会补跑错过的任务；生成日报，并在需要时生成最近一个完整周的周报。电脑需开机、数据盘已挂载且 Codex 登录有效。电脑离线时网站仍托管在 GitHub Pages，页面显示实际生成时间，错误或过期输入不覆盖旧站。
+以下说明保留的调度机制，不表示安装后应当启动。探索阶段保持禁用；以后明确恢复定时运行时，先确认单次发布成功，再启用定时器。计划每天北京时间08:27执行，用户服务管理器可用时会补跑错过的任务；生成日报，并在需要时生成最近一个完整周的周报。电脑需开机、数据盘已挂载且 Codex 登录有效。电脑离线时网站仍托管在 GitHub Pages，页面显示实际生成时间，错误或过期输入不覆盖旧站。
 
-```sh
-systemctl --user start ai-editorial-magazine.service
-systemctl --user status ai-editorial-magazine.service
-journalctl --user -u ai-editorial-magazine.service -n80
-systemctl --user enable --now ai-editorial-magazine.timer
-```
+当前手动操作和以后恢复的命令见[手动探索](#手动探索自动化暂停)。
 
 不要自动释放未知回执并重发。先检查私有结果及回执，再按项目既有恢复约定处理。可停用定时器，或在权威配置中设 MODEL_CALLS_ENABLED=false 来停止生成。生产任务不能使用临时 worktree 或 /tmp 数据库二进制。替换数据库运行时前备份专用数据库和数据目录；丢失回执后不能盲目重复提交可能已消耗额度的调用。
 

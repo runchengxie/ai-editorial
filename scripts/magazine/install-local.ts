@@ -52,4 +52,4 @@ await exec(process.execPath,['scripts/migrate.ts'],{cwd:release,env,maxBuffer:5_
 const setup=path.join(base,'runtime','configure-magazine-budget.mjs');await mkdir(path.dirname(setup),{recursive:true});
 await writeFile(setup,`import {createRequire} from 'node:module';const require=createRequire(${JSON.stringify(path.join(release,'package.json'))});const postgres=require('postgres');const sql=postgres(process.env.DATABASE_URL);await sql\`INSERT INTO budgets(service,per_minute,per_hour,per_day,note)VALUES('codex-cli',2,3,3,'Codex subscription quota: maximum3new calls per rolling24hours')ON CONFLICT(service)DO NOTHING\`;await sql.end();`,{mode:0o600});
 await exec(process.execPath,[setup],{env});
-console.log(`Installed producer ${revision}; database ready. Inspect configuration, start ai-editorial-magazine.service, then enable its timer after first successful publication.`);
+console.log(`Installed producer ${revision}; database ready. Installation does not enable generation or publication. Keep the timer disabled during evaluation; see docs/magazine.md for explicit manual operations and later activation.`);
