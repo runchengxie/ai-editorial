@@ -7,7 +7,8 @@ export function periodFor(kind:Packet['kind'],now:Date){
  return {start:range.start,end:range.end,coverageStart:beijingMidnight(range.start).toISOString(),coverageEnd:beijingMidnight(addDays(range.end,1)).toISOString()};
 }
 const normalized=(s:string)=>s.replace(/\s+/g,' ').trim();
-const numbers=(s:string)=>(s.replace(/(\d+(?:[.,]\d+)*)\s*[–—-]\s*(\d+(?:[.,]\d+)*)([%％])/g,'$1$3 $2$3').match(/\d+(?:[.,]\d+)*(?:\s*(?:thousand|million|billion|trillion)\b|万|亿|千|百)?(?:%|％)?/gi)??[]).map(value=>{
+const numbers=(s:string)=>(s.replace(/(\d+(?:[.,]\d+)*)\s*(?:percent|per cent)\b/gi,'$1%').replace(/(\d+(?:[.,]\d+)*)\s*[–—-]\s*(\d+(?:[.,]\d+)*)([%％])/g,'$1$3 $2$3').match(/\d+(?:[.,]\d+)*(?:\s*(?:(?:thousand|million|billion|trillion)\b|万|亿|千|百))?(?:\s*[%％])?/gi)??[]).map(value=>{
+ const version=value.match(/^\d+(?:\.\d+){2,}$/);if(version)return 'version:'+version[0];
  const n=value.replace(/,/g,'').match(/^(\d+(?:\.\d+)?)(.*)$/)!;
  const suffix=n[2].trim().toLowerCase(),scale=/trillion/.test(suffix)?1e12:/billion/.test(suffix)?1e9:/million/.test(suffix)?1e6:/thousand/.test(suffix)?1e3:/亿/.test(suffix)?1e8:/万/.test(suffix)?1e4:/千/.test(suffix)?1e3:/百/.test(suffix)?100:1;
  return String(Number(n[1])*scale)+(/[%％]/.test(suffix)?'%':'');
@@ -19,7 +20,7 @@ export function projectIssue(input:unknown,packet:Packet):Issue{
   const cited=raw.anchors.map(a=>lookup.get(a.id)!);
   const identifiers=(raw.en+' '+raw.zh).match(/[A-Za-z][A-Za-z0-9]*(?:[-.][A-Za-z0-9]+)*/g)?.filter(term=>/\d/.test(term)&&term.length<=100&&cited.some(e=>e.text.includes(term)||e.title.includes(term)))??[];
   const supported=new Set(numbers(quotes.join(' ')+' '+cited.map(e=>e.title).join(' ')+' '+identifiers.join(' ')));
-  for(const n of numbers(raw.en+' '+raw.zh))if(!supported.has(n))throw new Error('Unsupported number in generated text');
+  for(const n of numbers(raw.en+' '+raw.zh))if(!supported.has(n))throw new Error(`Unsupported number ${n} in generated text`);
   if(/sk-[A-Za-z0-9_-]{20,}|AKIA[A-Z0-9]{16}|BEGIN.{0,20}PRIVATE KEY/.test(raw.en+' '+raw.zh))throw new Error('Unsafe credential-like evidence output');
   return {en:raw.en,zh:raw.zh,sourceIds:[...new Set(raw.anchors.map(a=>a.id))]};
  }

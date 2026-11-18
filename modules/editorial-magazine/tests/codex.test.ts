@@ -21,3 +21,7 @@ test('a pending call from a killed worker blocks changed-input calls for the sam
  await sql`UPDATE receipts SET status='pending',response=NULL WHERE id=${first.receiptId}`;
  await assert.rejects(codexJson('pending-test','new-input',launch),/pending|unknown/i);assert.equal(calls,1);
 });
+test('Codex subprocess excludes collector credentials and database settings',async()=>{
+ const {codexChildEnvironment}=await import('../backend/codex.ts');const env=codexChildEnvironment({HOME:'/home/example',CODEX_HOME:'/private/codex',PATH:'/usr/bin',GITHUB_TOKEN:'private-collector-token',GH_TOKEN:'private-publisher-token',DATABASE_URL:'private-database',PGHOST:'/private/socket',OPENAI_API_KEY:'unrelated-key'});
+ assert.equal(env.CODEX_HOME,'/private/codex');assert.equal(env.HOME,'/home/example');for(const key of ['GITHUB_TOKEN','GH_TOKEN','DATABASE_URL','PGHOST','OPENAI_API_KEY'])assert.equal(env[key],undefined);
+});

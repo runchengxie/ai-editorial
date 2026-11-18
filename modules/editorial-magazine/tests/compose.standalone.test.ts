@@ -32,7 +32,7 @@ test('presentation numbering is removed before checking headline factual numbers
 test('quantity translation preserves value while unsupported numeric changes still fail',()=>{
  const packet=samplePacket();packet.evidence[0].text+=' The dataset contains 2.1 million customer reviews.';
  const draft=sampleDraft();draft.stories[0].paragraphs[0]={en:'The dataset contains 2.1 million reviews.',zh:'数据集包含210万条评论。',anchors:[{id:'ev-one',quote:'The dataset contains 2.1 million customer reviews.'}]};
- assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].paragraphs[0].zh='数据集包含2100万条评论。';assert.throws(()=>projectIssue(draft,packet),/number/);
+ assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].paragraphs[0].zh='数据集包含 210 万条评论。';assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].paragraphs[0].zh='数据集包含2100万条评论。';assert.throws(()=>projectIssue(draft,packet),/number/);
 });
 test('product version in the cited source title supports its summary without inventing a new version',()=>{
  const packet=samplePacket();packet.evidence[0].title='Sample Tools1.2 adds CSV import';const draft=sampleDraft();
@@ -54,4 +54,17 @@ test('percentage ranges carry the percent unit to both endpoints across language
  const packet=samplePacket();packet.evidence[0].text+=' Reported cost reductions were 18.4–30.9%.';const draft=sampleDraft();
  draft.stories[0].paragraphs[0]={en:'Reported reductions were 18.4–30.9%.',zh:'报告称成本下降18.4%至30.9%。',anchors:[{id:'ev-one',quote:'Reported cost reductions were 18.4–30.9%.'}]};
  assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].paragraphs[0].zh='报告称成本下降18.5%至30.9%。';assert.throws(()=>projectIssue(draft,packet),/number/);
+});
+test('word percent and percentage symbols represent the same quoted value',()=>{
+ const packet=samplePacket();packet.evidence[0].text+=' Revenue grew 103 percent while costs fell 2.5 per cent.';const draft=sampleDraft();
+ draft.briefs=[{en:'Revenue grew103% and costs fell2.5%.',zh:'营收增长103%，成本下降2.5%。',anchors:[{id:'ev-one',quote:'Revenue grew 103 percent while costs fell 2.5 per cent.'}]}];
+ assert.doesNotThrow(()=>projectIssue(draft,packet));draft.briefs[0].zh='营收增长104%，成本下降2.5%。';assert.throws(()=>projectIssue(draft,packet),/number/);
+});
+test('supports expanded weekly features and briefs while refusing over-bound output',()=>{
+ const packet={...samplePacket(),kind:'weekly' as const};const draft=sampleDraft();draft.stories=Array.from({length:12},()=>structuredClone(draft.stories[0]));draft.briefs=Array.from({length:25},()=>structuredClone(draft.lead));
+ assert.equal(projectIssue(draft,packet).stories.length,12);draft.briefs.push(draft.lead);assert.throws(()=>projectIssue(draft,packet));
+});
+test('release version patch numbers must match the cited version exactly',()=>{
+ const packet=samplePacket();packet.evidence[0].title='Tools v1.2.3 release';const draft=sampleDraft();draft.stories[0].headline={en:'Tools v1.2.3 adds CSV import.',zh:'Tools v1.2.3 增加CSV导入。',anchors:draft.title.anchors};
+ assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].headline.zh='Tools v1.2.4 增加CSV导入。';assert.throws(()=>projectIssue(draft,packet),/number/);
 });

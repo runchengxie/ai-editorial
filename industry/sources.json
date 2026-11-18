@@ -1,5 +1,5 @@
 {
-  "$comment": "Verified free/low-cost editorial source pack. Existing administrator settings are never overwritten by scripts/seed.ts. Core sources are enabled; optional sources are paused. See docs/editorial-sources.md for access, cost and verification limits.",
+  "$comment": "Free/low-cost source pack with checked original publication dates. Native feeds and guarded release APIs are preferred; inaccessible or undated candidates stay disabled. See docs/editorial-sources.md. Existing administrator database settings are not overwritten by seed.",
   "sources": [
     {
       "id": "rss-openai-news",
@@ -170,7 +170,7 @@
       "name": "Mistral AI",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://mistral.ai/news/rss",
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/mistral-news.xml",
         "_aihot": {
           "initialBackfillLimit": 2
         }
@@ -699,7 +699,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-claude-code-releases",
@@ -742,7 +742,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-codex-releases",
@@ -785,7 +785,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-pydantic-ai-releases",
@@ -828,7 +828,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-langgraph-releases",
@@ -871,7 +871,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-litellm-releases",
@@ -914,7 +914,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-pandas-releases",
@@ -957,7 +957,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-docling-releases",
@@ -1000,7 +1000,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-markitdown-releases",
@@ -1043,7 +1043,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-unstructured-releases",
@@ -1086,7 +1086,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-mcp-python-releases",
@@ -1129,7 +1129,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-llamaindex-releases",
@@ -1172,7 +1172,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-streamlit-releases",
@@ -1215,7 +1215,7 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "json-vscode-releases",
@@ -1255,6 +1255,645 @@
       "interval_minutes": 720,
       "tags": [
         "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-google-ai",
+      "name": "Google AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.google/technology/ai/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "google",
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-cloudflare",
+      "name": "Cloudflare Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.cloudflare.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-vercel",
+      "name": "Vercel Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://vercel.com/atom",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "rss-databricks",
+      "name": "Databricks Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.databricks.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-factset",
+      "name": "FactSet Insight",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://insight.factset.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-r-bloggers",
+      "name": "R-bloggers",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.r-bloggers.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "资讯"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-last-week-ai",
+      "name": "Last Week in AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://lastweekin.ai/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "资讯"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-ithome",
+      "name": "IT之家",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ithome.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "资讯"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-ifanr",
+      "name": "爱范儿",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ifanr.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "资讯"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-geekpark",
+      "name": "极客公园",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.geekpark.net/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "资讯"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-claude-news",
+      "name": "Claude News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/claude-news.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "anthropic",
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-anthropic-research",
+      "name": "Anthropic Research",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/anthropic-research.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "anthropic",
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-cohere",
+      "name": "Cohere Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/cohere-blog.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-ai2",
+      "name": "Ai2 News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/allenai-news.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-aisi",
+      "name": "AI Security Institute",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/aisi-blog.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-mila",
+      "name": "Mila News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://raw.githubusercontent.com/alan-turing-institute/ai-rss-feeds/main/feeds/mila-news.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "json-openbb-releases",
+      "name": "OpenBB releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/openbq-org/OpenBB/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "json-polars-releases",
+      "name": "Polars releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/pola-rs/polars/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "json-finrobot-releases",
+      "name": "FinRobot releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/AI4Finance-Foundation/FinRobot/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "json-fingpt-releases",
+      "name": "FinGPT releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/AI4Finance-Foundation/FinGPT/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": false
+    },
+    {
+      "id": "rss-jiqizhixin",
+      "name": "机器之心",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://wechat2rss.bestblogs.dev/feed/8d97af31b0de9e48da74558af128a4673d78c9a3.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "中文",
+        "桥接"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-xinzhiyuan",
+      "name": "新智元",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://wechat2rss.bestblogs.dev/feed/e531a18b21c34cf787b83ab444eef659d7a980de.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "中文",
+        "桥接"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-latepost-ai",
+      "name": "晚点AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://wechat2rss.bestblogs.dev/feed/316def62ee3a6d499bf3981ffe22a09bf7256265.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "中文",
+        "桥接"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-siliconstar",
+      "name": "硅星人Pro",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://wechat2rss.bestblogs.dev/feed/c62ceda9eed269d851802bdbc5f33c4fabbf7462.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "中文",
+        "桥接"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-zhipu",
+      "name": "智谱",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://wechat2rss.bestblogs.dev/feed/433d2134dca54d80804daf32e8be546155be3300.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "中文",
+        "桥接"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-arxiv-ai",
+      "name": "arXiv AI",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.arxiv.org/rss/cs.AI",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "研究"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false,

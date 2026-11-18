@@ -1,74 +1,37 @@
-# Free and low-cost source catalog
+# Editorial sources
 
 [简体中文](editorial-sources.zh-CN.md)
 
-The pack contains **45 sources: 30 enabled and 15 paused options**. It retains the original 18 source IDs and URLs and adds 27 verified sources. `industry/sources.json` is the authoritative runtime configuration. Verification date: 2026-11-16; availability and feed contents can change.
+The source pack now configures **71 sources:66 enabled and5 paused**. `industry/sources.json` is authoritative for the magazine worker. This expands the previous45/30 pack with26 new entries and activates14 existing entries. Counts describe configured defaults, not guaranteed daily output. Verification:2026-11-18.
 
-The 12 enabled additions cover official AI announcements, agent engineering, coding tools, spreadsheets, analytical data and practical AI use. The 15 options are 13 GitHub release APIs and two specialist publications. All added endpoints can provide public data without a paid collection subscription; public access does not grant full-text redistribution rights.
+## Coverage and discovery
 
-## Enabled additions
+| Coverage | Sources added or activated |
+| --- | --- |
+| AI products and research | Google AI; Claude News, Anthropic Research, Cohere, Ai2, AISI and Mila through the Alan Turing Institute's maintained RSS bridge; Ahead of AI |
+| Financial/data workflows | FactSet Insight, OpenBB releases, Databricks, Polars releases and topic-filtered R-bloggers |
+| Developer tools | Existing13 release APIs for Codex, Claude Code, Pydantic AI, LangGraph, LiteLLM, pandas, Docling, MarkItDown, Unstructured, MCP Python, LlamaIndex, Streamlit and VS Code |
+| Chinese coverage | IT之家, 爱范儿, 极客公园; BestBlogs bridges for机器之心、新智元、晚点AI、硅星人Pro、智谱; existing量子位 |
+| Engineering and curation | Topic-filtered Cloudflare; Last Week in AI |
 
-| Source | Kind | Base interval | Dated items verified | Purpose |
-|---|---|---:|---:|---|
-| [Anthropic News](https://www.anthropic.com/news) | `web_list` | 6 h | 20 | Official Claude/model and product announcements |
-| [Anthropic Engineering](https://www.anthropic.com/engineering) | `web_list` | 12 h | 24 | Agent engineering, context design and evaluations |
-| [DuckDB Blog](https://duckdb.org/feed.xml) | `rss` | 12 h | 10 | Local analytical data workflows |
-| [Microsoft Excel Blog](https://techcommunity.microsoft.com/t5/s/gxcuf89792/rss/board?board.id=ExcelBlog) | `rss` | 12 h | 20 | Spreadsheet analysis and Copilot workflows |
-| [Microsoft Python Blog](https://devblogs.microsoft.com/python/feed/) | `rss` | 12 h | 10 | Python tooling and development workflows |
-| [Cursor Changelog](https://cursor.com/changelog/rss.xml) | `rss` | 4 h | 50 | AI coding tool changes |
-| [Model Context Protocol Blog](https://blog.modelcontextprotocol.io/index.xml) | `rss` | 12 h | 29 | MCP protocol and ecosystem updates |
-| [One Useful Thing](https://www.oneusefulthing.org/feed) | `rss` | 12 h | 20 | Practical knowledge-work experiments; author claims need verification |
-| [Eugene Yan](https://eugeneyan.com/rss/) | `rss` | 12 h | 214 | Applied ML/LLM engineering and evaluations |
-| [Chip Huyen](https://huyenchip.com/feed.xml) | `rss` | 12 h | 10 | AI engineering and deployment practices |
-| [Hamel Husain](https://hamel.dev/index.xml) | `rss` | 12 h | 20 | Practical LLM evaluation and application design |
-| [量子位](https://www.qbitai.com/feed) | `rss` | 6 h | 10 | Chinese AI reporting; verify claims against primary sources |
+Discovery directories are [BestBlogs article OPML](https://github.com/ginobefun/BestBlogs/blob/main/BestBlogs_RSS_Articles.opml), [BestBlogs WeChat OPML](https://github.com/ginobefun/BestBlogs/blob/main/opml/bestblogs_wechat2rss_opml_all.opml), [Turing AI RSS](https://github.com/alan-turing-institute/ai-rss-feeds), [Engineering Blogs](https://github.com/kilimchoi/engineering-blogs) and [AI4Finance resources](https://github.com/AI4Finance-Foundation/Awesome_AI4Finance). They are candidate catalogs, not blanket imports or content-use permission. Prefer original publishers and retain source links. No paywall is bypassed; site_fulltext and syndicate_fulltext remain false.
 
-## Paused options
+Mistral's old endpoint was replaced by the maintained Turing feed while preserving its source ID. Native Chinese feeds and broad vendors are filtered by the site's AI/data-workflow policy in `industry/magazine.ts`. Source/publisher caps and weighted audience rotation prevent high-volume publishers or general hardware coverage from taking the whole edition. Final event merging still depends on the model; deterministic URL/exact-long-title deduplication is not semantic deduplication.
 
-| Source | Kind | Base interval | Dated items verified | Purpose |
-|---|---|---:|---:|---|
-| [Lilian Weng](https://lilianweng.github.io/index.xml) | `rss` | 24 h | 52 | Specialist technical research and long-form explanations |
-| [Ahead of AI](https://magazine.sebastianraschka.com/feed) | `rss` | 24 h | 20 | Specialist model research; public feed may contain paid-content teasers |
-| [Claude Code releases](https://api.github.com/repos/anthropics/claude-code/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [OpenAI Codex releases](https://api.github.com/repos/openai/codex/releases?per_page=20) | `json_list` | 12 h | 4 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [Pydantic AI releases](https://api.github.com/repos/pydantic/pydantic-ai/releases?per_page=20) | `json_list` | 12 h | 19 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [LangGraph releases](https://api.github.com/repos/langchain-ai/langgraph/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [LiteLLM releases](https://api.github.com/repos/BerriAI/litellm/releases?per_page=20) | `json_list` | 12 h | 12 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [pandas releases](https://api.github.com/repos/pandas-dev/pandas/releases?per_page=20) | `json_list` | 12 h | 16 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [Docling releases](https://api.github.com/repos/docling-project/docling/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [Microsoft MarkItDown releases](https://api.github.com/repos/microsoft/markitdown/releases?per_page=20) | `json_list` | 12 h | 12 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [Unstructured releases](https://api.github.com/repos/Unstructured-IO/unstructured/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [MCP Python SDK releases](https://api.github.com/repos/modelcontextprotocol/python-sdk/releases?per_page=20) | `json_list` | 12 h | 14 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [LlamaIndex releases](https://api.github.com/repos/run-llama/llama_index/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [Streamlit releases](https://api.github.com/repos/streamlit/streamlit/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
-| [Visual Studio Code releases](https://api.github.com/repos/microsoft/vscode/releases?per_page=20) | `json_list` | 12 h | 20 | Stable release notes; public GitHub API rate headroom or optional read-only authentication required |
+## Access and original dates
 
-The original 18 RSS sources remain enabled by default: OpenAI News, Google DeepMind, Google Research, Hugging Face, Microsoft Research, NVIDIA, AWS ML, GitHub AI & ML, Mistral, Berkeley AI Research, The Verge AI, TechCrunch AI, Ars Technica AI, MIT Technology Review AI, The Decoder, Simon Willison, Import AI and Latent Space.
+The magazine supports guarded direct RSS, HTML and GET GitHub release JSON. Its existing designated GitHub credential file is read once into the worker environment for authenticated public release reads, resolving the observed anonymous shared-IP rate limit. The existing collector sends it only to GitHub's fixed API; same-origin redirect rules remain. No credential copy or paid collection provider is introduced, and the Codex child environment excludes GitHub/database/API credentials. Generic continuous collectors require their own explicit configuration; this does not silently provision one.
 
-## Cost and access controls
+Release feeds use original published_at and exclude prereleases. Atom updated is never substituted for publication. Vercel's Atom returned100 entries but no published dates in the actual parser, so it stays paused. Other paused entries are Lilian Weng, arXiv AI, FinGPT releases and FinRobot releases. arXiv returned717 entries and needs a separate relevance/volume policy; low-frequency financial projects remain useful candidates without being counted as active news coverage.
 
-- Fresh installations import at most two entries per enabled source on first collection, instead of eight for the original demonstration sources. The current default pack therefore has an initial ceiling of 60 admitted entries. This is an initial-import bound, not a daily cap or an API spending limit; later runs may discover more new entries.
-- Existing source base intervals are at least four hours; additions use four to 24 hours. The engine adapts scheduling to observed output, so these are base intervals rather than guaranteed request counts. No scoring threshold or model budget has been changed.
-- No paid X/WeChat provider, Jina URL, login cookie or API secret is added. Source pages and RSS default to summaries/links, with site_fulltext and syndicate_fulltext false.
-- Free collection does not make downstream LLM analysis, hosting, storage or bandwidth free. Keep MODEL_CALLS_ENABLED false until a provider and budget are explicitly configured; no real model calls were made for this expansion.
-- GitHub's unauthenticated public REST API currently allows 60 requests/hour per originating IP; shared egress can exhaust that pool. Those requests were rate-limited during verification, so **all 13 release APIs remain paused**. Their parsing was verified using the designated GitHub CLI account only; no development credential was copied into collector configuration. Enable them only after verifying your deployment's rate headroom or deliberately configuring a suitable read-only collector credential. See [GitHub rate limits](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api).
-- Release sources read published_at and filter prerelease=false. They examine only the most recent 20 releases and do not claim complete release history. GitHub Atom updated timestamps are deliberately not treated as publication dates. See [GitHub release semantics](https://docs.github.com/en/rest/releases/releases#list-releases).
+The five Chinese bridges initially returned403 in discovery probes, but later passed captured-response replay and a second read through the real production collector, each with10 dated entries. They are enabled on that evidence, with availability dependent on a third-party service. Individual failures are skipped; the existing50% listing-health guard still prevents publication on broad collection failure. The Decoder returned403 in this capture; its existing configured status is preserved rather than changed after one transient failure.
 
-## Apply and enable
+## Verification and limits
 
-Run migrations and the existing seed command with your private backend environment, for example:
+Captured public responses were replayed with external network disabled through the real RSS/HTML/JSON parsers. GitHub release captures used the existing designated CLI account after anonymous requests were rate-limited. All66 enabled sources except one transient failure produced dated entries. On the same captured corpus, the old magazine selection chose8 daily/16 weekly candidates; expanded selection chose30 daily from20 sources and60 weekly from33 sources. These are listing-level measurements, not guarantees of article-body extraction, factual accuracy or final prose counts. The obsolete Mistral URL is excluded from baseline selection and counted only after replacement. Full captures, comparisons and validation records live under DATA_ROOT/ai-editorial/evaluations/source-expansion-20261118, outside Git.
 
-```sh
-node --env-file=<private-backend-env-file> scripts/migrate.ts
-node --env-file=<private-backend-env-file> scripts/seed.ts
-```
+New source first-import limits remain2/source. The configured66-source default therefore has a132-entry initial ceiling for the generic continuous collector; later runs have no such daily cap. The magazine instead selects at most30/60 candidates and bounds private text per item. It uses one Codex call per generated issue and preserves the existing3-call rolling24h budget; longer packets consume more subscription quota per call. See [magazine operations](magazine.md).
 
-Seeding inserts missing IDs only. It does not overwrite an existing editor's enabled state, interval or config; the lower first-import limit applies to newly inserted records. Change an existing source explicitly through `/admin/sources` if you want the new defaults. Inspect and test optional sources there before enabling them. The source enabled flag does not start a worker or enable the global collection/model switches. This change does not install or start a continuous collection service.
+## Apply
 
-Some data-tooling sources are adjacent to AI and may fail the existing AI relevance filter. The editor can still search raw material in the administrator workbench; this change does not silently loosen editorial scoring. Paid-post previews remain previews; no paywall is bypassed.
-
-## Verification and exclusions
-
-All 45 configured sources produced nonempty titled HTTP(S) article lists with usable source publication dates after their configured filters. Existing 18 source URL identities are unchanged. Captured public responses were replayed through the actual RSS, HTML-list, JSON-list and admission code with external connections disabled. Raw responses and full reports are retained under DATA_ROOT/ai-editorial/evaluations/free-sources-20261116, outside Git. An isolated import replay seeded 45 sources, collected 30 and skipped 15, admitted 58 items, and created zero paid receipts; no source exceeded two first-import items. Re-seeding preserved manually edited settings. The low-frequency Chip Huyen feed parsed correctly but admitted no entries within the default initial history window. Required local checks passed: 1173 backend tests, 67 browser tests, type checking, web build, migration safety and smoke. Independent review reported no findings. This checks listing extraction, not factual accuracy, article-body extraction or ongoing service health.
-
-Rejected endpoint variants included LlamaIndex blog RSS (404), LangChain's tested RSS URL and Cursor's blog RSS URL (HTML instead of a feed), Streamlit blog (403), Jupyter's old feed (404), tested Polars feed paths (404), Machine Heart's tested RSS (HTML), and Google Workspace's feed (truncated on both bounded attempts). LlamaIndex and Streamlit have verified optional release APIs instead. MCP and Hamel use their working index.xml endpoints. Lilian Weng is limited to /posts/ to exclude an undated FAQ.
+The scheduled magazine reads the checked release's source file directly. The separate v1 compatibility builder still reads only RSS/HTML. The generic admin/continuous pipeline can import missing source IDs with `scripts/seed.ts`; seeding never overwrites existing enabled/config/interval choices, so existing admin records need deliberate updates. No continuous collection worker is started by this source change. Keep private settings under CONFIG_ROOT and generated data under DATA_ROOT.

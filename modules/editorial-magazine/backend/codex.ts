@@ -19,7 +19,7 @@ async function launchCodex(prompt:string,model:string):Promise<{data:Draft;usage
  await mkdir(root,{recursive:true,mode:0o700});const task=await mkdtemp(path.join(root,'call-'));
  const schemaFile=path.join(task,'schema.json'),output=path.join(task,'response.json');
  await writeFile(schemaFile,JSON.stringify(z.toJSONSchema(draftSchema)),{mode:0o600});
- const env:NodeJS.ProcessEnv={};for(const key of ['HOME','USER','LOGNAME','PATH','LANG','LC_ALL','XDG_CONFIG_HOME','XDG_CACHE_HOME','XDG_RUNTIME_DIR','CODEX_HOME','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy','SSL_CERT_FILE','SSL_CERT_DIR'])if(process.env[key])env[key]=process.env[key];
+ const env=codexChildEnvironment(process.env);
  const args=['exec','--ignore-user-config','--skip-git-repo-check','--ephemeral','--sandbox','read-only','--model',model,
   '-c','model_reasoning_effort="low"','-c','web_search="disabled"','--disable','shell_tool','--disable','unified_exec','--disable','browser_use','--disable','apps','--disable','skill_search','--disable','shell_snapshot','--disable','plugins','--disable','hooks','--disable','image_generation','--disable','code_mode',
   '--json','-C',task,'--output-schema',schemaFile,'-o',output,'-'];
@@ -37,4 +37,8 @@ async function launchCodex(prompt:string,model:string):Promise<{data:Draft;usage
   if(event.type==='turn.completed')usage=event.usage??null;
  }
  return {data:draftSchema.parse(JSON.parse(await readFile(output,'utf8'))),usage};
+}
+
+export function codexChildEnvironment(parent:NodeJS.ProcessEnv):NodeJS.ProcessEnv{
+ const env:NodeJS.ProcessEnv={};for(const key of ['HOME','USER','LOGNAME','PATH','LANG','LC_ALL','XDG_CONFIG_HOME','XDG_CACHE_HOME','XDG_RUNTIME_DIR','CODEX_HOME','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy','SSL_CERT_FILE','SSL_CERT_DIR'])if(parent[key])env[key]=parent[key];return env;
 }
