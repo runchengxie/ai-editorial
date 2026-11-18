@@ -722,11 +722,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -765,11 +760,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -808,11 +798,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -851,11 +836,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -894,11 +874,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -937,11 +912,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -980,11 +950,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1023,11 +988,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1066,11 +1026,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1109,11 +1064,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1152,11 +1102,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1195,11 +1140,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1238,11 +1178,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1617,11 +1552,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1660,11 +1590,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1703,11 +1628,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1746,11 +1666,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1920,11 +1835,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1963,11 +1873,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -2006,11 +1911,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
