@@ -14,7 +14,7 @@ try{
  if(!args.includes('--publish-only')){
   const previous=await loadLibrary(path.join(root,'library.json'));const needWeekly=!previous.issues.some(i=>i.kind==='weekly'&&i.end===periodFor('weekly',new Date()).end);
   const kinds=args.includes('--both')?['daily','weekly']:args.includes('--weekly')?['weekly']:['daily',...(beijingWeekday(beijingDate(new Date()))==='星期一'||needWeekly?['weekly']:[])];
-  for(const kind of kinds)await generateIssue(kind as 'daily'|'weekly',root,path.join(repoRoot,'industry/sources.json'));
+  for(const kind of kinds)await generateIssue(kind as 'daily'|'weekly',root,path.join(repoRoot,'configs/industry/sources.json'));
  }
  const library=await loadLibrary(path.join(root,'library.json'));
  if(!library.issues.some(i=>i.kind==='daily')||!library.issues.some(i=>i.kind==='weekly'))throw new Error('Both daily and weekly editions are required before magazine publication');

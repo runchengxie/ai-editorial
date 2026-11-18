@@ -135,7 +135,7 @@ export interface AdminSource {
   tags: string[];
   owner_entity_id: string | null;
   tier: string;
-  /** A class of the industry pack's selection rules (industry/selection.ts): raises the tier's threshold. */
+  /** A class of the industry pack's selection rules (configs/industry/selection.ts): raises the tier's threshold. */
   selection_class: string | null;
   participation_mode: string;
   /** Uses besides the news pipeline, each declared by an installed module. */

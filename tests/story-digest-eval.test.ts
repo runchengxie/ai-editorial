@@ -162,7 +162,7 @@ test("nothing is sent when the calls exceed the limit or the candidate cannot be
   const candidate = write("candidate.md", "你是 {{siteName}} 的事件编辑。只输出 JSON：{\"title\": \"...\", \"digest\": \"...\"}\n");
   const unknownValue = write("unknown.md", "你是 {{siteName}} 的事件编辑，服务 {{audience}}。\n");
   const same = path.join(dir, "same.md");
-  copyFileSync(path.join(REPO_ROOT, "industry/prompts/story-digest.md"), same);
+  copyFileSync(path.join(REPO_ROOT, "configs/industry/prompts/story-digest.md"), same);
 
   const over = await run(["--cases", two, "--system", candidate, "--max-calls", "3", "--out-dir", dir], provider.url);
   assert.notEqual(over.code, 0);

@@ -30,7 +30,7 @@ if(args.includes('--help')){
  process.umask(0o077);
  await mkdir(path.join(data,'ai-editorial/evaluations'),{recursive:true,mode:0o700});
  const output=await mkdtemp(path.join(data,'ai-editorial/evaluations',`magazine-inspect-${new Date().toISOString().replace(/[:.]/g,'-')}-`));
- const pack=JSON.parse(await readFile(path.join(repo,'industry/sources.json'),'utf8'));
+ const pack=JSON.parse(await readFile(path.join(repo,'configs/industry/sources.json'),'utf8'));
  const summaries=[];
  for(const selected of kind==='both'?['daily','weekly']: [kind]){
   const discoveries:import('../../modules/editorial-magazine/backend/evidence.ts').DiscoveryCheck[]=[];

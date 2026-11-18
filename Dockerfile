@@ -15,8 +15,8 @@ COPY apps/web/package.json apps/web/
 COPY apps/worker/package.json apps/worker/
 COPY packages/backend/package.json packages/backend/
 COPY packages/contracts/package.json packages/contracts/
-COPY industry/package.json industry/
-COPY site/package.json site/
+COPY configs/industry/package.json configs/industry/
+COPY configs/site/package.json configs/site/
 COPY modules/editorial-workbench/package.json modules/editorial-workbench/
 RUN npm ci --no-audit --no-fund ${NPM_REGISTRY:+--registry=$NPM_REGISTRY}
 COPY . .

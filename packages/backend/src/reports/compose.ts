@@ -2,7 +2,7 @@
 // missed schedule points are caught up; regeneration creates a revision. What every issue carries is
 // decided by rule: a daily from edition.ts without a model; a weekly or monthly is compiled from its
 // dailies and a model only writes its overview and introductions, from the brief in the industry pack
-// (industry/prompts/report-period*.md).
+// (configs/industry/prompts/report-period*.md).
 import { z } from "zod";
 import { EDITION_TIMES, REPORTS, SITE } from "@aihot/site";
 import { PLAIN_TERMS, RELEASE } from "@aihot/industry/taxonomy";

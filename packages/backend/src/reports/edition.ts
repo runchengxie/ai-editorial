@@ -5,7 +5,7 @@
 // with a new fact; an event with an official post and three or more independent participants is
 // carried even when none of its reports was selected; entries rank by importance (score, the day's
 // independent participants, first-hand), and the first one leads. Sections are the industry pack's
-// (industry/taxonomy.ts CATEGORIES). A thin issue's highlights are filled from the window's best reports it
+// (configs/industry/taxonomy.ts CATEGORIES). A thin issue's highlights are filled from the window's best reports it
 // left out (dailyPicks).
 import { addDays } from "@aihot/contracts/time";
 import { SELECTION } from "@aihot/industry/selection";

@@ -1,5 +1,5 @@
 // A category filter on the public API, RSS and MCP takes in exactly the categories the site publishes as
-// it (site/site.ts PUBLIC_CATEGORIES), whatever the industry's categories are; the website filters by each
+// it (configs/site/site.ts PUBLIC_CATEGORIES), whatever the industry's categories are; the website filters by each
 // of its own. Failure cases: a public filter takes in a category the site publishes on its own (or misses
 // one merged into it); the website's filter merges categories; the exits disagree; HTTP validation,
 // Agent search, MCP input schemas or OpenAPI still advertise a retired category list.

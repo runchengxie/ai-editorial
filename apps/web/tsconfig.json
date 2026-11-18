@@ -5,7 +5,7 @@
     ".react-router/types/**/*",
     "../../modules/*/web.tsx",
     "../../modules/*/web/**/*",
-    "../../site/**/*.tsx"
+    "../../configs/site/**/*.tsx"
   ],
   "compilerOptions": {
     "lib": [

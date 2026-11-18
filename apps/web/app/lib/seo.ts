@@ -1,5 +1,5 @@
 // Page metadata from one place: title template, canonical address, OG images, robots; and list addresses,
-// with the feed filters they carry. The site's name and wording come from site/site.ts;
+// with the feed filters they carry. The site's name and wording come from configs/site/site.ts;
 //; its address from SITE_URL.
 import type { MetaDescriptor } from "react-router";
 import { REPORT_NAMES, reportDateLabel, type ReportDetail, type StoryDetail, type TimelineFilters } from "@aihot/contracts/site";

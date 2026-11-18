@@ -19,7 +19,9 @@ Scheduled generation/publication is paused; see [manual collection, generation a
 - [Validation record](docs/editorial-release-validation.md): tested revisions, checks and limitations.
 - [Pilot workflow](docs/editorial-pilot.md): editor acceptance and source/quality assessment.
 - [Design](docs/superpowers/specs/2026-11-16-editorial-workbench-design.md) and [implementation plan](docs/superpowers/plans/2026-11-16-editorial-workbench.md).
-- [Inherited engine guide](README.en.md) and [architecture](docs/architecture.md).
+- [Project status and audit](docs/project-status.md): source, deployment, runtime adoption and pending work.
+- [Repository layout](docs/repository-layout.md): configuration packages, documentation and stable public endpoints.
+- [Inherited engine guide](docs/upstream-guide.md) and [architecture](docs/architecture.md).
 
 After local setup, open `/admin/editorial`. The new workbench supports English and Chinese; inherited engine pages remain primarily Chinese. Draft preparation assembles an evidence packet without model calls; the separate magazine worker provides model-assisted prose generation.
 

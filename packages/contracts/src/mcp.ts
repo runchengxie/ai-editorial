@@ -1,4 +1,4 @@
-// The MCP tool names, from the site's prefix (site/site.ts): llms.txt, the agent page and the server
+// The MCP tool names, from the site's prefix (configs/site/site.ts): llms.txt, the agent page and the server
 // list the same names. One tool per ability of /api/v1/agent; a module's tools follow the engine's.
 import { SITE } from "@aihot/site";
 

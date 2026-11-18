@@ -179,7 +179,7 @@ const convertsBeijingTime = (line: string) =>
 const CONVERTS_BEIJING_TIME: Record<string, string> = {
   "packages/contracts/src/time.ts": "the conversions themselves",
   "packages/backend/src/editorial/analyze.ts": "the score input keeps the form its prompt was tuned on (whole seconds without .000)",
-  "site/changelog/FeatureRelease.tsx": "a changelog entry's Beijing date and time with its zone, to the minute, in dateTime",
+  "configs/site/changelog/FeatureRelease.tsx": "a changelog entry's Beijing date and time with its zone, to the minute, in dateTime",
   "clients/watchdog/watchdog.mjs": "installed as one file away from the repository, so it cannot import time.ts",
   "clients/mp-watch/articles.ts": "installed away from the repository with only its module's contracts, so it cannot import time.ts",
 };
@@ -207,13 +207,13 @@ test("modules do not import other modules", () => {
     const target = /^@aihot\/([^/]+)/.exec(spec)?.[1];
     return !!target && installed.includes(target) && target !== owner;
   });
-  assert.deepEqual(found, [], "compose modules in site/modules instead of importing their implementation");
+  assert.deepEqual(found, [], "compose modules in configs/site/modules instead of importing their implementation");
 });
 
 // The web's own code: the app, the modules' pages, and the site's pages and drawings, stylesheets included.
 // Each line is read without its comments: a word in a comment is neither a class nor a call.
 const WEB_CODE = /\.(?:tsx?|css)$/;
-const webLines = () => [...sources("apps/web/app", WEB_CODE), ...moduleWeb(WEB_CODE), ...sources("site", WEB_CODE)].flatMap(({ file, text }) =>
+const webLines = () => [...sources("apps/web/app", WEB_CODE), ...moduleWeb(WEB_CODE), ...sources("configs/site", WEB_CODE)].flatMap(({ file, text }) =>
   text.split("\n")
     .map((line, i) => ({ file, at: `${file}:${i + 1}`, line: line.replace(/\/\*.*?\*\//g, "").replace(/(^|\s)\/\/.*$/, "") }))
     .filter(({ line }) => !/^\s*(\/\/|\/\*|\*)/.test(line)));
@@ -287,6 +287,6 @@ test("admin page loaders use adminPageGet and GRAY_HEADERS", async () => {
 
 // Animations use Presence.tsx (CSS keyframes) or the Web Animations API, not a runtime animation library.
 test("web code does not import motion or framer-motion", () => {
-  const found = violations([...sources("apps/web"), ...moduleWeb(), ...sources("site")], (_file, spec) => /^(?:motion|framer-motion)(?:$|\/)/.test(spec));
+  const found = violations([...sources("apps/web"), ...moduleWeb(), ...sources("configs/site")], (_file, spec) => /^(?:motion|framer-motion)(?:$|\/)/.test(spec));
   assert.deepEqual(found, [], "animate with Presence.tsx, CSS keyframes or the Web Animations API instead of motion");
 });

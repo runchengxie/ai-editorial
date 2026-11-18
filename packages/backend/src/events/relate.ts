@@ -65,7 +65,7 @@ export interface Verdict {
 }
 
 /**
- * The relation prompts (industry/prompts/group-*.md): a new report against candidate facts with its
+ * The relation prompts (configs/industry/prompts/group-*.md): a new report against candidate facts with its
  * reading value, a pair, a signal post.
  */
 export const BATCH_SYSTEM = promptText("group-batch");

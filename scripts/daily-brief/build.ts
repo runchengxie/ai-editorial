@@ -14,7 +14,7 @@ if(args.includes('--fixture')) {
 } else {
  const [{fetchRss},{fetchWebList},{admitListing}]=await Promise.all([
   import('../../packages/backend/src/sources/rss.ts'),import('../../packages/backend/src/sources/web-list.ts'),import('../../packages/backend/src/sources/filters.ts')]);
- const pack=JSON.parse(await readFile(new URL('../../industry/sources.json',import.meta.url),'utf8'));
+ const pack=JSON.parse(await readFile(new URL('../../configs/industry/sources.json',import.meta.url),'utf8'));
  const sources=pack.sources.filter((s:any)=>s.enabled!==false&&['rss','web_list'].includes(s.kind));
  rows=[];
  // Bounded parallel reads; each guarded collector has its own timeout and response-size limit.

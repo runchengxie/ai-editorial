@@ -1,4 +1,4 @@
-// Model per capability: the code default (the site's choice in site/models.ts, else `default`, the deployment's
+// Model per capability: the code default (the site's choice in configs/site/models.ts, else `default`, the deployment's
 // own model), an environment override, and an admin switch kept in settings (every switch is audited).
 // Read at call time and cached for a minute, so a switch applies to the next call without a restart; a
 // changed model only affects work done from then on (history is not re-judged).
@@ -39,7 +39,7 @@ export const CAPABILITIES = {
 
 export type CapabilityKey = keyof typeof CAPABILITIES;
 
-/** Every step: the engine's, then the installed modules' (their defaults also from site/models.ts). */
+/** Every step: the engine's, then the installed modules' (their defaults also from configs/site/models.ts). */
 export function capabilities(): Record<string, Capability> {
   const all: Record<string, Capability> = { ...CAPABILITIES };
   for (const m of serverModules()) for (const [key, step] of Object.entries(m.models ?? {})) all[key] = { ...step, default: DEFAULTS[key] ?? "default" };

@@ -140,7 +140,7 @@ export function requireOk(res: GuardedResponse, what?: string): GuardedResponse 
   return res;
 }
 
-/** How the collectors introduce themselves: the site's own crawler name and address (site/site.ts). */
+/** How the collectors introduce themselves: the site's own crawler name and address (configs/site/site.ts). */
 export const DEFAULT_UA = `Mozilla/5.0 (compatible; ${SITE.crawlerName}; +${config.siteUrl}/about)`;
 
 /** The language a source asked for (its config.acceptLanguage), replacing the default preference above. */

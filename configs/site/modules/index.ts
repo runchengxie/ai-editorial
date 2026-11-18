@@ -3,6 +3,6 @@
 // pages' parts. Each list keeps the order its entries appear in on the site.
 import type { ModuleDeclaration } from "@aihot/contracts/modules";
 
-import editorial from "../../modules/editorial-workbench/module.ts";
+import editorial from "../../../modules/editorial-workbench/module.ts";
 
 export const MODULES: readonly ModuleDeclaration[] = [editorial];

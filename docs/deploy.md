@@ -37,7 +37,7 @@ docker compose up -d --build
 - 构建时 npm 走国内镜像：`docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com`，然后 `docker compose up -d`。
 - 拉取 Docker 镜像慢，先给 Docker 配置镜像加速。
 - 海外信源抓不到时，在 `.env` 里设置 `EGRESS_PROXY_URL`：抓信源和图片时走这个代理，调用模型接口不走。
-- 对外提供网站服务需要先完成 ICP 备案，备案号填在 `site/site.ts` 的 `icp`。
+- 对外提供网站服务需要先完成 ICP 备案，备案号填在 `configs/site/site.ts` 的 `icp`。
 
 ### 配域名和 HTTPS
 
@@ -66,7 +66,7 @@ MCP 默认接受 `SITE_URL` 的主机以及 `localhost`、`127.0.0.1`、`[::1]`�
 
 **2026 年 10 月 31 日的引擎同步**有三个数据库迁移（`0090`–`0092`），照下面的命令更新时 setup 会跑它们：信源多一列可选的类别 `selection_class`，反馈多了 `kind`（类型）和 `idea`（归入的建议）两列，都可以为空，旧数据不用改。没有必填的新环境变量。要注意的变化：
 
-- **`industry/selection.ts` 多了 `classes` 和 `browseFloor`**，见 [精选与校准](selection.md#门槛industryselectionts)；自己改过这个文件的，合并时补上这两项，不补通不过类型检查。
+- **`configs/industry/selection.ts` 多了 `classes` 和 `browseFloor`**，见 [精选与校准](selection.md#门槛industryselectionts)；自己改过这个文件的，合并时补上这两项，不补通不过类型检查。
   - `classes`：信源类别和它的门槛下限。后台“信源”页可以给官方信源选一个类别，门槛抬到不低于类别的数，只抬不降；不选类别的信源和原来一样。
   - `browseFloor`（默认 40）：浏览“全部动态”（网页列表，`/api/v1/items` 和 `/api/v1/agent/latest` 的 `mode=all`，MCP 最新列表的 `all`，“全部动态”RSS）只出平均分不低于它的资料，没评上分的照常出；带搜索词时仍搜全部。想和原来一样全部列出，设成 `0`。
 - **告警**：
@@ -103,7 +103,7 @@ docker compose run --rm setup && docker compose up -d
 
 #### 后台只用管理员密码登录（2026 年 11 月 15 日）
 
-后台不再提供飞书登录，只剩管理员密码。升级时 `setup` 自动执行两条迁移，删掉数据库里存的飞书身份（`admin_users.feishu_union_id`、`admin_sessions.auth_claims`），不用手动处理。用过飞书登录的，升级前先在 `.env` 设好 `ADMIN_PASSWORD`（至少 12 位），否则有后台页面的站点在生产环境拒绝启动；升级后用密码登录，原来的飞书登录会话自动失效。`FEISHU_LOGIN_APP_ID`、`FEISHU_LOGIN_APP_SECRET`、`ADMIN_FEISHU_UNION_IDS`、`ADMIN_EMAILS` 不再读取，可以从 `.env` 删掉，飞书开放平台上专为登录建的应用也可以停用。飞书的告警、反馈转发和内容推送不受影响。`site/site.ts` 的 `ADMIN` 为 `null`（不挂后台页面）的站点不再提供后台登录，也不再要求设管理员密码。
+后台不再提供飞书登录，只剩管理员密码。升级时 `setup` 自动执行两条迁移，删掉数据库里存的飞书身份（`admin_users.feishu_union_id`、`admin_sessions.auth_claims`），不用手动处理。用过飞书登录的，升级前先在 `.env` 设好 `ADMIN_PASSWORD`（至少 12 位），否则有后台页面的站点在生产环境拒绝启动；升级后用密码登录，原来的飞书登录会话自动失效。`FEISHU_LOGIN_APP_ID`、`FEISHU_LOGIN_APP_SECRET`、`ADMIN_FEISHU_UNION_IDS`、`ADMIN_EMAILS` 不再读取，可以从 `.env` 删掉，飞书开放平台上专为登录建的应用也可以停用。飞书的告警、反馈转发和内容推送不受影响。`configs/site/site.ts` 的 `ADMIN` 为 `null`（不挂后台页面）的站点不再提供后台登录，也不再要求设管理员密码。
 
 #### 百度主动推送（2026 年 11 月 8 日）
 
@@ -111,15 +111,15 @@ docker compose run --rm setup && docker compose up -d
 
 #### 站长平台的网站验证（2026 年 11 月 8 日）
 
-没有迁移，没有新的环境变量。`site/site.ts` 新增 `SITE.siteVerification`：百度、必应、360、搜狗、神马、头条等站长平台给的 HTML 标签验证码按“meta 名 → 验证码”填进去，就会出现在首页的 head 里；验证通过后也要留着。自己维护 `site/site.ts` 的站，合并时加上这一行，用不到就写 `siteVerification: {}`；不加的话构建会报找不到 `siteVerification`。
+没有迁移，没有新的环境变量。`configs/site/site.ts` 新增 `SITE.siteVerification`：百度、必应、360、搜狗、神马、头条等站长平台给的 HTML 标签验证码按“meta 名 → 验证码”填进去，就会出现在首页的 head 里；验证通过后也要留着。自己维护 `configs/site/site.ts` 的站，合并时加上这一行，用不到就写 `siteVerification: {}`；不加的话构建会报找不到 `siteVerification`。
 
 #### 页脚的“由 AIHOT 驱动”（2026 年 11 月 8 日）
 
-没有迁移，没有新的环境变量。`site/site.ts` 新增 `SITE.poweredBy`：填了就在侧栏底部和“我的”页底部显示“由 X 驱动”并链到它的网址，模板默认链回 AIHOT。自己维护 `site/site.ts` 的站，合并时把这一行加上；不想显示就写 `poweredBy: null`。不加这一行构建会报找不到 `poweredBy`。
+没有迁移，没有新的环境变量。`configs/site/site.ts` 新增 `SITE.poweredBy`：填了就在侧栏底部和“我的”页底部显示“由 X 驱动”并链到它的网址，模板默认链回 AIHOT。自己维护 `configs/site/site.ts` 的站，合并时把这一行加上；不想显示就写 `poweredBy: null`。不加这一行构建会报找不到 `poweredBy`。
 
 #### 搜索结果里的标题（2026 年 11 月 8 日）
 
-没有迁移，没有新的环境变量。`site/site.ts` 新增必填的 `SEO_TITLES`：热点榜、全部动态、Agent 接入页、关于页、日报周报月报的最新一期和主题页在搜索结果里的标题，读者会搜的词在前，页面自动在最后接上“ · 站名”；首页仍用 `SITE.homeTitle`。自己维护 `site/site.ts` 的站，合并时把模板里的这一段复制过去，再换成你行业的说法；不加的话构建会报找不到 `SEO_TITLES`。
+没有迁移，没有新的环境变量。`configs/site/site.ts` 新增必填的 `SEO_TITLES`：热点榜、全部动态、Agent 接入页、关于页、日报周报月报的最新一期和主题页在搜索结果里的标题，读者会搜的词在前，页面自动在最后接上“ · 站名”；首页仍用 `SITE.homeTitle`。自己维护 `configs/site/site.ts` 的站，合并时把模板里的这一段复制过去，再换成你行业的说法；不加的话构建会报找不到 `SEO_TITLES`。
 
 #### 钉钉内容推送（2026 年 11 月 6 日）
 
@@ -129,15 +129,15 @@ docker compose run --rm setup && docker compose up -d
 
 #### 读者文字的改用词（2026 年 10 月 9 日）
 
-没有迁移，没有必填的新环境变量。行业包多了 `industry/wording.ts`（读者文字里不用的词，模板里是空的）和提示词 `mend-wording.md`；合并时这两个文件随更新带进来，自己的行业包没有冲突。词表空着就不查、不多调用模型；写了词以后，用了这些词的标题、摘要、推荐理由会多一次模型调用（模型步骤“改用词”，可用选填的 `WORDING_MODEL` 单独选模型）。说明见 [把它改成你的行业](customize.md)。
+没有迁移，没有必填的新环境变量。行业包多了 `configs/industry/wording.ts`（读者文字里不用的词，模板里是空的）和提示词 `mend-wording.md`；合并时这两个文件随更新带进来，自己的行业包没有冲突。词表空着就不查、不多调用模型；写了词以后，用了这些词的标题、摘要、推荐理由会多一次模型调用（模型步骤“改用词”，可用选填的 `WORDING_MODEL` 单独选模型）。说明见 [把它改成你的行业](customize.md)。
 
 #### 导航里可以不放某些入口
 
-没有迁移，没有新环境变量。`site/site.ts` 多了 `NAV.hidden`（目前只支持热点榜 `"/hot"` 和主题 `"/topics"`，见 [把它改成你的行业](customize.md)）；框架从 `@aihot/site` 读它，**自己维护 `site/site.ts` 的站，合并时照模板加上 `NAV`**，不加通不过类型检查。模板里是空的，导航和原来一样；隐藏入口不会关闭页面或公开接口。
+没有迁移，没有新环境变量。`configs/site/site.ts` 多了 `NAV.hidden`（目前只支持热点榜 `"/hot"` 和主题 `"/topics"`，见 [把它改成你的行业](customize.md)）；框架从 `@aihot/site` 读它，**自己维护 `configs/site/site.ts` 的站，合并时照模板加上 `NAV`**，不加通不过类型检查。模板里是空的，导航和原来一样；隐藏入口不会关闭页面或公开接口。
 
 #### 原帖展示与引擎同步（2026 年 10 月 6 日）
 
-没有新增必填环境变量或数据库迁移。自己维护 `site/site.ts` 的站点需补上 `REPORTS.quiet`，可对照示范配置：日报时段内有资料经过评判、但没有新大事时照常出刊，用这两句做标题与导语；导语的 `{start}`、`{end}` 是时段起止。没有任何资料经过评判仍算采集或判断失败，不伪装成平静的一天。
+没有新增必填环境变量或数据库迁移。自己维护 `configs/site/site.ts` 的站点需补上 `REPORTS.quiet`，可对照示范配置：日报时段内有资料经过评判、但没有新大事时照常出刊，用这两句做标题与导语；导语的 `{start}`、`{end}` 是时段起止。没有任何资料经过评判仍算采集或判断失败，不伪装成平静的一天。
 
 空正文、纯链接的 X 帖子保留原来的链接、图片和引用，不调用写作或翻译模型；来源允许展示全文时，纯图片帖子也可以显示，现有展示与再分发许可继续生效。已取得实际正文的 X 长文照常处理。旧译文也不会再出现在这些原帖的公开页面里。已生成过错误标题摘要的帖子，可在更新后用 `packages/backend/src/publication/publish.ts` 的 `publishArticle(id)` 重建公开内容，不需要重新调用模型。
 
@@ -147,7 +147,7 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
 
 #### 社区修复、时间规则与读取优化（2026 年 10 月 4 日）
 
-公开接口版本仍是 4.0.0。没有必填的新环境变量；新增一个选填的 `LLM_REASONING_TOKENS`，见下面 `site/models.ts` 一条。
+公开接口版本仍是 4.0.0。没有必填的新环境变量；新增一个选填的 `LLM_REASONING_TOKENS`，见下面 `configs/site/models.ts` 一条。
 
 **开关只认 `true`**：`.env` 里所有 `*_ENABLED` 开关（`COLLECT_ENABLED`、`MODEL_CALLS_ENABLED`、`FEISHU_*_ENABLED`、`INDEXNOW_SUBMIT_ENABLED` 等）只有写成小写的 `true` 才打开。以前写 `1` 或 `TRUE` 也算打开，现在都当作关闭；升级前检查 `.env`，改成 `true`。
 
@@ -161,7 +161,7 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
 
 **自己改过这些文件的站，合并时对照新文件**：
 
-- `site/site.ts` 多了几项：
+- `configs/site/site.ts` 多了几项：
   - `EDITION_TIMES`、`EDITION_WHEN`：日报、周报、月报的出刊时间，原来写死在代码里；排程、日报的时间窗口、缺期告警和提到时间的文案都读它。`public/` 里的文件用占位 `{{dailyTime}}`、`{{weeklyTime}}`、`{{monthlyTime}}`。
   - `ITEM_COPY`：推荐理由叫什么，网页和分享图上显示不显示评分。
   - `REPORTS.descriptions`、`entry`、`metricUnits`、`shareUnit`：报告页面的描述和版面上的说法。
@@ -170,12 +170,12 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
   - `SITE.feedbackLead`、`SITE.feedbackEmailHint`：反馈页标题下的一句话和邮箱框提示，原来写死在代码里。
   - `SITE.psb`：可选的公安备案号，未办理或不适用时填 `null`。
   - `ABOUT.lead` 里 `{sources}` 两边不再写空格，页面会自动加。
-- `site/models.ts`：评分调用参数现在由具名预设的 `scoreCall` 配置；保留 `glm-5.3-flash-selection` 时同步示例中的温度、输出额度和超时。已有自定义模型没写这一项时沿用引擎默认值。
-- `site/models.ts` 的 `ModelPreset` 和 `site/site.ts` 的 `Founder` 类型统一从 `@aihot/contracts/site-config` 导入，原有站点配置值保留；自定义过这两个文件时同步类型导入，避免漏掉引擎新增的可选字段。
+- `configs/site/models.ts`：评分调用参数现在由具名预设的 `scoreCall` 配置；保留 `glm-5.3-flash-selection` 时同步示例中的温度、输出额度和超时。已有自定义模型没写这一项时沿用引擎默认值。
+- `configs/site/models.ts` 的 `ModelPreset` 和 `configs/site/site.ts` 的 `Founder` 类型统一从 `@aihot/contracts/site-config` 导入，原有站点配置值保留；自定义过这两个文件时同步类型导入，避免漏掉引擎新增的可选字段。
 - 数据库迁移遇到正在导出的 `pg_dump` 会先等待，最长与 worker 排空时间相同；超时后在执行这条迁移前退出，等导出结束后重跑更新命令。其他占锁仍快速报错。
 - 迁移会删除已停用的 `translation_attempts.request_tag` 列；翻译正文、尝试记录和付费回执保留。来源发布时间的原始精度另行保存，旧资料无法确定的精度保持未知，不把零点自动当作来源只写了日期。
-- `site/models.ts`：推理模型的额度改成明确配置。默认模型设 `LLM_REASONING_TOKENS`，具名模型写 `reasoningTokens`。原来只有名字以 `-think` 结尾的具名模型会多给 4000，这个做法去掉了；自己加过这类模型的，补上 `reasoningTokens: 4000` 才保持原来的额度。推理模型把额度用光时，报错会写明 `finish_reason=length` 和该改哪一项。
-- `industry/prompts/story-digest.md`：事件概览换了写法，第一句讲清核心变化和目前的结论，再补必要背景，分成短段，不按日期复述下方的时间线，不评论报道本身，也不再写死行业。已有综述不会被批量重写，随新报道逐步换成新写法；想让某几个事件立即重写，见 [综述评测](story-digest-evaluation.md) 的最后一节（`rewriteStoryDigest`，每个事件一次模型调用）。
+- `configs/site/models.ts`：推理模型的额度改成明确配置。默认模型设 `LLM_REASONING_TOKENS`，具名模型写 `reasoningTokens`。原来只有名字以 `-think` 结尾的具名模型会多给 4000，这个做法去掉了；自己加过这类模型的，补上 `reasoningTokens: 4000` 才保持原来的额度。推理模型把额度用光时，报错会写明 `finish_reason=length` 和该改哪一项。
+- `configs/industry/prompts/story-digest.md`：事件概览换了写法，第一句讲清核心变化和目前的结论，再补必要背景，分成短段，不按日期复述下方的时间线，不评论报道本身，也不再写死行业。已有综述不会被批量重写，随新报道逐步换成新写法；想让某几个事件立即重写，见 [综述评测](story-digest-evaluation.md) 的最后一节（`rewriteStoryDigest`，每个事件一次模型调用）。
 - 自己维护的 Compose 文件可以删去 `LOCAL_ROUTER_URL`：分享图预热现在直接复用后端渲染器，不再请求固定的本机端口，没有代码再读这一项，自带的 `docker-compose.yml` 已经去掉。分享图地址、格式和缓存约定不变。
 
 **采集与发布时间**：
@@ -205,16 +205,16 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
 - **迁移不阻塞读写**：新迁移每个文件只放一条允许在线执行的语句，不整表回填或重写，建索引用 `CREATE INDEX CONCURRENTLY IF NOT EXISTS`；CI 用 `scripts/check-migrations.ts` 检查。统计维护只针对明确的表和列，规则见 [架构](architecture.md#数据库迁移)。
 - MCP 请求有大小上限，错误日志去掉凭据。
 - 桌面侧栏放大后显示细滚动条。
-- 测试按每一步实际的提示词认请求、从 `industry/selection.ts` 读门槛，换行业改写提示词和门槛后不再误报；架构测试不再受路径分隔符影响。
+- 测试按每一步实际的提示词认请求、从 `configs/industry/selection.ts` 读门槛，换行业改写提示词和门槛后不再误报；架构测试不再受路径分隔符影响。
 
-#### 站点文件搬进 `site/`（2026 年 10 月 4 日）
+#### 站点文件搬进 `configs/site/`（2026 年 10 月 4 日）
 
 公开接口没有变化，版本仍是 4.0.0。
 
-- **站点自己的文件从 `industry/` 搬到了 `site/`**：`site.ts`、`models.ts`、`brand/`、`pages/`、`public/`、`changelog.json`。`industry/` 只留行业知识：`taxonomy.ts`、`topics.json`、`sources.json`、`prompts/`、`selection.ts`。自己改过这些文件的，合并时把改动挪到 `site/` 下的同名文件。
+- **站点自己的文件从 `configs/industry/` 搬到了 `configs/site/`**：`site.ts`、`models.ts`、`brand/`、`pages/`、`public/`、`changelog.json`。`configs/industry/` 只留行业知识：`taxonomy.ts`、`topics.json`、`sources.json`、`prompts/`、`selection.ts`。自己改过这些文件的，合并时把改动挪到 `configs/site/` 下的同名文件。
 - **`site.ts` 多了几项**，都可以不填：`SITE.github`、`SITE.llmsIntro`、`SITE.rootIcons`，`POLICY.terms.license`、`POLICY.terms.headers`，`ABOUT.termsAnchor`（二维码卡片可以写 `alias`），以及 `ACCESS`、`ADMIN`、`DEPLOYMENT`、`FEED_COPY`、`PUBLIC_CATEGORIES`，说明见 [把它改成你的行业](customize.md)。`PUBLIC_CATEGORIES` 取代了 4.0.0 时的 `publicAs`：原来在类别上写 `publicAs: "tip"` 的，改在 `PUBLIC_CATEGORIES.merge` 里写（键是这个类别的 key，值是 `"tip"`）。
 - **`DEPLOYMENT.requiredSecrets`** 是生产 API 启动时额外检查的凭据清单，默认空；基本会话、图片签名和管理员登录校验仍然生效。只有你的部署要求某个可选集成必须配置时才填写。
-- **只属于你这个站的功能可以做成模块**：放进 `modules/<名字>/`，在 `site/modules/` 的清单里启用，见 [架构](architecture.md) 的“模块”。框架本身不带模块。
+- **只属于你这个站的功能可以做成模块**：放进 `modules/<名字>/`，在 `configs/site/modules/` 的清单里启用，见 [架构](architecture.md) 的“模块”。框架本身不带模块。
 - **Agent 接入页默认打开 MCP**，页面列出 MCP、RSS 和 API 三种接入方式。Agent Markdown 接口仍在 `/api/v1/agent`，可从页面下方“Agent 使用说明”进入。
 - **图片代理可以设流量上限**：`IMGPROXY_UPSTREAM_MB_PER_MINUTE`、`IMGPROXY_UPSTREAM_GB_PER_DAY`（或 `site.ts` 的 `DEPLOYMENT.imageUpstreamBudget`），默认不设。
 - **修复**：同样的数据每次给出同样的字节（排序遇到并列时补上唯一的次序，API 和 RSS 的 ETag 不再无故变化）；网页转给 api 的请求不再带上逐跳头，`Connection: close` 不再让下一个 POST 失败；`llms.txt` 的接入方式按实际数，不再写成四种。
@@ -222,13 +222,13 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
 #### 升级到公开接口 4.0.0（2026 年 10 月 3 日）
 
 - **模型榜、Codex 重置监控和主题页的大事记不再是框架的一部分**，只留在 AIHOT 上。页面（`/leaderboard`、`/codex-reset`）、接口（`/api/v1/codex-resets`、`/api/v1/codex-resets/recent`、`/api/v1/agent/codex-resets`）和 MCP 工具 `<前缀>_get_codex_resets` 都去掉了，MCP 和 `/openapi-v1.json` 的版本号升到 4.0.0。迁移 `0053` 删掉它们的表（`lb_*`、`monitor_*`、`fx_rates`）和设置，定时任务及其执行队列在 worker 启动时自动撤掉，后台运行记录继续保留；要留这些数据的，升级前先备份。公司主题页的标志改成公司名的首字母。
-- **行业包有几处变化**，自己改过 `industry/` 的站，合并时对照新文件补上：
+- **行业包有几处变化**，自己改过 `configs/industry/` 的站，合并时对照新文件补上：
   - `site.ts` 多了 `topicsTitle`、`feedbackExample`、`keywords`、`since`、`interfaceVersion`、`POLICY`（使用规则和隐私说明两页的名字与简介、X 帖子算不算全文）、`ABOUT.description`、`ABOUT.sourcesFallback`、`AGENT`、`REPORTS`、`ALERTS`、`SOURCE_DEFAULTS`、`COMMUNITY_FEEDS`、`CARDS`；作者块的两张二维码卡片加了 `kind`，`ABOUT.copyright` 改成反馈页链接前后的两段。
   - 新增 `models.ts`：具名的模型和每一步默认用哪个，原来写在代码里。
-  - 网页左上角的标志从 `apps/web/app/components/Logo.tsx` 搬到 `industry/brand/Logo.tsx`（后来搬到 `site/` 下，见上方）。
-  - 新增 `public/`：`robots.txt`、`manifest.webmanifest` 原来在代码里生成，OpenAPI 说明原来在 `reference/`，现在都是这里的文件。原来填了 `contactEmail` 就会生成的 `/.well-known/security.txt`，现在要自己放一份 `public/.well-known/security.txt`（后来搬到 `site/` 下，见上方）。
+  - 网页左上角的标志从 `apps/web/app/components/Logo.tsx` 搬到 `configs/industry/brand/Logo.tsx`（后来搬到 `configs/site/` 下，见上方）。
+  - 新增 `public/`：`robots.txt`、`manifest.webmanifest` 原来在代码里生成，OpenAPI 说明原来在 `reference/`，现在都是这里的文件。原来填了 `contactEmail` 就会生成的 `/.well-known/security.txt`，现在要自己放一份 `public/.well-known/security.txt`（后来搬到 `configs/site/` 下，见上方）。
   - 删掉了 `features.ts`、`chronicle.ts` 和 `chronicles/`；`topics.json` 里的 `orgNames`、`leaderboardProvider`、`chronicleTerms` 不再使用，可以删掉。
-  - `taxonomy.ts` 的类别可以写 `feedLabel`（分类 RSS 标题里的名字，示例站用“AI 模型”这样的说法）；`ENTITIES` 加了几家公司。当时类别上还可以写 `publicAs`，让它在公开接口里并进另一类；这个字段后来删掉了，改成 `site/site.ts` 的 `PUBLIC_CATEGORIES.merge`（见上方），再写 `publicAs` 通不过类型检查。
+  - `taxonomy.ts` 的类别可以写 `feedLabel`（分类 RSS 标题里的名字，示例站用“AI 模型”这样的说法）；`ENTITIES` 加了几家公司。当时类别上还可以写 `publicAs`，让它在公开接口里并进另一类；这个字段后来删掉了，改成 `configs/site/site.ts` 的 `PUBLIC_CATEGORIES.merge`（见上方），再写 `publicAs` 通不过类型检查。
 - **推送接口的限流可以设置**：`/api/ingest/items` 每个客户端每分钟最多推几次由 `INGEST_RATE_LIMIT` 决定，`docker compose` 默认 10，和以前一样；不用 Docker 时默认不限，前面没有代理限流的话在 `.env` 里设上。
 - **不再使用的环境变量**：`ARTIFICIAL_ANALYSIS_API_KEY`、`MONITOR_MODEL`，可以从 `.env` 删掉。
 
@@ -240,12 +240,12 @@ MCP 的 `subscriptions/listen` 现在立即返回 HTTP 404 和 JSON-RPC `-32601 
 - **精选要等去重确认**：分数够了的资料，要等归组确认它不是精选里已有新闻的重复、带来了新信息，才进精选；确认之前只在“全部动态”。归组用的模型回答不合格式时会停在那里，后台“运行”页能看到。
 - **一手只看分级**：`T1` 就是一手，`first_party` 不再单独设置；以前单独标成一手的 `T1_5`、`T2` 信源不再算一手，要算就改成 `T1`。
 - **行业包多了几项**：`taxonomy.ts` 新增 `RELEASE`、`PLAIN_TERMS`，评论类的类别标 `commentary: true`，`ENTITIES` 可以写 `otherNames`，`CATEGORY_BY_ITEM_TYPE` 不再使用。已经换成别的行业的站，合并时对照 [把它改成你的行业](customize.md) 补上。
-- **主题只读 `industry/topics.json`**：迁移会删掉数据库里的 `topics` 表。只改过数据库、没改文件的主题，升级前先写进文件。公司主题只看 `entityId`，`related` 不再使用。
+- **主题只读 `configs/industry/topics.json`**：迁移会删掉数据库里的 `topics` 表。只改过数据库、没改文件的主题，升级前先写进文件。公司主题只看 `entityId`，`related` 不再使用。
 - **日报不再调用模型**：日报按规则编排，周报月报从日报汇编，模型只写总述和栏目导读；已经出过的各期不重写。
-- **提示词有改动**：`industry/prompts/` 里的 `structure.md`、`group-*.md`、`story-digest.md`、`report-period.md` 换成了新的写法，`report-daily-lead.md` 删掉了，新加了 `report-period-sections.md`。改过这些提示词的，对照着把自己的改动搬过去。
+- **提示词有改动**：`configs/industry/prompts/` 里的 `structure.md`、`group-*.md`、`story-digest.md`、`report-period.md` 换成了新的写法，`report-daily-lead.md` 删掉了，新加了 `report-period-sections.md`。改过这些提示词的，对照着把自己的改动搬过去。
 - **删掉的脚本**：`scripts/delete-sources.ts`、`scripts/regroup-events.ts`、`scripts/enqueue-analysis.ts`。不要的信源在后台暂停；单篇的重新评估、重新归组在后台“内容诊断”里打开这一篇操作。
 - **管理员会话绑定登录方式**（迁移 `0041`）：从还没有会话绑定的版本升级后，未绑定的旧会话需要重新登录。此前已试用会话绑定迁移的数据库可直接升级，已有列和绑定会被保留，无需手动修改迁移记录。之后的规则见下方“管理员会话与配置变更”。
-- **3.x 的 `/agent` 默认打开 Agent Markdown**，MCP 的接入说明在 `/agent?tab=mcp`；当前接入页见上方“站点文件搬进 `site/`”。
+- **3.x 的 `/agent` 默认打开 Agent Markdown**，MCP 的接入说明在 `/agent?tab=mcp`；当前接入页见上方“站点文件搬进 `configs/site/`”。
 - **飞书内容群只推 `T1`、`T1_5` 信源的精选。**
 
 ### 备份

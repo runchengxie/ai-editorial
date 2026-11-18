@@ -1,53 +1,31 @@
-# 给 Agent 的说明
+# AI Editorial repository instructions
 
-这是一个行业热点网站的框架：采集信源、用模型筛选和写作、归组事件、出日报周报月报，并通过网站、RSS、公开 API、Agent Markdown 和 MCP 对外提供。默认配置是一个 AI 行业的示例站。先读 README，再按任务读 `docs/` 里对应的文档。
+This repository owns the internal dynamic engine, editorial workbench, source configuration and public data production. The independent `ai-editorial-pages` repository owns the static reader, localization, issue RSS, HTML export and Pages deployment. Read [README.md](README.md), [operations](docs/magazine.md) and the relevant module before changing it. `CLAUDE.md` delegates to this file.
 
-## 最常见的任务：改成另一个行业
+## Layout and boundaries
 
-按 `docs/customize.md` 的顺序做。这个站自己的东西在 `site/`：站名文案（`site.ts`）、每一步的模型（`models.ts`）、品牌与 Logo（`brand/`）、条款页（`pages/`）、发布在网站根目录的固定文件（`public/`，替换占位符后发布）、更新日志（`changelog.json`）。行业知识在 `industry/`：分类标签（`taxonomy.ts`）、主题（`topics.json`）、示范信源（`sources.json`）、提示词（`prompts/`）、门槛（`selection.ts`）。通常不需要改 `apps/` 和 `packages/`；框架里没有、只有这个站要的功能，做成模块放进 `modules/`（`docs/architecture.md` 的“模块”）。
+- `apps/`: API, worker and dynamic web entry points. `packages/`: shared contracts and backend implementation. `modules/`: fork-specific features.
+- `configs/site/` and `configs/industry/`: typed npm workspace configuration packages. Preserve `@aihot/site` and `@aihot/industry` names; update filesystem readers, package manifests, Docker, tests and documentation together when paths change. Shared TypeScript options live in `configs/tsconfig.base.json`.
+- `scripts/`, `tests/`, `docs/`, `database/`, `assets/` and `deploy/` retain their distinct responsibilities. Runtime prompt and policy Markdown remains with its configuration package; explanatory documentation belongs in `docs/`.
+- Respect the workspace's external data/configuration roots. Never commit credentials, raw evidence, generated publications, runtime state or test outputs. See [data contract](docs/editorial-data-contract.md).
+- Keep the dynamic app internal through loopback binding or an authenticated perimeter. Its inherited anonymous endpoints are not the public static reader. Do not use AIHOT branding.
 
-这些事要问使用者本人，不要替他决定：站名；要盯哪些信源；什么消息重要、什么是噪声；分类怎么分；条款和隐私说明的内容（`site/pages/` 是模板，上线前需要他本人确认）。
+## Validation
 
-改评分标准时保留原有结构（内容类型、五个维度加权、噪声压制、安全边界），替换的是“什么算重要”“什么算噪声”的例子。门槛要用使用者标注的样本重新校准（`docs/selection.md`），不要凭感觉改数字。
+Use Node.js 24.22.2 or later for this fork. Run `npm ci --no-audit --no-fund`, `npm run typecheck`, `npm run build -w @aihot/web`, `npm run test:standalone`, `npm test`, `npm run test:web`, and the two `scripts/daily-brief/*.test.ts` checks as relevant. Backend test database names must end in `_test` or `_ci`; tests create isolated copies and need `CREATEDB`, compatible PostgreSQL backup clients and `tar`. Never use production data for tests.
 
-## 运行与检查
+CI also checks migration safety, built-site smoke/MCP behavior and Docker seeding. Use Chromium and WebKit for the inherited browser suite. Missing browser system libraries are an environment failure, not grounds to skip tests. Record exact revisions and actual results; see [validation history](docs/editorial-release-validation.md). No separate lint, coverage threshold or security-scanner gate is currently configured. Run dependency audits explicitly when inspecting dependency security; `npm ci --no-audit` does not establish security status.
 
-- Node.js 24 直接运行 TypeScript，后端没有构建步骤。npm workspaces：`apps/*`、`packages/*`、`industry`、`site`、`modules/*`。
-- 本机运行和 Docker 见 `docs/deploy.md`。
-- 改完至少跑：
-  ```bash
-  npm run typecheck
-  DATABASE_URL=postgres://127.0.0.1:5432/<名字>_test npm test   # 名字必须以 _test 或 _ci 结尾；没有会自动建好并迁移，账号要能建库
-  npm run build -w @aihot/web && npm run test:web
-  node scripts/smoke.ts --base http://localhost:3000             # 站点跑起来以后
-  ```
-- `tests/` 里部分测试用的是示例行业的分类、标签和公司，改了 `industry/taxonomy.ts` 后把这些例子换成新行业的对应项。
+## Stable safety and architecture rules
 
-## 要守住的规则
+- The dynamic web frontend reaches the backend over HTTP only. Dynamic public outlets read through `packages/backend/src/publication/`; the magazine has a separate sanitized, versioned public projection. Validate provider and consumer together when changing either contract.
+- Models run only in background or explicit operator jobs, never while serving reader requests. Billable requests use existing receipts and budgets. Unknown outcomes require investigation before another attempt.
+- News automation is paused. CI does not publish; cloud publication workflows are manual-only, and installing the local worker does not authorize timer activation. Read [manual operations](docs/magazine.md#manual-evaluation-automation-paused). Source integration, content publication, worker installation and production migration are separate actions.
+- Tests use local fixtures/stubs and keep external actions off. Collection/model/push safety flags are enabled only by explicit operational authorization. Source full-text publication defaults remain off.
+- Preserve released migrations. New migrations follow the single online-safe statement convention in [architecture](docs/architecture.md#数据库迁移). Removing stored data requires an explicit migration and documented compatibility/rollback impact. Migration comments from upstream do not authorize production changes here.
+- Preserve real history, necessary compatibility endpoints and task ownership. Do not force-push, weaken gates or delete another task's work. Follow workspace integration authorization for assigned work and repository protections.
+- English is canonical for new reader-facing documentation, with aligned `zh-CN` counterparts for current setup/operations/contracts. Locale changes presentation only; IDs, schema, configuration keys, dates and source facts stay stable.
 
-- 前端（`apps/web`）只通过 HTTP 读 `apps/api`，数据库、模型调用和密钥只在后端。
-- 所有公开出口都从 `packages/backend/src/publication/` 这一个读取层读，新增公开出口也一样。
-- 读者打开页面不触发模型调用；模型只在 worker 的任务里调用。
-- 付费请求都经过回执（`providers/receipts.ts`）和预算熔断，不要绕开。
-- 安全阀只有设成 `true` 才打开。开发时保持关闭：`COLLECT_ENABLED`、`MODEL_CALLS_ENABLED`、`FEISHU_*_ENABLED`、`DINGTALK_CONTENT_PUSH_ENABLED`、`INDEXNOW_SUBMIT_ENABLED`、`BAIDU_PUSH_ENABLED`。测试里推送一直关着，采集和模型调用只连本地假服务，不访问任何外部服务。
-- 信源默认只展示摘要和原文链接（`site_fulltext` 关）；只有来源明确允许时才打开全文。
-- 公开内容匿名，管理员和访客看到的一样；后台只允许管理员。
-- 停用或替换一个功能、机制时，同一个改动删掉它的代码、测试、文档和存下的状态（库表与列、定时任务、settings、环境变量和 `.env.example` 里的项）；会删掉使用者已有数据的，在 `docs/deploy.md` 的更新说明里写明。加锁、重试、兼容旧格式、开关和兜底，先要有证据：真实部署里发生过，或平台的语义决定它会发生。
-- 数据库迁移放在 `database/migrations/`（只属于某个模块的表放在它的 `migrations/`），按完整文件名排序执行和记账；编号相同的不同文件分别执行，新增迁移使用新的文件名，已经发布的迁移不改。从 `0055` 起，每个文件只放一条允许在线执行的语句，PR 会检查；索引使用 `CONCURRENTLY IF NOT EXISTS`，大批数据回填不放进发布迁移。约束验证和破坏性变更先按 [迁移约定](docs/architecture.md#数据库迁移) 设计，不能修改历史文件或关闭检查绕过。
-- 不要提交 `.env`、密钥和 `.data/`。
-- 不要使用 AIHOT 的名字和 Logo。
+## Upstream contributions
 
-## 写代码
-
-匹配周围代码的写法、命名和注释密度。选能清楚解决问题的简单方案，只定义正在使用的抽象。验证改动涉及的重要行为，不为简单的样式改动写测试。
-
-## 给本仓库提 PR
-
-要把改动提回 `KKKKhazix/AIHOT` 时，先读 `CONTRIBUTING.md`。下面是评审里最常被退回或返工的情况：
-
-- **只收对所有站都成立的改进。** 新开关、新的配置入口和新功能再小也算产品行为，先开 Issue 讲清场景。你们站自己的规定、数字和例子留在自己的 `industry/`、`site/`，不写进共享的提示词模板、注释和测试。
-- **先找现有的。** 加函数、插口或配置前先搜一遍：模块发自己的文件用 `apps/api/src/routes/static.ts` 的 `sendFile`，接中转站填 `LLM_BASE_URL`。
-- **测试只证明你想到的情况。** 动了采集、日期、正文清洗、精选或归组的，拿一批公开的真实订阅和网页跑改动前后，在 PR 里写有多少条结果变了、变的是否都对。中文网页的时间常不带时区，按信源时区读（默认 `+08:00`），上面的 “CST” 一般指北京时间；测试结果不能取决于运行机器的时区。
-- **测试守行为，不守写法。** 复现问题的测试并进这个功能已有的测试文件，不为一次修复新开文件；不断言私有常量、CSS 类名、像素位置或浏览器自己的行为，不把重构前的输出钉成永久测试。合并前会按这个标准删减测试。
-- **这几类文件不收外部 PR 的修改：** 依赖与锁文件（版本升级由 dependabot 提）、`AGENTS.md`、`CLAUDE.md`、`CONTRIBUTING.md`、`SECURITY.md` 和 `.agents/`、`.claude/` 下的规则、二进制文件（测试要的样本请用代码生成）。需要改的先开 Issue 说明，由维护者来改。
-- **改全。** 新的环境变量写进 `.env.example`，新的站点配置写进 `site/`；改了配置字段的意思，示例配置跟着改，让已部署的站升级后行为不变；改一个读者看到的名字或入口，出现它的地方一起改。新增或更改导航配置时，分别核对默认配置与非默认配置的电脑侧栏、手机底栏、返回和“我的”入口，入口变少时的标签布局也要在浏览器里看。
+Default PRs target the owner's fork, not AIHOT upstream. Upstream-only changes follow its contribution policy and require separate scope; this fork's product configuration and modules remain local. See [contributing](docs/contributing.md) and the [inherited engine guide](docs/upstream-guide.md).

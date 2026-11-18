@@ -1,5 +1,5 @@
 // The backend's sockets for modules (modules/<name>/server.ts). The api and worker processes install the
-// site's list when they start (site/modules/server.ts); the engine reads the sockets when it needs them and
+// site's list when they start (configs/site/modules/server.ts); the engine reads the sockets when it needs them and
 // never imports a module, so it runs the same with none installed: the open-source edition, and the
 // engine's own tests. Each socket names the engine file that reads it.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
@@ -23,7 +23,7 @@ export interface Scheduled {
   when?: () => boolean;
 }
 
-/** A model step (editorial/models.ts); its default model comes from site/models.ts, else `default`. */
+/** A model step (editorial/models.ts); its default model comes from configs/site/models.ts, else `default`. */
 export interface ModelStep {
   label: string;
   env: string;

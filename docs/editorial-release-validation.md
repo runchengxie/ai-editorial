@@ -1,12 +1,12 @@
-# Internal pilot validation
+# Initial internal pilot validation (historical)
 
-The workbench is implemented for internal pilot use. It is not publicly deployed, member-gated or connected to live model/collection credentials.
+This records the initial internal-workbench pilot only. Subsequent collection, magazine generation and static-site publication are separate capabilities; the dynamic workbench itself remains internal. See [current delivery and audit status](project-status.md) for later source, artifact and deployment evidence.
 
 ## Reviewed source
 
 - Upstream baseline: `209417b0dd614460926ba7d96760794d07d83711`.
 - Independent review: feature commit `4205ac7`; findings fixed in `891f0d7`.
-- Validated implementation: `891f0d7fc8394e26436b2341a86c6f72d4410bb5`. Later workflow/documentation commits do not alter application behavior.
+- Validated implementation: `891f0d7fc8394e26436b2341a86c6f72d4410bb5`. This revision identifies that historical test run; it is not the current implementation revision.
 - Node.js 24.22.2; local PostgreSQL 18.6; Chromium 149 and WebKit 26.5.
 
 ## Evidence

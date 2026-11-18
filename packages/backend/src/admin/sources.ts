@@ -116,7 +116,7 @@ export async function previewSource(draft: Pick<SourceRow, "id" | "kind" | "conf
   };
 }
 
-/** A class of the industry pack (industry/selection.ts), or none. */
+/** A class of the industry pack (configs/industry/selection.ts), or none. */
 const SelectionClass = z.string().refine((c) => Object.hasOwn(SELECTION.classes, c), { message: "不是行业包里的信源类别" }).nullable();
 
 const EDITABLE = z

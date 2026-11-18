@@ -5,8 +5,8 @@
   "workspaces": [
     "packages/*",
     "apps/*",
-    "industry",
-    "site",
+    "configs/industry",
+    "configs/site",
     "modules/*"
   ],
   "engines": {

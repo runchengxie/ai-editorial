@@ -104,8 +104,8 @@ function Day({ date, releases, id }: { date: string; releases: Release[]; id?: s
 /** Draws a major release: its `feature`, whose shape is the site's. */
 type FeatureDrawing = ComponentType<{ release: Release; id?: string }>;
 
-/** The site's drawing (site/changelog/FeatureRelease.tsx), when it ships one. */
-const SITE_FEATURE = Object.values(import.meta.glob<FeatureDrawing>("../../../../site/changelog/FeatureRelease.tsx", { eager: true, import: "FeatureRelease" }))[0];
+/** The site's drawing (configs/site/changelog/FeatureRelease.tsx), when it ships one. */
+const SITE_FEATURE = Object.values(import.meta.glob<FeatureDrawing>("../../../../configs/site/changelog/FeatureRelease.tsx", { eager: true, import: "FeatureRelease" }))[0];
 
 /**
  * A date with a major release: each release's `feature` is drawn as its own block by the site's drawing,

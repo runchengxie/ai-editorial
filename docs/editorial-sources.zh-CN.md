@@ -2,7 +2,7 @@
 
 [English](editorial-sources.md)
 
-当前配置共 **84 个信源，79 个启用、5 个暂停**。杂志任务以 `industry/sources.json` 为准。本轮研究与工程扩充在此前75个、启用70个的基础上补充9个免费来源。配置数量不等于每日出稿数量。验证日期：2026-11-18。
+当前配置共 **84 个信源，79 个启用、5 个暂停**。杂志任务以 `configs/industry/sources.json` 为准。本轮研究与工程扩充在此前75个、启用70个的基础上补充9个免费来源。配置数量不等于每日出稿数量。验证日期：2026-11-18。
 
 ## 覆盖范围与发现目录
 
@@ -16,7 +16,7 @@
 
 发现目录包括 [BestBlogs 文章 OPML](https://github.com/ginobefun/BestBlogs/blob/main/BestBlogs_RSS_Articles.opml)、[公众号 OPML](https://github.com/ginobefun/BestBlogs/blob/main/opml/bestblogs_wechat2rss_opml_all.opml)、[Turing AI RSS](https://github.com/alan-turing-institute/ai-rss-feeds)、[Engineering Blogs](https://github.com/kilimchoi/engineering-blogs)、[AI4Finance 资源](https://github.com/AI4Finance-Foundation/Awesome_AI4Finance)。这些是候选目录，不是整批导入或内容转载授权。优先保留原始发布者与原文链接，不绕过付费墙，site_fulltext 与 syndicate_fulltext 仍关闭。
 
-Mistral 保留原信源 ID，将旧地址替换为 Turing 维护的订阅。综合中文与厂商博客按 `industry/magazine.ts` 的 AI、数据工作流规则筛选；来源与发布者限额、读者方向轮换避免高频内容挤占整期。URL 与较长相同标题可确定性去重，真正的事件合并仍由模型处理。
+Mistral 保留原信源 ID，将旧地址替换为 Turing 维护的订阅。综合中文与厂商博客按 `configs/industry/magazine.ts` 的 AI、数据工作流规则筛选；来源与发布者限额、读者方向轮换避免高频内容挤占整期。URL 与较长相同标题可确定性去重，真正的事件合并仍由模型处理。
 
 ## 访问与原始日期
 
@@ -62,4 +62,4 @@ Mistral 保留原信源 ID，将旧地址替换为 Turing 维护的订阅。综�
 
 针对11月9–15日，把旧51条材料和新增已核验内容合并后，得到64条独立材料，自动选择保留60条。LangChain有4篇文章虽然RSS日期较新，但原文发表于8月或10月，已排除。新增有效材料包括财报电话会前视偏差、交易智能体评测、文档向量研究，以及工程案例。原生采集得到11条可用材料，来自新增9个来源中的5个；首次安全采集检查有6个成功，HN、LangChain和Google有瞬时失败。公开响应回放与真实采集结果分别记录，不能据此声称全部来源持续可用。Netflix原文页返回403，使用公开RSS正文，没有绕过访问限制。
 
-本地验收版从已保存的8篇重点、16条快讯扩充为12篇重点、25条快讯，引用45篇文章、覆盖28个具名来源。这是基于真实材料的编辑扩充，**没有新增Codex生成调用**；新提示词目标仍需未来在预算允许时实测。引用、数字、结构以及双语阅读器和浏览器检查记录保存在 `DATA_ROOT/ai-editorial/evaluations/broader-news-20261118`。稿件未发布，定时生成仍暂停。
+本地验收版从已保存的8篇重点、16条快讯扩充为12篇重点、25条快讯，引用45篇文章、覆盖28个具名来源。这是基于真实材料的编辑扩充，**没有新增Codex生成调用**；新提示词目标仍需未来在预算允许时实测。引用、数字、结构以及双语阅读器和浏览器检查记录保存在 `DATA_ROOT/ai-editorial/evaluations/broader-news-20261118`。稿件已于11月18日手动发布，定时生成仍暂停。发布产物与部署证据见[项目状态](project-status.zh-CN.md)。

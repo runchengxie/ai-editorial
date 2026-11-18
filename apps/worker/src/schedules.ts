@@ -31,7 +31,7 @@ const ENGINE_SCHEDULES: Scheduled[] = [
   { name: "hot.rank", cron: "*/5 * * * *", run: () => computeHotRanking() },
   { name: "hot.snapshot", cron: "2 * * * *", run: () => snapshotHeat() },
   { name: "stories.links", cron: "12 * * * *", run: linkRelatedStories },
-  // Every issue that is due and not written yet, each from its edition time (site/site.ts EDITION_TIMES)
+  // Every issue that is due and not written yet, each from its edition time (configs/site/site.ts EDITION_TIMES)
   // at the next half hour; a missed or failed one at the next run.
   { name: "reports.compose", cron: "0,30 * * * *", missed: "once", run: () => composeDueReports() },
   // The deletions the privacy notice promises, once their retention periods are over.

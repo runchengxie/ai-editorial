@@ -10,6 +10,8 @@
 
 定时生成和发布已暂停，参见[手动采集、生成与发布](docs/magazine.zh-CN.md#手动探索自动化暂停)。既有网站继续在线。
 
+
+[项目状态与盘点](docs/project-status.zh-CN.md) · [目录职责](docs/repository-layout.zh-CN.md)
 ## 从这里开始
 
 - [文章式日报与周报](docs/magazine.zh-CN.md)：本机 Codex 生成、证据、额度回执和自动发布。
@@ -19,7 +21,7 @@
 - [验证记录](docs/editorial-release-validation.md)：已测版本、检查结果及限制。
 - [试用流程](docs/editorial-pilot.zh-CN.md)：编辑验收和信源、质量评估。
 - [设计](docs/superpowers/specs/2026-11-16-editorial-workbench-design.md)及[开发计划](docs/superpowers/plans/2026-11-16-editorial-workbench.md)。
-- [上游引擎英文指南](README.en.md)及[架构说明](docs/architecture.md)。
+- [上游引擎英文指南](docs/upstream-guide.md)及[架构说明](docs/architecture.md)。
 
 完成本地配置后访问 `/admin/editorial`。新增采编界面支持中英切换，上游引擎页面仍以中文为主。草稿功能目前整理证据资料包，不调用模型，独立刊物任务已支持模型辅助成稿。
 

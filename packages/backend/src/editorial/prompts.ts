@@ -1,6 +1,6 @@
-// Every editorial prompt lives in the industry pack as a Markdown file (industry/prompts/*.md), so a new
+// Every editorial prompt lives in the industry pack as a Markdown file (configs/industry/prompts/*.md), so a new
 // industry changes its taste by editing text, not code. Two template forms, nothing else:
-//   {{name}}     a value the calling step passes (plus siteName, from site/site.ts)
+//   {{name}}     a value the calling step passes (plus siteName, from configs/site/site.ts)
 //   {{> file}}   another prompt file, inserted as it is (shared rules)
 // A missing value or file is an error, never a silent blank. Versions are content hashes, so a receipt
 // and the admin's model page always say which wording produced a result. A wording that is not a file
@@ -11,7 +11,7 @@ import path from "node:path";
 import { SITE } from "@aihot/site";
 import { REPO_ROOT } from "../config.ts";
 
-const DIR = path.join(REPO_ROOT, "industry/prompts");
+const DIR = path.join(REPO_ROOT, "configs/industry/prompts");
 const TOKEN = /\{\{(>\s*)?([A-Za-z][\w.-]*)\s*\}\}/g;
 
 const files = new Map<string, string>();

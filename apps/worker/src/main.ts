@@ -1,5 +1,5 @@
 // Worker process: queues and schedules for collection, processing, events, reports and ops, and the site's
-// modules (site/modules/server.ts).
+// modules (configs/site/modules/server.ts).
 import { assertProductionSecrets } from "@aihot/backend/config";
 import { closeDb } from "@aihot/backend/db";
 import { getBoss, stopBoss, workModuleQueues } from "@aihot/backend/jobs/queue";

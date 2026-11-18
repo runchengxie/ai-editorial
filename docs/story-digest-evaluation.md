@@ -1,6 +1,6 @@
 # 事件综述提示词评测
 
-事件页的综述由 `industry/prompts/story-digest.md` 生成。改这份提示词之前，先在同一批事件上把现有提示词和候选提示词并排跑一遍，人工比较，不凭页面印象判断。
+事件页的综述由 `configs/industry/prompts/story-digest.md` 生成。改这份提示词之前，先在同一批事件上把现有提示词和候选提示词并排跑一遍，人工比较，不凭页面印象判断。
 
 ## 1. 准备案例
 
@@ -10,7 +10,7 @@ node --env-file=.env scripts/eval-story-digests.ts --stories <事件id>,<事件i
 
 事件 id 是事件页地址 `/story/<id>` 里的那一段。导出只读数据库，不调用模型，不改动任何事件。报道按站点生成综述时的同一套规则取，只是顺带提及的、综合稿、撤下的和尚未公开的报道不算。已经有综述的事件按“更正后重写”组装（不带上一版综述），还没有综述的按首次撰写。找不到、已被合并或没有可用报道的事件会直接报错。
 
-导出的文件每行一个事件，可以先审阅。想测有新报道时的增量更新，把 `inputMode` 改为 `incremental`，填上 `story.previousDigest` 和 `knownArticleIds`（上一版已包含的报道 id）。也可以手写案例，格式见 `industry/story-digest-eval.example.jsonl`（虚构示例）。
+导出的文件每行一个事件，可以先审阅。想测有新报道时的增量更新，把 `inputMode` 改为 `incremental`，填上 `story.previousDigest` 和 `knownArticleIds`（上一版已包含的报道 id）。也可以手写案例，格式见 `configs/industry/story-digest-eval.example.jsonl`（虚构示例）。
 
 ## 2. 并排对比
 
@@ -19,7 +19,7 @@ node --env-file=.env scripts/eval-story-digests.ts --cases .data/story-digest-ca
 ```
 
 - 每个案例用现有提示词和候选提示词各跑一次：同一个模型（默认是“事件综述”这一步当前用的模型，`--models` 可指定），同一份输入。发给模型的系统提示词、输入和采样参数与站点生成综述时完全相同。
-- 候选文件的写法与 `industry/prompts/` 相同：`{{siteName}}` 换成站名，`{{> 文件名}}` 插入共用规则，缺值会报错。候选与现有提示词渲染后完全相同时拒绝运行。不传 `--system` 时只跑现有提示词。
+- 候选文件的写法与 `configs/industry/prompts/` 相同：`{{siteName}}` 换成站名，`{{> 文件名}}` 插入共用规则，缺值会报错。候选与现有提示词渲染后完全相同时拒绝运行。不传 `--system` 时只跑现有提示词。
 - 开始前打印调用次数（案例数 × 模型数 × 提示词数），超过 `--max-calls`（默认 18）一次都不发。每次调用和站点其他模型请求一样记录、计入预算；原样重跑复用已收到的结果，不再付费，所以改一版候选再跑，现有提示词那一半不花钱。
 
 结果写到 `.data/eval/`（`--out-dir` 可改），一份 JSON、一份 Markdown：两边的标题和综述并排，附每次调用的 token 用量和记录编号，失败的调用写明原因。

@@ -1,5 +1,5 @@
 // MCP: /api/mcp, remote Streamable HTTP, anonymous, read-only, stateless, no push. One tool per ability
-// of /api/v1/agent, named after the site's prefix (site/site.ts); they read through the public read
+// of /api/v1/agent, named after the site's prefix (configs/site/site.ts); they read through the public read
 // layer and answer with the same text as the Agent addresses (publication/agent) and the same JSON as
 // the v1 endpoints.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";

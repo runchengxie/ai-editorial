@@ -13,9 +13,9 @@ import { loadSitemap } from "@aihot/backend/publication/sitemap";
 import { llmsTxt, loadLlmsAvailability } from "@aihot/backend/publication/llms";
 import { loadContact } from "@aihot/backend/site/contact";
 
-const PUBLIC = path.join(REPO_ROOT, "site/public");
-/** The site's brand files (site/brand/), and how long its icons are cached. */
-const BRAND = path.join(REPO_ROOT, "site/brand");
+const PUBLIC = path.join(REPO_ROOT, "configs/site/public");
+/** The site's brand files (configs/site/brand/), and how long its icons are cached. */
+const BRAND = path.join(REPO_ROOT, "configs/site/brand");
 const ICON_CACHE = "public, max-age=2592000, stale-while-revalidate=604800";
 
 const TYPES: Record<string, string> = {
@@ -129,7 +129,7 @@ export function registerStatic(app: FastifyInstance) {
     return sendTextWithEtag(req, reply, text, { etagPrefix: "llms", cacheControl: "public, max-age=300, must-revalidate", contentType: "text/plain; charset=utf-8" });
   });
 
-  // The site's public files (site/public/), placeholders filled in; one the site does not have is a 404.
+  // The site's public files (configs/site/public/), placeholders filled in; one the site does not have is a 404.
   app.get("/robots.txt", (req, reply) => sendFile(req, reply, path.join(PUBLIC, "robots.txt"), { cacheControl: "public, max-age=3600", fill: true }));
   app.get("/.well-known/security.txt", (req, reply) => sendFile(req, reply, path.join(PUBLIC, ".well-known/security.txt"), { cacheControl: "public, max-age=86400", fill: true }));
   // Cached as long as the icons it names: every page links it, so a day's lifetime was a request per reader a day.
@@ -142,7 +142,7 @@ export function registerStatic(app: FastifyInstance) {
     app.get(`/${config.indexNowKey}.txt`, (req, reply) => sendEntry(req, reply, key, { type: TYPES[".txt"]!, cacheControl: "public, max-age=3600" }));
   }
 
-  // The site's icons (site/brand/): the standard ones, then any others it keeps at the root.
+  // The site's icons (configs/site/brand/): the standard ones, then any others it keeps at the root.
   for (const icon of ["favicon.ico", "icon.png", "icon-192.png", "apple-icon.png", "logo.svg", ...SITE.rootIcons]) {
     app.get(`/${icon}`, (req, reply) => sendFile(req, reply, path.join(BRAND, icon), { cacheControl: ICON_CACHE }));
   }

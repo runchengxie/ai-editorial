@@ -35,7 +35,7 @@ export interface AnalyzeInputArticle {
     name: string;
     kind: string;
     tier: string;
-    /** Raises the tier's selection threshold (industry/selection.ts classes); null for none. */
+    /** Raises the tier's selection threshold (configs/industry/selection.ts classes); null for none. */
     selectionClass?: string | null;
     firstParty: boolean;
     tags?: string[];

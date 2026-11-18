@@ -1,15 +1,15 @@
 import { describePublicationTime } from "../sources/dates.ts";
 // analyzeArticle: the judging and writing steps, each with its own prompt from the industry pack
-// (industry/prompts/):
+// (configs/industry/prompts/):
 // Without material (only a title) or a displayable original post, the item waits for a new material
 // revision before any step.
 //   1. prefilter: does the material belong to this industry at all (wide recall). Only BLOCK stops an
 //      item; a BLOCK on an original post without text counts as UNKNOWN;
-//   2. score: two independent scores against the source's threshold (tier and class, industry/selection.ts) decide 精选;
+//   2. score: two independent scores against the source's threshold (tier and class, configs/industry/selection.ts) decide 精选;
 //   3. structure: category, tags, subjects and the current news fact, beside scoring;
 //   4. writing, once the structure is in: the Chinese title, summary and reason by the content
 //      understanding for selected and near-selected items, by the cheaper title/summary prompts for the rest;
-//      copy that uses a word the site keeps from readers (industry/wording.ts) goes back once to change only those.
+//      copy that uses a word the site keeps from readers (configs/industry/wording.ts) goes back once to change only those.
 // Material with only a title or a feed summary has its article page fetched before it is judged.
 import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
@@ -56,7 +56,7 @@ export const ANALYZE_PROMPT_VERSION = Object.values(PROMPT_VERSIONS).join("+");
 export const SCORE_CALLS = 2;
 
 /**
- * The threshold on the mean score for a source (industry/selection.ts): its tier's, raised to its
+ * The threshold on the mean score for a source (configs/industry/selection.ts): its tier's, raised to its
  * class's floor; a class never lowers it. Selected when score1 + score2 >= 2 × threshold. Tiers
  * without a threshold are not scored for 精选.
  */
@@ -72,7 +72,7 @@ export const UNDERSTAND_FLOOR = SELECTION.understandFloor;
 /** Call parameters of the score step, unless the model sets its own (the site's preset, `scoreCall`). */
 const scoreCall = (model: string) => MODELS[model]?.scoreCall ?? { temperature: 0.2, maxTokens: 1024, timeoutMs: 120_000 };
 
-/** The score prompt: the industry's taste (industry/prompts/selection-score.md). */
+/** The score prompt: the industry's taste (configs/industry/prompts/selection-score.md). */
 export const SCORE_SYSTEM = promptText("selection-score");
 
 export const ScoreSchema = z.object({ attentionScore: z.coerce.number().int().min(0).max(100) });
@@ -374,7 +374,7 @@ export const MEND_SYSTEM = promptText("mend-wording", { reasonLabel: ITEM_COPY.r
 const MendSchema = z.object({ titleZh: z.string().trim().min(1), summaryZh: z.string().trim().min(1), reasonZh: z.string().trim().nullable().catch(null) });
 
 /**
- * Written copy that uses a word the site keeps from its readers (industry/wording.ts) goes back once, those words
+ * Written copy that uses a word the site keeps from its readers (configs/industry/wording.ts) goes back once, those words
  * named, to change only them: a site's writing prompts can ask the same, but a model keeps drifting back to the
  * words it uses most. The mended copy keeps the
  * identity guard and is used only when it leaves fewer such words and the same numbers.

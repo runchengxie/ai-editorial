@@ -2,7 +2,7 @@
 
 [简体中文](editorial-sources.zh-CN.md)
 
-The source pack now configures **84 sources:79 enabled and5 paused**. `industry/sources.json` is authoritative for the magazine worker. The broader research/engineering expansion adds nine free feeds to the prior75/70 pack. Counts describe configured defaults, not guaranteed daily output. Verification:2026-11-18.
+The source pack now configures **84 sources:79 enabled and5 paused**. `configs/industry/sources.json` is authoritative for the magazine worker. The broader research/engineering expansion adds nine free feeds to the prior75/70 pack. Counts describe configured defaults, not guaranteed daily output. Verification:2026-11-18.
 
 ## Coverage and discovery
 
@@ -16,7 +16,7 @@ The source pack now configures **84 sources:79 enabled and5 paused**. `industry/
 
 Discovery directories are [BestBlogs article OPML](https://github.com/ginobefun/BestBlogs/blob/main/BestBlogs_RSS_Articles.opml), [BestBlogs WeChat OPML](https://github.com/ginobefun/BestBlogs/blob/main/opml/bestblogs_wechat2rss_opml_all.opml), [Turing AI RSS](https://github.com/alan-turing-institute/ai-rss-feeds), [Engineering Blogs](https://github.com/kilimchoi/engineering-blogs) and [AI4Finance resources](https://github.com/AI4Finance-Foundation/Awesome_AI4Finance). They are candidate catalogs, not blanket imports or content-use permission. Prefer original publishers and retain source links. No paywall is bypassed; site_fulltext and syndicate_fulltext remain false.
 
-Mistral's old endpoint was replaced by the maintained Turing feed while preserving its source ID. Native Chinese feeds and broad vendors are filtered by the site's AI/data-workflow policy in `industry/magazine.ts`. Source/publisher caps and weighted audience rotation prevent high-volume publishers or general hardware coverage from taking the whole edition. Final event merging still depends on the model; deterministic URL/exact-long-title deduplication is not semantic deduplication.
+Mistral's old endpoint was replaced by the maintained Turing feed while preserving its source ID. Native Chinese feeds and broad vendors are filtered by the site's AI/data-workflow policy in `configs/industry/magazine.ts`. Source/publisher caps and weighted audience rotation prevent high-volume publishers or general hardware coverage from taking the whole edition. Final event merging still depends on the model; deterministic URL/exact-long-title deduplication is not semantic deduplication.
 
 ## Access and original dates
 
@@ -62,4 +62,4 @@ Research/community lanes are capped at2 each daily and3 each weekly, within exis
 
 The 9–15November replay combined a prior51-item packet with new verified materials into64 unique evidence items; the selector retained60. Four LangChain items were excluded because their original dates were in August/October despite fresh RSS dates. A new NoLBERT earnings-call paper, a trading-agent benchmark, document-embedding research and engineering case studies added useful depth. Native collection yielded11 usable items from five of the nine new feeds; the initial guarded listing check succeeded for six, with transient HN/LangChain/Google failures. Captured public responses and native results are separate evidence, not a claim that all feeds are continuously healthy. Netflix's article page returned403; its public RSS body was used without bypassing that response.
 
-The local acceptance edition expands the saved8-feature/16-brief draft to12 features/25 briefs, citing45 articles from28 named feeds. This was an editorial expansion of saved evidence, **not a new Codex generation**; new prompt targets remain to be tested on a future budget-authorized run. Evidence/number/schema and bilingual reader/browser checks are recorded under `DATA_ROOT/ai-editorial/evaluations/broader-news-20261118`. It remains unpublished, and scheduled generation stays disabled.
+The local acceptance edition expands the saved8-feature/16-brief draft to12 features/25 briefs, citing45 articles from28 named feeds. This was an editorial expansion of saved evidence, **not a new Codex generation**; new prompt targets remain to be tested on a future budget-authorized run. Evidence/number/schema and bilingual reader/browser checks are recorded under `DATA_ROOT/ai-editorial/evaluations/broader-news-20261118`. It was manually published on18November; scheduled generation stays disabled. See [project status](project-status.md) for artifact and deployment evidence.

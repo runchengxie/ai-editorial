@@ -22,7 +22,7 @@ export const PUBLIC_API_CORS: Record<string, string> = {
   "Access-Control-Max-Age": "86400",
 };
 
-/** MCP and the v1 OpenAPI carry one public version, the site's (site/site.ts); it only goes up. */
+/** MCP and the v1 OpenAPI carry one public version, the site's (configs/site/site.ts); it only goes up. */
 export const PUBLIC_INTERFACE_VERSION = SITE.interfaceVersion;
 
 export const NO_STORE = "no-store";

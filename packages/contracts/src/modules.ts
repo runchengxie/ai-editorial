@@ -1,6 +1,6 @@
 // What a module (modules/<name>/module.ts) says about its addresses: its pages, its redirects and the
 // paths the api process answers. Plain data, read by every process and by the web build; the site
-// lists the modules it runs (site/modules/index.ts). The module's code plugs in through its own
+// lists the modules it runs (configs/site/modules/index.ts). The module's code plugs in through its own
 // server.ts (backend/modules.ts) and web.tsx (apps/web/app/modules.ts).
 import type { RedirectRule } from "./http-policy.ts";
 

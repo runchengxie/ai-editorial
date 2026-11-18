@@ -27,7 +27,7 @@ const { measure, noun } = REPORTS.entry;
 /** "件大事": what an issue counts its entries in, in the site's words (REPORTS.entry). */
 export const ENTRIES_UNIT = `${measure}${noun}`;
 
-/** "这一天的 4 件 AI 大事" / "本周的 12 件 AI 大事" / "8 月的 20 件 AI 大事" (the subject and REPORTS.entry from site/site.ts). */
+/** "这一天的 4 件 AI 大事" / "本周的 12 件 AI 大事" / "8 月的 20 件 AI 大事" (the subject and REPORTS.entry from configs/site/site.ts). */
 export function headline(kind: ReportKind, key: string, count: number): string {
   if (kind === "daily") return subjectAfter(`这一天的 ${count} ${measure}`, noun);
   if (kind === "weekly") return subjectAfter(`本周的 ${count} ${measure}`, noun);

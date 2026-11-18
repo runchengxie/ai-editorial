@@ -1,5 +1,5 @@
 // Topics: stable slugs in three groups (companies, directions, content forms), defined by the industry
-// pack (industry/topics.json) and read from there when the process starts. Which reports a topic takes
+// pack (configs/industry/topics.json) and read from there when the process starts. Which reports a topic takes
 // is one SQL predicate, `membership`: a direction or a form takes its tags; a company takes the reports
 // it is a subject of, but not those that only mention it — among several subject companies, its name must
 // appear in the Chinese or the original title. Lists and counts read the selected set one report per
@@ -24,7 +24,7 @@ export interface Topic {
   name: string;
   group: TopicGroupKey;
   definition: string;
-  /** Companies: the subject id (industry/taxonomy.ts ENTITIES). */
+  /** Companies: the subject id (configs/industry/taxonomy.ts ENTITIES). */
   entityId: string | null;
   /** Tags that put a report in the topic: a company's subject tag, a direction's or a form's tags. */
   tags: string[];
@@ -51,7 +51,7 @@ function titlePattern(name: string, entityId: string): string {
   return `(?<![A-Za-z])(${[...names].map(escape).join("|")})(?![A-Za-z])`;
 }
 
-const file = JSON.parse(readFileSync(path.join(REPO_ROOT, "industry/topics.json"), "utf8")) as TopicFile;
+const file = JSON.parse(readFileSync(path.join(REPO_ROOT, "configs/industry/topics.json"), "utf8")) as TopicFile;
 
 export const TOPIC_GROUPS: TopicGroup[] = file.groups;
 

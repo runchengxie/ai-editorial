@@ -71,13 +71,13 @@ function aspect(svg: string): number {
 const wordmarks = new Map<string, Promise<{ src: string; aspect: number } | null>>();
 
 /**
- * A wordmark of the site (site/brand/<file>, e.g. wordmark-dark.svg for the dark cards) as an
+ * A wordmark of the site (configs/site/brand/<file>, e.g. wordmark-dark.svg for the dark cards) as an
  * image of the given height; null when the pack has none, and the card sets the name in type instead.
  */
 export async function brandMark(file: string, height: number): Promise<Node | null> {
   let mark = wordmarks.get(file);
   if (!mark) {
-    mark = readFile(path.join(REPO_ROOT, "site/brand", file), "utf8").then(
+    mark = readFile(path.join(REPO_ROOT, "configs/site/brand", file), "utf8").then(
       (svg) => ({ src: `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`, aspect: aspect(svg) }),
       () => null,
     );
