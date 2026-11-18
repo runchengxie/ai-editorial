@@ -1898,6 +1898,156 @@
       "site_fulltext": false,
       "syndicate_fulltext": false,
       "enabled": false
+    },
+    {
+      "id": "json-edgartools-releases",
+      "name": "EdgarTools releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/dgunning/edgartools/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "json-arelle-releases",
+      "name": "Arelle XBRL releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/Arelle/Arelle/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "json-dlt-releases",
+      "name": "dlt data pipeline releases",
+      "kind": "json_list",
+      "config": {
+        "url": "https://api.github.com/repos/dlt-hub/dlt/releases?per_page=20",
+        "mode": "json_api",
+        "titlePaths": [
+          "name",
+          "tag_name"
+        ],
+        "summaryPaths": [
+          "body"
+        ],
+        "summaryIsBody": true,
+        "urlTemplate": "{raw:html_url}",
+        "publishedAtPath": "published_at",
+        "requireBoolean": {
+          "path": "prerelease",
+          "equals": false
+        },
+        "rawDropKeys": [
+          "assets",
+          "author",
+          "reactions"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "externalIdPath": "id"
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-alphasense",
+      "name": "AlphaSense Research & Insights",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.alpha-sense.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
     }
   ]
 }

@@ -1,5 +1,5 @@
 import{publicUrl,audience}from'@aihot/backend/publication/daily';
-import{TOPIC_FILTERED_SOURCES,MAGAZINE_TOPICS,FINANCIAL_RELEASE_SOURCES}from'@aihot/industry/magazine';
+import{TOPIC_FILTERED_SOURCES,MAGAZINE_TOPICS,FINANCIAL_RELEASE_SOURCES,FINANCIAL_EDITORIAL_SOURCES,FINANCIAL_WORKFLOW_TOPICS}from'@aihot/industry/magazine';
 import type{Candidate}from'@aihot/backend/sources/types';import type{Packet,Evidence}from'../contracts.ts';
 export interface ListingCandidate{source:{id:string;name:string;tier:string;kind:string;config:Record<string,any>;owner_entity_id?:string|null};c:Candidate;}
 export function sourceAllowed(source:any):boolean{
@@ -11,11 +11,15 @@ export function sourceAllowed(source:any):boolean{
 }
 export function sourceAudience(row:ListingCandidate):Evidence['audience']{
  if(FINANCIAL_RELEASE_SOURCES.has(row.source.id))return 'finance';
- return row.source.kind==='json_list'?'development':audience(row.c.title);
+ if(row.source.kind==='json_list')return 'development';
+ const title=row.c.title;
+ if(!/data cent(?:er|re)|nuclear|electricity|\bsues\b|lawsuit|antitrust|数据中心|起诉/i.test(title)&&
+  (FINANCIAL_WORKFLOW_TOPICS.test(title)||(FINANCIAL_EDITORIAL_SOURCES.has(row.source.id)&&FINANCIAL_WORKFLOW_TOPICS.test(title+' '+(row.c.excerpt??'')))))return 'finance';
+ return audience(title);
 }
 export function evidenceTextLimit(kind:Packet['kind'],index:number):number{return index<(kind==='daily'?12:20)?6000:1400;}
 export function selectCandidates(rows:ListingCandidate[],kind:Packet['kind']):ListingCandidate[]{
- const sorted=rows.filter(r=>publicUrl(r.c.url)&&(!TOPIC_FILTERED_SOURCES.has(r.source.id)||MAGAZINE_TOPICS.test(r.c.title+' '+(r.c.excerpt??''))))
+ const sorted=rows.filter(r=>publicUrl(r.c.url)&&(!TOPIC_FILTERED_SOURCES.has(r.source.id)||MAGAZINE_TOPICS.test(r.c.title+' '+(r.c.excerpt??''))||(FINANCIAL_EDITORIAL_SOURCES.has(r.source.id)&&FINANCIAL_WORKFLOW_TOPICS.test(r.c.title+' '+(r.c.excerpt??'')))))
   .sort((a,b)=>(b.source.tier==='T1'?1:0)-(a.source.tier==='T1'?1:0)||(b.c.publishedAt?.getTime()??0)-(a.c.publishedAt?.getTime()??0)||a.c.url.localeCompare(b.c.url)||a.source.id.localeCompare(b.source.id));
  const groups={finance:[]as ListingCandidate[],development:[]as ListingCandidate[],general:[]as ListingCandidate[]};for(const row of sorted)groups[sourceAudience(row)].push(row);
  const selected:ListingCandidate[]=[],urls=new Set<string>(),events=new Set<string>(),counts=new Map<string,number>(),publishers=new Map<string,number>();

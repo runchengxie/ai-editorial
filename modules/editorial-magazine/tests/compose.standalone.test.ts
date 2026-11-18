@@ -68,3 +68,15 @@ test('release version patch numbers must match the cited version exactly',()=>{
  const packet=samplePacket();packet.evidence[0].title='Tools v1.2.3 release';const draft=sampleDraft();draft.stories[0].headline={en:'Tools v1.2.3 adds CSV import.',zh:'Tools v1.2.3 增加CSV导入。',anchors:draft.title.anchors};
  assert.doesNotThrow(()=>projectIssue(draft,packet));draft.stories[0].headline.zh='Tools v1.2.4 增加CSV导入。';assert.throws(()=>projectIssue(draft,packet),/number/);
 });
+test('saved pilot evidence rejects duplicate identities, oversized text and dates outside the issue window',async()=>{
+ const {packetSchema}=await import('../contracts.ts');const packet=samplePacket();
+ assert.doesNotThrow(()=>packetSchema.parse(packet));
+ for(const mutate of [(p:any)=>p.evidence.push({...p.evidence[0]}),(p:any)=>p.evidence[0].text='x'.repeat(6001),(p:any)=>p.evidence[0].publishedAt=p.coverageEnd,(p:any)=>p.evidence[0].url='javascript:alert(1)',(p:any)=>{p.start=p.end='2099-99-99';},(p:any)=>{p.start='2026-11-15';}]){
+  const bad=structuredClone(packet);mutate(bad);assert.throws(()=>packetSchema.parse(bad));
+ }
+});
+
+test('pilot acceptance drafts include every dated outlook in both languages',async()=>{
+ const {pilotMarkdown}=await import('../../../scripts/magazine/pilot-render.ts');const issue=projectIssue(sampleDraft(),samplePacket());issue.outlook=[{date:'2026-11-20',text:issue.lead}];
+ for(const locale of ['en','zh'] as const)assert.ok(pilotMarkdown(issue,locale).includes('2026-11-20'));
+});

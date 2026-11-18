@@ -2,7 +2,7 @@
 
 [简体中文](editorial-sources.zh-CN.md)
 
-The source pack now configures **71 sources:66 enabled and5 paused**. `industry/sources.json` is authoritative for the magazine worker. This expands the previous45/30 pack with26 new entries and activates14 existing entries. Counts describe configured defaults, not guaranteed daily output. Verification:2026-11-18.
+The source pack now configures **75 sources:70 enabled and5 paused**. `industry/sources.json` is authoritative for the magazine worker. The latest financial-workflow pilot adds four free original sources to the earlier71/66 pack. Counts describe configured defaults, not guaranteed daily output. Verification:2026-11-18.
 
 ## Coverage and discovery
 
@@ -30,8 +30,14 @@ The five Chinese bridges initially returned403 in discovery probes, but later pa
 
 Captured public responses were replayed with external network disabled through the real RSS/HTML/JSON parsers. GitHub release captures used the existing designated CLI account after anonymous requests were rate-limited. All66 enabled sources except one transient failure produced dated entries. On the same captured corpus, the old magazine selection chose8 daily/16 weekly candidates; expanded selection chose30 daily from20 sources and60 weekly from33 sources. These are listing-level measurements, not guarantees of article-body extraction, factual accuracy or final prose counts. The obsolete Mistral URL is excluded from baseline selection and counted only after replacement. Full captures, comparisons and validation records live under DATA_ROOT/ai-editorial/evaluations/source-expansion-20261118, outside Git.
 
-New source first-import limits remain2/source. The configured66-source default therefore has a132-entry initial ceiling for the generic continuous collector; later runs have no such daily cap. The magazine instead selects at most30/60 candidates and bounds private text per item. It uses one Codex call per generated issue and preserves the existing3-call rolling24h budget; longer packets consume more subscription quota per call. See [magazine operations](magazine.md).
+New source first-import limits remain2/source. The configured70-source default therefore has a140-entry initial ceiling for the generic continuous collector; later runs have no such daily cap. The magazine instead selects at most30/60 candidates and bounds private text per item. It uses one Codex call per generated issue and preserves the existing3-call rolling24h budget; longer packets consume more subscription quota per call. See [magazine operations](magazine.md).
 
 ## Apply
 
 The scheduled magazine reads the checked release's source file directly. The separate v1 compatibility builder still reads only RSS/HTML. The generic admin/continuous pipeline can import missing source IDs with `scripts/seed.ts`; seeding never overwrites existing enabled/config/interval choices, so existing admin records need deliberate updates. No continuous collection worker is started by this source change. Keep private settings under CONFIG_ROOT and generated data under DATA_ROOT.
+
+## Financial-workflow pilot
+
+Added native [AlphaSense RSS](https://www.alpha-sense.com/feed/), [EdgarTools releases](https://github.com/dgunning/edgartools/releases), [Arelle XBRL releases](https://github.com/Arelle/Arelle/releases), and [dlt releases](https://github.com/dlt-hub/dlt/releases). All four returned dated public material in the real2026-11-18 check. For the complete9–15November window, the collector yielded four new finance evidence items from EdgarTools/Arelle; the previous saved47-item packet plus these items produced51 candidates from28sources. AlphaSense's newest item was6November and dlt's newest stable release29October, so neither was passed off as this week's news.
+
+Version-only titles from the two financial filing tools are classified as finance. Explicit XBRL/10-K/financial-statement workflows are discoverable; selected financial publishers may use the feed excerpt to identify the workflow. Generic financial-company data-center/lawsuit stories remain general. The existing rotation, source/publisher caps, numeric/quote checks and model budgets are unchanged. Several guessed RSS paths returned404, a Daloopa path returned HTML rather than RSS, and Bloomberg/Snowflake feeds returned403; these were not added. Raw captures and the dated pilot packet stay outside Git. See [single-edition acceptance](magazine.md#single-edition-pilot).

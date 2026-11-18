@@ -81,3 +81,15 @@ Run root typecheck, built dynamic-app/web/backend checks, module tests and the r
 Candidate limits are30 daily/60 weekly, with weighted finance/development/general rotation, per-source/publisher caps and AI/data-workflow filters for broad feeds. The first12/20 candidates retain at most6000 characters each; others retain1400, bounding private text at97200/176000 characters. Brief candidates need no extra full-page read; sufficiently complete release bodies are used directly.
 
 Daily targets5–7 features and10–15 briefs; weekly targets8–12 features and15–25 briefs. Thin material produces fewer items, never padding. The v2 shape is unchanged, with bounds of12 features,25 briefs and60 source references. Deploy the more permissive reader before publishing expanded producer output; retain old issues. Numeric validation supports percent/per cent↔% and exact three-part versions; it is not semantic fact verification.
+
+## Single-edition pilot
+
+For a private acceptance draft, use the saved, bounded evidence packet without recollecting sources or touching the public library. After this code is integrated and its exact main revision is checked, run from clean main:
+
+```sh
+node --env-file="$CONFIG_ROOT/projects/ai-editorial/magazine.env" scripts/magazine/pilot.ts --packet "$DATA_ROOT/ai-editorial/evaluations/<task>/pilot.packet.json" --out "$DATA_ROOT/ai-editorial/evaluations/<task>/draft-1"
+```
+
+Inputs/output must stay under the project's external evaluations directory; output must be new. The command generates exactly one daily/weekly edition using the existing receipt ledger, quota and saved request identity. It never changes a budget, publishes, edits the canonical public library or enables automation. No arguments show help. Private outputs include `library.json`, bilingual Markdown, CLI diagnostics and an acceptance manifest with counts, source revision, input digest and receipt ID. Structural, date, boundedness, exact-quote and numeric checks must pass before export. Editorial review remains pending until usefulness, distinct events, wording and source support are inspected. A failed or uncertain receipt must be examined and recovered through the existing receipt conventions; do not create a new output name to evade budget or unknown-outcome guards. Generating from the same saved packet may reuse an already received response.
+
+The18November preparation contains51 candidates (4finance,29development,18general),130697 evidence characters, from28sources for9–15November. This is a candidate packet, not a generated51-story issue. The initial3-call rolling24h budget was exhausted; generation requires an available slot or an explicitly authorized one-off budget adjustment. Automatic publication remains paused.

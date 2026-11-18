@@ -1,5 +1,5 @@
 import{test}from'node:test';import assert from'node:assert/strict';
-import{selectCandidates,sourceAllowed,evidenceTextLimit}from'../backend/selection.ts';
+import{selectCandidates,sourceAllowed,evidenceTextLimit,sourceAudience}from'../backend/selection.ts';
 import type{ListingCandidate}from'../backend/selection.ts';
 const entry=(i:number,group='development'):ListingCandidate=>({source:{id:`s-${Math.floor(i/2)}`,name:group==='finance'?'Financial tools':'Developer tools',tier:'T1',kind:'rss',config:{}},c:{title:`${group==='finance'?'Financial':group==='general'?'Model news':'Python API'} product announcement ${i}`,url:`https://source${Math.floor(i/2)}.example/item/${i}`,publishedAt:new Date('2026-11-17T10:00:00Z')}});
 test('fills larger windows with source diversity and retains general/model coverage',()=>{
@@ -23,4 +23,12 @@ test('independent GitHub organizations remain separate publishers while a shared
  const rows=Array.from({length:16},(_,i)=>{const r=entry(i);r.source.kind='json_list';r.c.title='v1.2.3';r.c.url=`https://github.com/org${Math.floor(i/2)}/tool/releases/tag/v${i}`;return r;});
  assert.equal(selectCandidates(rows,'daily').length,16);
  const shared=rows.map(r=>({...r,c:{...r.c,url:r.c.url.replace(/\/org\d+\//,'/one/')}}));assert.equal(selectCandidates(shared,'daily').length,4);assert.equal(selectCandidates(shared,'weekly').length,6);
+});
+
+test('financial filing tools and explicit research workflows remain discoverable without classifying generic infrastructure as finance',()=>{
+ const tool=entry(0);tool.source.id='json-edgartools-releases';tool.source.kind='json_list';tool.c.title='v6.2.0';assert.equal(sourceAudience(tool),'finance');
+ const filing=entry(1);filing.c.title='New XBRL workflow for extracting 10-K statements';assert.equal(sourceAudience(filing),'finance');
+ const analysis=entry(2);analysis.c.title='AI investment research with source-linked financial tables';assert.equal(sourceAudience(analysis),'finance');
+ const generic=entry(3);generic.c.title='Financial companies build a new data center';assert.equal(sourceAudience(generic),'general');
+ const factset=entry(4);factset.source.id='rss-factset';factset.c.title='Mercury adds structured data to Generative Search';factset.c.excerpt='Analysts can query financial statements and earnings transcripts with citations.';assert.equal(sourceAudience(factset),'finance');assert.equal(selectCandidates([factset],'daily').length,1);
 });
