@@ -58,10 +58,16 @@ jobs:
           python3 - <<'PYAPT'
           from pathlib import Path
           import re
+          from urllib.parse import urlsplit
           for file in Path('/etc/apt').rglob('*'):
               if file.is_file() and file.suffix in ('.list', '.sources'):
                   hosts = sorted(set(re.findall(r'https?://[a-z0-9.-]*(?:ubuntu\.com|debian\.org)/[a-z0-9/.-]*', file.read_text(errors='replace'))))
                   print(str(file), hosts)
+                  for line in file.read_text(errors='replace').splitlines():
+                      if line.startswith('URIs:'):
+                          for value in line.split()[1:]:
+                              uri = urlsplit(value)
+                              print('APT URI', uri.scheme, uri.hostname, uri.port, uri.path if uri.scheme.endswith('file') else '')
           PYAPT
           found=false
           for source in /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources /etc/apt/mirrors/ubuntu.list /etc/apt/mirrors/ubuntu-security.list; do
