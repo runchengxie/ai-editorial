@@ -52,6 +52,14 @@ jobs:
         env:
           MIGRATION_BASE: ${{ github.event.pull_request.base.sha || github.sha }}
         run: node scripts/check-migrations.ts --base "$MIGRATION_BASE"
+      - name: Use the primary Ubuntu package mirror
+        # Regional EC2 package downloads delayed main browser environment setup.
+        run: |
+          for source in /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
+            if [ -f "$source" ]; then
+              sudo sed -i -E 's@https?://[a-z0-9.-]+\.ec2\.archive\.ubuntu\.com/ubuntu/?@https://archive.ubuntu.com/ubuntu/@g' "$source"
+            fi
+          done
       - name: PostgreSQL backup tools
         # 恢复测试需要与 PostgreSQL 17 服务匹配的客户端，不能依赖 runner 的默认版本。
         run: |
