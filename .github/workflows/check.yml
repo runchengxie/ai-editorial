@@ -55,6 +55,14 @@ jobs:
       - name: Use the primary Ubuntu package mirror
         # Regional EC2 package downloads delayed main browser environment setup.
         run: |
+          python3 - <<'PYAPT'
+          from pathlib import Path
+          import re
+          for file in Path('/etc/apt').rglob('*'):
+              if file.is_file() and file.suffix in ('.list', '.sources'):
+                  hosts = sorted(set(re.findall(r'https?://[a-z0-9.-]*(?:ubuntu\.com|debian\.org)/[a-z0-9/.-]*', file.read_text(errors='replace'))))
+                  print(str(file), hosts)
+          PYAPT
           found=false
           for source in /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources /etc/apt/mirrors/ubuntu.list /etc/apt/mirrors/ubuntu-security.list; do
             if [ -f "$source" ]; then
