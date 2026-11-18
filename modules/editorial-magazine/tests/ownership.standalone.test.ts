@@ -13,3 +13,9 @@ test('dedicated socket configuration is interpreted by the installed PostgreSQL 
  const config=socketDatabaseEnvironment('/run/user/1000/ai-editorial-postgres');Object.assign(process.env,{PGHOST:config.PGHOST,PGPORT:config.PGPORT});
  const sql=postgres(config.DATABASE_URL);try{assert.equal(sql.options.path,config.PGHOST+'/.s.PGSQL.21850');assert.equal(sql.options.database,'ai_editorial');}finally{await sql.end();if(oldHost===undefined)delete process.env.PGHOST;else process.env.PGHOST=oldHost;if(oldPort===undefined)delete process.env.PGPORT;else process.env.PGPORT=oldPort;}
 });
+test('installer requires the exact completed push-main success record',async()=>{
+ const{successfulMainCheck}=await import('../../../scripts/magazine/checks.ts');const sha='a'.repeat(40),run={head_sha:sha,head_branch:'main',event:'push',status:'completed',conclusion:'success'};
+ assert.equal(successfulMainCheck({workflow_runs:[run]},sha),true);
+ for(const changed of[{head_sha:'b'.repeat(40)},{head_branch:'other'},{event:'pull_request'},{status:'in_progress'},{conclusion:'failure'}])assert.equal(successfulMainCheck({workflow_runs:[{...run,...changed}]},sha),false);
+ assert.equal(successfulMainCheck({},sha),false);
+});

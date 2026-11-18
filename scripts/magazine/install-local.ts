@@ -1,5 +1,6 @@
 // Installs only this project's checked release and user units. Credentials remain in their existing homes.
 import {execFile} from 'node:child_process';import {promisify,parseEnv} from 'node:util';import {mkdir,readFile,writeFile,access,chmod,readdir} from 'node:fs/promises';import path from 'node:path';import os from 'node:os';
+import {successfulMainCheck} from './checks.ts';
 import {setTimeout as delay} from 'node:timers/promises';
 import {needsClusterInitialization,markOwnedCluster,assertDatabaseOwnership,databaseOwnershipComment,socketDatabaseEnvironment} from './ownership.ts';
 const exec=promisify(execFile);process.umask(0o077);
@@ -13,8 +14,8 @@ const revision=await git('rev-parse','HEAD');const privateDir=path.join(config,'
 const envFile=path.join(privateDir,'magazine.env');let previous:Record<string,string>={};try{previous=parseEnv(await readFile(envFile,'utf8')) as Record<string,string>;}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
 const tokenFile=previous.MAGAZINE_GITHUB_TOKEN_FILE||path.join(config,'shared/github/primary.pat');const token=(await readFile(tokenFile,'utf8')).trim();if(!token)throw new Error('Designated GitHub credential is empty');
 const ghEnv={...process.env,GH_TOKEN:token};const gh=previous.GH_BINARY||process.env.GH_BINARY||'gh';
-const runs=JSON.parse((await exec(gh,['api',`repos/runchengxie/ai-editorial/actions/workflows/check.yml/runs?head_sha=${revision}&branch=main&event=push&status=success`],{env:ghEnv})).stdout);
-if(!runs.workflow_runs?.some((r:any)=>r.head_sha===revision&&r.conclusion==='success'))throw new Error('Producer main must pass its exact revision checks before install');
+const runs=JSON.parse((await exec(gh,['api',`repos/runchengxie/ai-editorial/actions/workflows/check.yml/runs?head_sha=${revision}&branch=main&event=push&per_page=100`],{env:ghEnv})).stdout);
+if(!successfulMainCheck(runs,revision))throw new Error('Producer main must pass its exact revision checks before install');
 const release=path.join(base,'releases',revision),archive=path.join(base,'releases',revision+'.tar');await mkdir(path.dirname(release),{recursive:true});
 try{await access(path.join(release,'package.json'));}catch{
  await mkdir(release,{recursive:true});await exec('git',['archive','--format=tar','-o',archive,revision],{cwd:source});await exec('tar',['-xf',archive,'-C',release]);
