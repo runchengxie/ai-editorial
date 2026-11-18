@@ -1,5 +1,5 @@
 import{test}from'node:test';import assert from'node:assert/strict';
-import{selectCandidates,sourceAllowed,evidenceTextLimit,sourceAudience}from'../backend/selection.ts';
+import{selectCandidates,sourceAllowed,evidenceTextLimit,sourceAudience,planBodyReads}from'../backend/selection.ts';
 import type{ListingCandidate}from'../backend/selection.ts';
 const entry=(i:number,group='development'):ListingCandidate=>({source:{id:`s-${Math.floor(i/2)}`,name:group==='finance'?'Financial tools':'Developer tools',tier:'T1',kind:'rss',config:{}},c:{title:`${group==='finance'?'Financial':group==='general'?'Model news':'Python API'} product announcement ${i}`,url:`https://source${Math.floor(i/2)}.example/item/${i}`,publishedAt:new Date('2026-11-17T10:00:00Z')}});
 test('fills larger windows with source diversity and retains general/model coverage',()=>{
@@ -42,7 +42,14 @@ test('broader coverage keeps a small research and community lane without floodin
  assert.ok(selected.filter(r=>r.source.id==='rss-hackernews-ai').length<=3);
 });
 test('engineering posts can establish topic relevance through original feed body rather than a generic teaser',()=>{
- const r=entry(500);r.source.id='rss-netflix-tech';r.c.title='Fact-checking at scale';r.c.excerpt='An engineering case study';r.c.bodyText='The system uses language models and grounded retrieval to check factuality in generated summaries.';
+ const r=entry(500);r.source.id='rss-netflix-tech';r.c.title='A production verification system';r.c.excerpt='An engineering case study';r.c.bodyText='The system uses language models and grounded retrieval to check factuality in generated summaries.';
  assert.equal(selectCandidates([r],'weekly').length,1);
  r.c.bodyText='The article describes a redesign of an office cafeteria and its lunch menu.';assert.equal(selectCandidates([r],'weekly').length,0);
+});
+
+test('short feed summaries beyond the feature window receive only a bounded number of extra free page reads',()=>{
+ const rows=Array.from({length:40},(_,i)=>{const r=entry(i);r.c.excerpt='A short AI workflow summary with a concrete new feature.';return r;});
+ const weekly=planBodyReads(rows,'weekly');assert.equal(weekly.size,28);assert.ok(weekly.has(rows[25].c.url));assert.equal(weekly.has(rows[35].c.url),false);
+ assert.equal(planBodyReads(rows,'daily').size,16);
+ rows[1].source.id='rss-arxiv-targeted';rows[21].c.bodyText='An already available original body';const guarded=planBodyReads(rows,'weekly');assert.equal(guarded.has(rows[1].c.url),false);assert.equal(guarded.has(rows[21].c.url),false);
 });

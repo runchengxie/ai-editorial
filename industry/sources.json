@@ -2028,7 +2028,11 @@
         "_aihot": {
           "initialBackfillLimit": 2
         },
-        "sortByPublishedAt": true
+        "sortByPublishedAt": true,
+        "detail": {
+          "publishedAtAuthoritative": true,
+          "maxFetches": 4
+        }
       },
       "tier": "T1",
       "owner_entity_id": null,
@@ -2050,7 +2054,11 @@
         "_aihot": {
           "initialBackfillLimit": 2
         },
-        "sortByPublishedAt": true
+        "sortByPublishedAt": true,
+        "detail": {
+          "publishedAtAuthoritative": true,
+          "maxFetches": 8
+        }
       },
       "tier": "T1",
       "owner_entity_id": null,
@@ -2141,7 +2149,7 @@
         "sortByPublishedAt": true,
         "detail": {
           "publishedAtAuthoritative": true,
-          "maxFetches": 8
+          "maxFetches": 4
         }
       },
       "tier": "T1",

@@ -78,9 +78,9 @@ Run root typecheck, built dynamic-app/web/backend checks, module tests and the r
 
 ## Richer daily and weekly coverage
 
-Candidate limits are30 daily/60 weekly, with weighted finance/development/general rotation, per-source/publisher caps and AI/data-workflow filters for broad feeds. The first12/20 candidates retain at most6000 characters each; others retain1400, bounding private text at97200/176000 characters. Brief candidates need no extra full-page read; sufficiently complete release bodies are used directly.
+Candidate limits are30 daily/60 weekly, with weighted finance/development/general rotation, per-source/publisher caps and AI/data-workflow filters for broad feeds. The first12/20 candidates retain at most6000 characters each; others retain1400, bounding private text at97200/176000 characters. Thin excerpts outside the feature window can receive up to4/8 additional free page reads, for at most16/28 daily/weekly reads. Research abstracts and existing full bodies receive no extra read. Text caps stay unchanged.
 
-Daily targets5–7 features and10–15 briefs; weekly targets8–12 features and15–25 briefs. Thin material produces fewer items, never padding. The v2 shape is unchanged, with bounds of12 features,25 briefs and60 source references. Deploy the more permissive reader before publishing expanded producer output; retain old issues. Numeric validation supports percent/per cent↔% and exact three-part versions; it is not semantic fact verification.
+Daily targets7–9 features and15–20 briefs; weekly targets10–12 features and20–25 briefs. Thin material produces fewer items, never padding. The v2 shape is unchanged, with bounds of12 features,25 briefs and60 source references. Deploy the more permissive reader before publishing expanded producer output; retain old issues. Numeric validation supports percent/per cent↔% and exact three-part versions; it is not semantic fact verification.
 
 ## Single-edition pilot
 

@@ -3,11 +3,12 @@ import {mkdir,mkdtemp,readFile,writeFile,realpath} from 'node:fs/promises';
 import path from 'node:path';
 import {collectPacket} from '../../modules/editorial-magazine/backend/evidence.ts';
 import type {Packet} from '../../modules/editorial-magazine/contracts.ts';
+import {closeDb} from '@aihot/backend/db';
 
 const args=process.argv.slice(2);
 if(args.includes('--help')){
  console.log('Usage: node scripts/magazine/inspect.ts [--kind daily|weekly|both] [--at ISO-date]\nRequires DATA_ROOT. Optionally reads MAGAZINE_GITHUB_TOKEN_FILE for public release listings.\nWrites private evidence and a count summary under DATA_ROOT/ai-editorial/evaluations/. No model calls or publication.');
-}else{
+}else try{
  const options=new Map<string,string>();
  for(let i=0;i<args.length;i+=2){
   if(!['--kind','--at'].includes(args[i])||!args[i+1]||options.has(args[i]))throw new Error('Expected --kind daily|weekly|both and optional --at ISO-date');
@@ -45,4 +46,4 @@ if(args.includes('--help')){
  await writeFile(path.join(output,'summary.json'),JSON.stringify(summary,null,2)+'\n',{mode:0o600});
  for(const s of summaries)console.log(`${s.kind} ${s.end}: ${s.candidates} candidates, ${s.sources} sources; ${JSON.stringify(s.audiences)}`);
  console.log(`Private evidence: ${output}\nModel calls: 0; published: false`);
-}
+}finally{await closeDb();}

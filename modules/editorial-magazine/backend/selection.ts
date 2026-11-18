@@ -18,6 +18,14 @@ export function sourceAudience(row:ListingCandidate):Evidence['audience']{
  return audience(title);
 }
 export function evidenceTextLimit(kind:Packet['kind'],index:number):number{return index<(kind==='daily'?12:20)?6000:1400;}
+export function planBodyReads(rows:ListingCandidate[],kind:Packet['kind']):Set<string>{
+ const reads=new Set<string>(),deep=kind==='daily'?12:20;let extra=0;
+ rows.forEach((row,index)=>{
+  if(row.c.bodyText||RESEARCH_SOURCES.has(row.source.id))return;
+  if(index<deep)reads.add(row.c.url);
+  else if((row.c.excerpt??'').trim().length<400&&extra<(kind==='daily'?4:8)){reads.add(row.c.url);extra++;}
+ });return reads;
+}
 export function sourceRelevant(r:ListingCandidate):boolean{const text=r.c.title+' '+(r.c.excerpt??'')+' '+(r.c.bodyText??'').slice(0,2000);return !TOPIC_FILTERED_SOURCES.has(r.source.id)||MAGAZINE_TOPICS.test(text)||(FINANCIAL_EDITORIAL_SOURCES.has(r.source.id)&&FINANCIAL_WORKFLOW_TOPICS.test(text));}
 export function selectCandidates(rows:ListingCandidate[],kind:Packet['kind']):ListingCandidate[]{
  const sorted=rows.filter(r=>publicUrl(r.c.url)&&sourceRelevant(r))
