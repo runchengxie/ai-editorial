@@ -1,5 +1,7 @@
 # 部署
 
+本分支的五次上游源码更新与生产迁移边界见[升级说明](upstream-five-upgrade.zh-CN.md)。
+
 ## 用 Docker（推荐）
 
 需要一台装了 Docker（带 Compose）的机器。云服务器建议至少 2 核、4 GB 内存，构建镜像时要用到。
