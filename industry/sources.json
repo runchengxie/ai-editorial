@@ -722,11 +722,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -765,11 +760,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -808,11 +798,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -851,11 +836,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -894,11 +874,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -937,11 +912,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -980,11 +950,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1023,11 +988,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1066,11 +1026,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1109,11 +1064,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1152,11 +1102,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1195,11 +1140,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1238,11 +1178,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1617,11 +1552,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1660,11 +1590,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1703,11 +1628,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1746,11 +1666,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1920,11 +1835,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -1963,11 +1873,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -2006,11 +1911,6 @@
           "path": "prerelease",
           "equals": false
         },
-        "rawDropKeys": [
-          "assets",
-          "author",
-          "reactions"
-        ],
         "_aihot": {
           "initialBackfillLimit": 2
         },
@@ -2042,6 +1942,212 @@
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 1440,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-arxiv-targeted",
+      "name": "arXiv targeted AI research (abstracts)",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://export.arxiv.org/api/query?search_query=%28cat%3Acs.CL+OR+cat%3Acs.AI+OR+cat%3Aq-fin.CP%29+AND+%28ti%3Afinancial+OR+ti%3Afinance+OR+ti%3Adocument+OR+ti%3Atabular+OR+ti%3Atable+OR+ti%3Aearnings%29&sortBy=submittedDate&sortOrder=descending&max_results=60",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-hackernews-ai",
+      "name": "Hacker News discovery to verified original articles",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hnrss.org/newest?q=AI+OR+LLM+OR+Claude+OR+GPT+OR+agent&points=50&count=50",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "detail": {
+          "publishedAtAuthoritative": true,
+          "maxFetches": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-interconnects",
+      "name": "Interconnects",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.interconnects.ai/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-clickhouse-blog",
+      "name": "ClickHouse Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://clickhouse.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-langchain-blog",
+      "name": "LangChain Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.langchain.com/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-sebastian-technical",
+      "name": "Sebastian Raschka Technical Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sebastianraschka.com/rss_feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-netflix-tech",
+      "name": "Netflix TechBlog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://netflixtechblog.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-github-engineering",
+      "name": "GitHub Engineering",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://github.blog/engineering/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": "github",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "官方"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-google-developers",
+      "name": "Google Developers Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://developers.googleblog.com/feeds/posts/default/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true,
+        "detail": {
+          "publishedAtAuthoritative": true,
+          "maxFetches": 8
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": "google",
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
       "tags": [
         "官方"
       ],

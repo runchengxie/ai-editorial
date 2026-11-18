@@ -32,3 +32,17 @@ test('financial filing tools and explicit research workflows remain discoverable
  const generic=entry(3);generic.c.title='Financial companies build a new data center';assert.equal(sourceAudience(generic),'general');
  const factset=entry(4);factset.source.id='rss-factset';factset.c.title='Mercury adds structured data to Generative Search';factset.c.excerpt='Analysts can query financial statements and earnings transcripts with citations.';assert.equal(sourceAudience(factset),'finance');assert.equal(selectCandidates([factset],'daily').length,1);
 });
+test('broader coverage keeps a small research and community lane without flooding primary news',()=>{
+ const rows=Array.from({length:180},(_,i)=>entry(i,i<60?'finance':i<120?'development':'general'));
+ for(let i=0;i<5;i++){const r=entry(200+i);r.source.id='rss-arxiv-targeted';r.source.tier='T2';r.c.title='Financial LLM research paper '+i;r.c.url='https://arxiv.org/abs/2611.'+(10000+i);rows.push(r);}
+ for(let i=0;i<5;i++){const r=entry(300+i);r.source.id='rss-hackernews-ai';r.source.tier='T2';r.c.title='AI workflow original article '+i;r.c.url='https://original'+i+'.example/posts/ai';rows.push(r);}
+ const selected=selectCandidates(rows,'weekly');assert.equal(selected.length,60);
+ assert.equal(selected.filter(r=>r.source.id==='rss-arxiv-targeted').length,3);
+ assert.ok(selected.some(r=>r.source.id==='rss-hackernews-ai'));
+ assert.ok(selected.filter(r=>r.source.id==='rss-hackernews-ai').length<=3);
+});
+test('engineering posts can establish topic relevance through original feed body rather than a generic teaser',()=>{
+ const r=entry(500);r.source.id='rss-netflix-tech';r.c.title='Fact-checking at scale';r.c.excerpt='An engineering case study';r.c.bodyText='The system uses language models and grounded retrieval to check factuality in generated summaries.';
+ assert.equal(selectCandidates([r],'weekly').length,1);
+ r.c.bodyText='The article describes a redesign of an office cafeteria and its lunch menu.';assert.equal(selectCandidates([r],'weekly').length,0);
+});

@@ -1,5 +1,5 @@
 import{publicUrl,audience}from'@aihot/backend/publication/daily';
-import{TOPIC_FILTERED_SOURCES,MAGAZINE_TOPICS,FINANCIAL_RELEASE_SOURCES,FINANCIAL_EDITORIAL_SOURCES,FINANCIAL_WORKFLOW_TOPICS}from'@aihot/industry/magazine';
+import{TOPIC_FILTERED_SOURCES,MAGAZINE_TOPICS,FINANCIAL_RELEASE_SOURCES,FINANCIAL_EDITORIAL_SOURCES,FINANCIAL_WORKFLOW_TOPICS,RESEARCH_SOURCES,COMMUNITY_SOURCES}from'@aihot/industry/magazine';
 import type{Candidate}from'@aihot/backend/sources/types';import type{Packet,Evidence}from'../contracts.ts';
 export interface ListingCandidate{source:{id:string;name:string;tier:string;kind:string;config:Record<string,any>;owner_entity_id?:string|null};c:Candidate;}
 export function sourceAllowed(source:any):boolean{
@@ -18,18 +18,21 @@ export function sourceAudience(row:ListingCandidate):Evidence['audience']{
  return audience(title);
 }
 export function evidenceTextLimit(kind:Packet['kind'],index:number):number{return index<(kind==='daily'?12:20)?6000:1400;}
+export function sourceRelevant(r:ListingCandidate):boolean{const text=r.c.title+' '+(r.c.excerpt??'')+' '+(r.c.bodyText??'').slice(0,2000);return !TOPIC_FILTERED_SOURCES.has(r.source.id)||MAGAZINE_TOPICS.test(text)||(FINANCIAL_EDITORIAL_SOURCES.has(r.source.id)&&FINANCIAL_WORKFLOW_TOPICS.test(text));}
 export function selectCandidates(rows:ListingCandidate[],kind:Packet['kind']):ListingCandidate[]{
- const sorted=rows.filter(r=>publicUrl(r.c.url)&&(!TOPIC_FILTERED_SOURCES.has(r.source.id)||MAGAZINE_TOPICS.test(r.c.title+' '+(r.c.excerpt??''))||(FINANCIAL_EDITORIAL_SOURCES.has(r.source.id)&&FINANCIAL_WORKFLOW_TOPICS.test(r.c.title+' '+(r.c.excerpt??'')))))
+ const sorted=rows.filter(r=>publicUrl(r.c.url)&&sourceRelevant(r))
   .sort((a,b)=>(b.source.tier==='T1'?1:0)-(a.source.tier==='T1'?1:0)||(b.c.publishedAt?.getTime()??0)-(a.c.publishedAt?.getTime()??0)||a.c.url.localeCompare(b.c.url)||a.source.id.localeCompare(b.source.id));
- const groups={finance:[]as ListingCandidate[],development:[]as ListingCandidate[],general:[]as ListingCandidate[]};for(const row of sorted)groups[sourceAudience(row)].push(row);
+ const groups={finance:[]as ListingCandidate[],development:[]as ListingCandidate[],general:[]as ListingCandidate[],research:[]as ListingCandidate[],community:[]as ListingCandidate[]};
+ for(const row of sorted)groups[RESEARCH_SOURCES.has(row.source.id)?'research':COMMUNITY_SOURCES.has(row.source.id)?'community':sourceAudience(row)].push(row);
  const selected:ListingCandidate[]=[],urls=new Set<string>(),events=new Set<string>(),counts=new Map<string,number>(),publishers=new Map<string,number>();
- const cycle=['finance','development','development','general']as const,limit=kind==='daily'?30:60;
+ const cycle=['finance','development','development','general','research','community']as const,limit=kind==='daily'?30:60,laneCounts={research:0,community:0};
  while(selected.length<limit&&Object.values(groups).some(g=>g.length))for(const group of cycle){
+  if((group==='research'||group==='community')&&laneCounts[group]>=(kind==='daily'?2:3)){groups[group].length=0;continue;}
   const queue=groups[group];while(queue.length&&selected.length<limit){
    const row=queue.shift()!,url=publicUrl(row.c.url)!;const title=row.c.title.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');const event=title.length>=36?title:url;
    const location=new URL(url);const publisher=row.source.owner_entity_id||(location.hostname==='github.com'?'github:'+location.pathname.split('/')[1].toLowerCase():location.hostname.replace(/^www\./,''));
    if(urls.has(url)||events.has(event)||(counts.get(row.source.id)??0)>=(kind==='daily'?2:3)||(publishers.get(publisher)??0)>=(kind==='daily'?4:6))continue;
-   selected.push(row);urls.add(url);events.add(event);counts.set(row.source.id,(counts.get(row.source.id)??0)+1);publishers.set(publisher,(publishers.get(publisher)??0)+1);break;
+   selected.push(row);if(group==='research'||group==='community')laneCounts[group]++;urls.add(url);events.add(event);counts.set(row.source.id,(counts.get(row.source.id)??0)+1);publishers.set(publisher,(publishers.get(publisher)??0)+1);break;
   }
  }
  return selected;
