@@ -24,7 +24,7 @@ The reader repository is a smaller independent application with `src/`, `tests/`
 
 `industry/` and `site/` moved to `configs/industry/` and `configs/site/`; package imports remain `@aihot/industry` and `@aihot/site`. Shared options moved to `configs/tsconfig.base.json`; project-specific TypeScript entry files stay with their projects. Run `npm ci` after updating the checkout to refresh workspace links. Custom scripts that read old filesystem paths must update them; no compatibility symlink is retained. Docker and built-in readers use the new paths. Upstream merges touching those paths may need explicit conflict resolution.
 
-This source move does not relocate production data, reconfigure or install the immutable local worker, or apply migrations. Replace an installed worker only through the documented checked-release process, separately reviewing migration0169 and its rollback limit.
+This source move does not relocate production data, reconfigure or install the immutable local worker, or apply migrations. Replace an installed worker only through the documented checked-release process, separately reviewing migration 0169 and its rollback limit.
 
 ## Documentation website
 
