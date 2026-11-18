@@ -1,12 +1,12 @@
 # AI Editorial repository instructions
 
-This repository owns the internal dynamic engine, editorial workbench, source configuration and public data production. The independent `ai-editorial-pages` repository owns the static reader, localization, issue RSS, HTML export and Pages deployment. Read [README.md](README.md), [operations](docs/magazine.md) and the relevant module before changing it. `CLAUDE.md` delegates to this file.
+This repository owns the internal dynamic engine, editorial workbench, source configuration and public data production. The independent `ai-editorial-pages` repository owns the static reader, localization, issue RSS, HTML export and Pages deployment. Read [README.md](README.md), [operations](docs/magazine.md) and the relevant module before changing it.
 
 ## Layout and boundaries
 
 - `apps/`: API, worker and dynamic web entry points. `packages/`: shared contracts and backend implementation. `modules/`: fork-specific features.
-- `configs/site/` and `configs/industry/`: typed npm workspace configuration packages. Preserve `@aihot/site` and `@aihot/industry` names; update filesystem readers, package manifests, Docker, tests and documentation together when paths change. Shared TypeScript options live in `configs/tsconfig.base.json`.
-- `scripts/`, `tests/`, `docs/`, `database/`, `assets/` and `deploy/` retain their distinct responsibilities. Runtime prompt and policy Markdown remains with its configuration package; explanatory documentation belongs in `docs/`.
+- `configs/site/` and `configs/industry/`: typed npm workspace configuration packages. Preserve `@aihot/site` and `@aihot/industry` names; update filesystem readers, package manifests, tests and documentation together when paths change. Shared TypeScript options live in `configs/tsconfig.base.json`.
+- `scripts/`, `tests/`, `docs/`, `database/`, `assets/` retain their distinct responsibilities. Runtime prompt and policy Markdown remains with its configuration package; explanatory documentation belongs in `docs/`.
 - Respect the workspace's external data/configuration roots. Never commit credentials, raw evidence, generated publications, runtime state or test outputs. See [data contract](docs/editorial-data-contract.md).
 - Keep the dynamic app internal through loopback binding or an authenticated perimeter. Its inherited anonymous endpoints are not the public static reader. Do not use AIHOT branding.
 
@@ -14,7 +14,7 @@ This repository owns the internal dynamic engine, editorial workbench, source co
 
 Use Node.js 24.22.2 or later for this fork. Run `npm ci --no-audit --no-fund`, `npm run typecheck`, `npm run build -w @aihot/web`, `npm run test:standalone`, `npm test`, `npm run test:web`, and the two `scripts/daily-brief/*.test.ts` checks as relevant. Backend test database names must end in `_test` or `_ci`; tests create isolated copies and need `CREATEDB`, compatible PostgreSQL backup clients and `tar`. Never use production data for tests.
 
-CI also checks migration safety, built-site smoke/MCP behavior and Docker seeding. Use Chromium and WebKit for the inherited browser suite. Missing browser system libraries are an environment failure, not grounds to skip tests. Record exact revisions and actual results; see [validation history](docs/editorial-release-validation.md). No separate lint, coverage threshold or security-scanner gate is currently configured. Run dependency audits explicitly when inspecting dependency security; `npm ci --no-audit` does not establish security status.
+CI also checks migration safety, built-site smoke/MCP behavior. Use Chromium and WebKit for the inherited browser suite. Missing browser system libraries are an environment failure, not grounds to skip tests. Record exact revisions and actual results; see [validation history](docs/editorial-release-validation.md). No separate lint, coverage threshold or security-scanner gate is currently configured. Run dependency audits explicitly when inspecting dependency security; `npm ci --no-audit` does not establish security status.
 
 ## Stable safety and architecture rules
 

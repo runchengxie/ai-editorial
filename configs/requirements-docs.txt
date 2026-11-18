@@ -1,0 +1,2 @@
+# Standard MkDocs theme; no third-party theme or publication plugin.
+mkdocs==1.6.1

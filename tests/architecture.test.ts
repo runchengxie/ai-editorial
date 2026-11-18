@@ -141,29 +141,20 @@ const ENV_READ = /\b(?:process\.env|(?<!import\.meta\.)env)\.([A-Z][A-Z0-9_]+)|\
 const envReads = (files: Array<{ text: string }>) => new Set(files.flatMap(({ text }) => [...text.matchAll(ENV_READ)].map((m) => (m[1] ?? m[2] ?? m[3])!)));
 const assigned = (file: string, pattern: RegExp) => [...readFileSync(path.join(ROOT, file), "utf8").matchAll(pattern)].map((m) => m[1]!);
 
-// .env.example is the template. A deployment's own files, where the repository has them, set the rest
-// themselves: docker-compose.yml the container settings (database address, data folder, hosts and
-// ports), the Caddyfile the HTTPS domain; a server deployment may keep its own templates beside it
-// (`<name>.env.example`) and set a few in its systemd units (`Environment=`). Keys and secrets are read by name through credential(group,
-// NAME) or a model preset, so a name the code gives whole as a string counts as read, and so does one a
-// deployment file substitutes (the database password, the HTTPS domain).
+// Environment templates document actual reads; service templates can supply explicit defaults.
+// Dynamic credential names count as reads, without retaining retired container substitutions.
 const matches = (text: string, pattern: RegExp) => [...text.matchAll(pattern)].map((m) => (m[1] ?? m[2])!);
 const NAMED = /["']([A-Z][A-Z0-9_]+)["']/g;
-const SUBSTITUTED = /\$\{([A-Z][A-Z0-9_]+)|\{\$([A-Z][A-Z0-9_]+)\}/g;
-const COMPOSE = "docker-compose.yml";
-const DEPLOYMENT = [COMPOSE, "deploy/Caddyfile"].filter((file) => existsSync(path.join(ROOT, file)));
 const tracked = (pattern: string) => execFileSync("git", ["ls-files", "--", pattern], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean);
 
 test("every environment variable the code reads is listed in a template, and every listed one is read", () => {
   const listed = new Set(tracked("*.env.example").flatMap((file) => assigned(file, /^#?\s*([A-Z][A-Z0-9_]+)=/gm)));
   const preset = new Set([
-    ...(DEPLOYMENT.includes(COMPOSE) ? assigned(COMPOSE, /^\s+([A-Z][A-Z0-9_]+):\s/gm) : []),
     ...tracked("*.service").flatMap((unit) => assigned(unit, /^Environment="?([A-Z][A-Z0-9_]+)=/gm)),
   ]);
   const read = envReads(production());
   const readAnywhere = new Set([...read, ...envReads(sources("scripts")),
-    ...[...production(), ...sources("scripts")].flatMap(({ text }) => matches(text, NAMED)),
-    ...DEPLOYMENT.flatMap((file) => matches(readFileSync(path.join(ROOT, file), "utf8"), SUBSTITUTED))]);
+    ...[...production(), ...sources("scripts")].flatMap(({ text }) => matches(text, NAMED))]);
   assert.deepEqual([...read].filter((name) => !listed.has(name) && !preset.has(name)), [], "list it in an environment template, or stop reading it");
   assert.deepEqual([...listed].filter((name) => !readAnywhere.has(name)), [], "no code reads it: remove it from the template");
 });

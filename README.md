@@ -1,5 +1,7 @@
 # AI Editorial
 
+[Online manual](https://runchengxie.github.io/ai-editorial/) · [Manual publishing](docs/manual-site.md)
+
 Read the [AI news website](https://runchengxie.github.io/ai-editorial-pages/) · [RSS](https://runchengxie.github.io/ai-editorial-pages/feed.xml). See [daily publication and its current limits](docs/daily-pages.md).
 
 [简体中文](README.zh-CN.md)

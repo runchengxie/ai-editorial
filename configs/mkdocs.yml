@@ -1,0 +1,34 @@
+site_name: AI Editorial manual
+site_url: https://runchengxie.github.io/ai-editorial/
+repo_url: https://github.com/runchengxie/ai-editorial
+edit_uri: ''
+docs_dir: !ENV DOCS_STAGE
+site_dir: !ENV DOCS_SITE
+strict: true
+theme:
+  name: mkdocs
+  locale: en
+plugins:
+  - search
+nav:
+  - Home: index.md
+  - Setup: editorial-setup.md
+  - Magazine: magazine.md
+  - Sources: editorial-sources.md
+  - Public data: daily-pages.md
+  - Website operations: manual-site.md
+  - Layout: repository-layout.md
+  - 简体中文:
+      - 首页: index.zh-CN.md
+      - 本地部署: editorial-setup.zh-CN.md
+      - 杂志: magazine.zh-CN.md
+      - 来源: editorial-sources.zh-CN.md
+      - 公开数据: daily-pages.zh-CN.md
+      - 网站操作: manual-site.zh-CN.md
+      - 目录结构: repository-layout.zh-CN.md
+validation:
+  links:
+    anchors: warn
+markdown_extensions:
+  - toc:
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode

@@ -20,7 +20,7 @@ const release=path.join(base,'releases',revision),archive=path.join(base,'releas
 try{await access(path.join(release,'package.json'));}catch{
  await mkdir(release,{recursive:true});await exec('git',['archive','--format=tar','-o',archive,revision],{cwd:source});await exec('tar',['-xf',archive,'-C',release]);
 }
-await exec('npm',['ci','--no-audit','--no-fund'],{cwd:release,maxBuffer:5_000_000});
+await exec('npm',['ci','--omit=dev','--no-audit','--no-fund'],{cwd:release,maxBuffer:5_000_000});
 const pgData=path.join(base,'postgres'),socket=path.join(process.env.XDG_RUNTIME_DIR||`/run/user/${process.getuid!()}`,'ai-editorial-postgres');
 const pgEnv={...process.env,LD_LIBRARY_PATH:pgLib};
 if(await needsClusterInitialization(pgData)){

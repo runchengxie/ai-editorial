@@ -1,6 +1,6 @@
 # Inherited AIHOT engine guide
 
-This reference describes the inherited engine. For this fork’s current scope, paused schedules and publication boundaries, start with the [project README](../README.md). Paths below follow this fork’s configuration layout; upstream service metrics and branding are historical attribution, not measurements of this deployment.
+This is historical upstream reference material. Docker instructions in this archived guide are retired in this fork; use the [current deployment guide](deploy.md). This reference describes the inherited engine. For this fork’s current scope, paused schedules and publication boundaries, start with the [project README](../README.md). Paths below follow this fork’s configuration layout; upstream service metrics and branding are historical attribution, not measurements of this deployment.
 
 <p align="center">
   <picture>

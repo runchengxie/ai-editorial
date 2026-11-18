@@ -14,4 +14,4 @@
 | `selection.ts` | Selection thresholds; calibrate using labeled material |
 | `*.example.jsonl` | Selection, relation and digest-evaluation format examples |
 
-Prompt Markdown is application input, not explanatory documentation, so it stays with this workspace. Private machine/provider configuration belongs under `CONFIG_ROOT`, not here. Changing a path requires updating workspace links, runtime readers, Docker and tests together. Existing installed immutable worker releases retain their own source layout until deliberately replaced.
+Prompt Markdown is application input, not explanatory documentation, so it stays with this workspace. Private machine/provider configuration belongs under `CONFIG_ROOT`, not here. Changing a path requires updating workspace links, runtime readers and tests together. Existing installed immutable worker releases retain their own source layout until deliberately replaced.

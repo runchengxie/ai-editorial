@@ -1,5 +1,5 @@
 // 站点身份和读者看得到的文案。换成你的行业时，先改这个文件。
-// 网页和后端都读它；改完重新构建（docker compose up --build）即可生效。
+// 网页和后端都读它；改完重新构建（npm run build -w @aihot/web）即可生效。
 // 域名不在这里：部署时用环境变量 SITE_URL 设置。
 
 import type { Founder } from "@aihot/contracts/site-config";
@@ -233,7 +233,7 @@ export const ALERTS = {
   /** 同一条告警里，“没有”后面补一句平时的收录量；null 就不写。 */
   usualFlow: null as string | null,
   /** worker 停了的告警里，怎么看它的日志。 */
-  workerLogs: "看 worker 的日志（docker compose logs worker）",
+  workerLogs: "查看后台任务运行日志",
 };
 
 /** 后台新建信源时的默认设置。 */

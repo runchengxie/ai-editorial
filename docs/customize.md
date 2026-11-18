@@ -14,7 +14,7 @@
 
 ## 1. 站名和文案：`configs/site/site.ts`
 
-[`configs/site/site.ts`](../configs/site/site.ts) 的每个导出项和字段旁边都写了直接注释（用在哪里、能不能留空、默认值什么意思），从上往下按注释改即可；改完重新构建（`docker compose up -d --build`）前后端一起生效。跨文件或上线后要注意的只有这几条：
+[`configs/site/site.ts`](../configs/site/site.ts) 的每个导出项和字段旁边都写了直接注释（用在哪里、能不能留空、默认值什么意思），从上往下按注释改即可；改完重新构建（`npm run build -w @aihot/web`）前后端一起生效。跨文件或上线后要注意的只有这几条：
 
 - **站点地址不在 `site.ts` 里**：部署时用环境变量 `SITE_URL` 设置（`SITE.defaultUrl` 只是没设 `SITE_URL` 时的本地兜底）。
 - **一起改的名字**：改 `SITE.name` 时顺手把 `SITE.organization.name`（给搜索引擎看的结构化数据）一起改掉；`SITE.crawlerName` 写你自己的抓取标识，别冒用别人的站名。
@@ -30,7 +30,7 @@
 - **网址里的 `key` 上线后不改**：`CATEGORIES` 的 `key` 会进网址和订阅地址（`/all?category=`、`/feed/category/<key>.xml`）。要让某一类在公开接口、RSS 和 MCP 里并进另一类发布（网页上仍分开），在 `configs/site/site.ts` 的 `PUBLIC_CATEGORIES` 里配。
 - **和提示词同步**：改了 `CATEGORIES`、标签词表或 `ITEM_TYPES`，要同步改 `configs/industry/prompts/structure.md`（归类原则与标签规则）、`content-understanding.md`（内容类型枚举）和 `selection-score.md`（各内容类型的五维权重表）。
 - **不需要防张冠李戴时可清空**：`IDENTITY_LEXICON`、`PUBLISHER_DOMAINS`、`IDENTITY_CONTEXT_ALIASES` 用来保证标题摘要里提到的公司在原文里出现过；你的行业不需要这项检查时设为空数组 `[]`。
-- **`configs/industry/topics.json`**（主题目录 `/topics`）：站点启动时读取，改完重新构建（`docker compose up -d --build`）生效。分 `company`（公司与机构）、`field`（方向）、`genre`（内容形态）三组，`slug` 上线后不要改：
+- **`configs/industry/topics.json`**（主题目录 `/topics`）：站点启动时读取，改完重新构建（`npm run build -w @aihot/web`）生效。分 `company`（公司与机构）、`field`（方向）、`genre`（内容形态）三组，`slug` 上线后不要改：
   - `company` 主题用 `entityId`（`ENTITIES` 的 id）收以这家公司为主体的报道；一篇报道的主体有几家公司时，标题里点了它的名才算。可选 `aliases`：搜索框里只搜这个词，也能找出这家公司的报道。
   - `field` 和 `genre` 主题用 `tags` 收打了这些标签的报道。
 
@@ -111,7 +111,7 @@
 
 ## 8. 模型和部署
 
-- 模型：`.env` 里的 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`，任何 OpenAI 兼容接口都行，所有步骤默认都用它。`configs/site/models.ts` 列出具名的模型（各用自己的地址和密钥环境变量）和每一步默认用哪个；部署时还可以用环境变量（见 `.env.example`）或后台“模型与评测”页逐步改选。用推理模型（先想再答）时给它留出推理的额度：默认模型设 `LLM_REASONING_TOKENS`，具名模型在 `configs/site/models.ts` 里写 `reasoningTokens`；不留的话推理会把每一步的输出额度用光，答案为空，每次调用都失败。 评分预设还可写 `scoreCall: { temperature, maxTokens, timeoutMs }`，分别控制温度、输出额度和超时毫秒；示例评分预设已明确配置这些值。备用模型的 `fallbackFor` 按能力名指定它接替的主模型，须先用自己的资料评测这组组合；示例站默认没有备用组合。
+- 模型：`.env` 里的 `LLM_BASE_URL`、`LLM_API_KEY`、`LLM_MODEL`，任何 OpenAI 兼容接口都行，所有步骤默认都用它。`configs/site/models.ts` 列出具名的模型（各用自己的地址和密钥环境变量）和每一步默认用哪个；部署时还可以用环境变量（见 `configs/dynamic.env.example`）或后台“模型与评测”页逐步改选。用推理模型（先想再答）时给它留出推理的额度：默认模型设 `LLM_REASONING_TOKENS`，具名模型在 `configs/site/models.ts` 里写 `reasoningTokens`；不留的话推理会把每一步的输出额度用光，答案为空，每次调用都失败。 评分预设还可写 `scoreCall: { temperature, maxTokens, timeoutMs }`，分别控制温度、输出额度和超时毫秒；示例评分预设已明确配置这些值。备用模型的 `fallbackFor` 按能力名指定它接替的主模型，须先用自己的资料评测这组组合；示例站默认没有备用组合。
 - 部署：见 [部署](deploy.md)。
 
 ## 改完以后检查

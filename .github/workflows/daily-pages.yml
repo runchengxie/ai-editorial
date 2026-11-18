@@ -3,6 +3,12 @@ name: Daily Data
 on:
   # Manual-only while the editorial pipeline is being evaluated.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Documentation only, or explicitly refresh free-source data
+        type: choice
+        default: docs
+        options: [docs, refresh]
 
 permissions:
   contents: read
@@ -60,17 +66,30 @@ jobs:
             echo 'No publication archive found within the search bound; refusing to drop history'
             exit 1
           fi
+      - name: Install manual builder
+        run: python -m pip install -r configs/requirements-docs.txt
       - name: Generate public data from free listings
+        if: inputs.mode == 'refresh'
         run: node scripts/daily-brief/build.ts --out "$RUNNER_TEMP/public" --state "$RUNNER_TEMP/previous/editions.json"
+      - name: Build manual with preserved public data
+        env:
+          PUBLICATION_MODE: ${{ inputs.mode }}
+        run: |
+          state="$RUNNER_TEMP/previous"
+          if [ "$PUBLICATION_MODE" = refresh ]; then state="$RUNNER_TEMP/public"; fi
+          python -B scripts/docs/build.py --state "$state" --out "$RUNNER_TEMP/site"
+          mkdir -p "$RUNNER_TEMP/public-state"
+          cp "$RUNNER_TEMP/site/editions.json" "$RUNNER_TEMP/site/latest.json" "$RUNNER_TEMP/site/feed.xml" "$RUNNER_TEMP/site/zh-CN.html" "$RUNNER_TEMP/public-state/"
+          find "$RUNNER_TEMP/site" -maxdepth 1 -type f -name '????-??-??.*.html' -exec cp {} "$RUNNER_TEMP/public-state/" \;
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: daily-public-state
-          path: ${{ runner.temp }}/public/editions.json
+          path: ${{ runner.temp }}/public-state
           retention-days: 90
           if-no-files-found: error
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
-          path: ${{ runner.temp }}/public
+          path: ${{ runner.temp }}/site
   deploy:
     needs: build
     runs-on: ubuntu-latest

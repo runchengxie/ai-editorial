@@ -8,7 +8,7 @@
 
 从本机配置解析 CODE_ROOT、DATA_ROOT、CONFIG_ROOT，遵守[数据约定](editorial-data-contract.md)。测试使用独立数据库，不能连接共享业务数据库。密钥的权威副本放在 CONFIG_ROOT/projects/ai-editorial，限制为本人可读。应用不会自动读取工作区根配置。
 
-显式传入 DATABASE_URL、AIHOT_DATA_DIR、SITE_URL、API_PORT、API_BASE_URL、WEB_PORT。分组密钥文件可通过 AIHOT_CREDENTIALS_DIR 指向项目配置目录。保持 COLLECT_ENABLED、MODEL_CALLS_ENABLED、FEISHU_CONTENT_PUSH_ENABLED、FEISHU_INTERNAL_ENABLED、DINGTALK_CONTENT_PUSH_ENABLED、INDEXNOW_SUBMIT_ENABLED、BAIDU_PUSH_ENABLED 为 false。不要直接运行未经调整的 init-env.ts，它会开启真实采集和模型调用。
+显式传入 DATABASE_URL、AIHOT_DATA_DIR、SITE_URL、API_PORT、API_BASE_URL、WEB_PORT。分组密钥文件可通过 AIHOT_CREDENTIALS_DIR 指向项目配置目录。保持 COLLECT_ENABLED、MODEL_CALLS_ENABLED、FEISHU_CONTENT_PUSH_ENABLED、FEISHU_INTERNAL_ENABLED、DINGTALK_CONTENT_PUSH_ENABLED、INDEXNOW_SUBMIT_ENABLED、BAIDU_PUSH_ENABLED 为 false。可选的init-env.ts生成本地随机密钥，默认关闭采集和模型调用。
 
 ## 本地验证
 
@@ -27,3 +27,5 @@ npm run test:web
 仅调试界面时可设置 DEV_AUTH_ROLE=admin，不能将它用于外部可访问的服务。日常使用优先配置管理员密码。确定性的草稿资料包不需要模型密钥。
 
 也可以临时解包 PostgreSQL 运行时，不安装系统服务。可丢弃的是运行程序，保留的数据库和验证结果仍应放在 DATA_ROOT。安装系统服务、启用真实接口和公开部署需要分别处理。
+
+内部动态应用的示例位于 `configs/dynamic.env.example`，只含占位值，不含真实凭据。本机刊物安装器单独管理CONFIG_ROOT中的私有配置。
