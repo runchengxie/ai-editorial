@@ -105,3 +105,5 @@ node scripts/magazine/quality.ts --packet "$DATA_ROOT/ai-editorial/evaluations/<
 ```
 
 The output directory must be new. `quality.json` records actual feature/brief counts, target attainment, source/article diversity, audience mix, full-body support, practical notes, unused evidence and shared lead citations. Shared citations are review flags, not proof of duplicate events. It rejects mismatched packet/source facts; it does not prove semantic accuracy, independent replication or distinct-event quality. Inspect the bilingual prose and original evidence separately before publication. This command reads private saved files only and neither generates nor publishes.
+
+The installed generator also retains each attempted collection report under `MAGAZINE_DATA_DIR/collection-reports/`, including source-health failures, before any model request. Existing receipt usage remains the authority for actual Codex calls and token counts; a subscription call has no inferred monetary price. No automatic retention deletion is introduced.

@@ -1,11 +1,15 @@
-import {readFile,writeFile,mkdir} from 'node:fs/promises';import path from 'node:path';import {createHash} from 'node:crypto';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';import path from 'node:path';import {createHash,randomUUID} from 'node:crypto';
 import {sql} from '@aihot/backend/db';import {completeReceipt,rejectReceivedResponse} from '@aihot/backend/providers/receipts';
 import {stableJson} from '@aihot/backend/lib/ids';
-import {collectPacket} from './evidence.ts';import {codexJson} from './codex.ts';import {composePrompt} from './prompt.ts';
+import {collectPacket,type CollectionReport} from './evidence.ts';import {codexJson} from './codex.ts';import {composePrompt} from './prompt.ts';
 import {projectIssue,mergeLibrary} from './compose.ts';import {loadLibrary,atomicJson} from './library.ts';
 import type {Packet} from '../contracts.ts';
 export async function generateIssue(kind:Packet['kind'],root:string,sourceFile:string){
- const libraryFile=path.join(root,'library.json');const fresh=await collectPacket(kind,JSON.parse(await readFile(sourceFile,'utf8')));
+ const libraryFile=path.join(root,'library.json'),reports=path.join(root,'collection-reports');
+ await mkdir(reports,{recursive:true,mode:0o700});
+ let fresh:Packet,collection:CollectionReport|undefined;
+ try{fresh=await collectPacket(kind,JSON.parse(await readFile(sourceFile,'utf8')),new Date(),{onReport:r=>{collection=r;}});}
+ finally{if(collection)await writeFile(path.join(reports,`${kind}-${randomUUID()}.json`),JSON.stringify({recordedAt:new Date().toISOString(),report:collection}),{flag:'wx',mode:0o600});}
  const revision=createHash('sha256').update(stableJson({kind:fresh.kind,start:fresh.start,end:fresh.end,evidence:fresh.evidence})).digest('hex');
  const packets=path.join(root,'packets');await mkdir(packets,{recursive:true,mode:0o700});const file=path.join(packets,revision+'.json');
  try{await writeFile(file,JSON.stringify(fresh),{flag:'wx',mode:0o600});}catch(error){if((error as NodeJS.ErrnoException).code!=='EEXIST')throw error;}
