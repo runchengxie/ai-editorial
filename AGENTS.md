@@ -4,9 +4,9 @@ This repository owns the internal dynamic engine, editorial workbench, source co
 
 ## Layout and boundaries
 
-- `apps/`: API, worker and dynamic web entry points. `packages/`: shared contracts and backend implementation. `modules/`: fork-specific features.
+- `apps/`: API, worker and dynamic web entry points. `packages/`: shared contracts, backend implementation and fork-specific editorial features.
 - `configs/site/` and `configs/industry/`: typed npm workspace configuration packages. Preserve `@aihot/site` and `@aihot/industry` names; update filesystem readers, package manifests, tests and documentation together when paths change. Shared TypeScript options live in `configs/tsconfig.base.json`.
-- `scripts/`, `tests/`, `docs/`, `database/`, `assets/` retain their distinct responsibilities. Runtime prompt and policy Markdown remains with its configuration package; explanatory documentation belongs in `docs/`.
+- `scripts/`, `tests/` and `docs/` retain their distinct responsibilities. Backend-owned migrations and fonts live under `packages/backend/migrations/` and `packages/backend/assets/og-fonts/`. Editorial TypeScript coverage is configured in `configs/editorial.tsconfig.json`. Runtime prompt and policy Markdown remains with its configuration package; explanatory documentation belongs in `docs/`.
 - Respect the workspace's external data/configuration roots. Never commit credentials, raw evidence, generated publications, runtime state or test outputs. See [data contract](docs/editorial-data-contract.md).
 - Keep the dynamic app internal through loopback binding or an authenticated perimeter. Its inherited anonymous endpoints are not the public static reader. Do not use AIHOT branding.
 

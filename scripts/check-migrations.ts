@@ -5,22 +5,28 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { FIRST_ONLINE_MIGRATION, migrationPlan } from "./migration-safety.ts";
 
-const isMigration = (file: string) => /^(database\/migrations|modules\/[^/]+\/migrations)\/[^/]+\.sql$/.test(file);
+// Only the established one-to-one layout moves can preserve deployed history.
+const canonical = (file: string) => file.replace(/^database\/migrations\//, "packages/backend/migrations/")
+  .replace(/^modules\/([^/]+)\/migrations\//, "packages/$1/migrations/");
+const isMigration = (file: string) => /^(database\/migrations|modules\/[^/]+\/migrations|packages\/[^/]+\/migrations)\/[^/]+\.sql$/.test(file);
 
 export function checkMigrations(root: string, base: string): string[] {
   const git = (...args: string[]) => execFileSync("git", args, { cwd: root, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
   const before = new Set(git("ls-tree", "-r", "--name-only", base).split("\n").filter(isMigration));
   const current = git("ls-files", "--cached", "--others", "--exclude-standard").split("\n").filter((file) => isMigration(file) && existsSync(path.join(root, file)));
   const problems: string[] = [];
+  const historical = new Set([...before].map(canonical));
   for (const file of before) {
-    if (!existsSync(path.join(root, file)) || readFileSync(path.join(root, file), "utf8") !== git("show", `${base}:${file}`)) problems.push(`${file}: deployed migrations are immutable; add a new migration`);
+    const target = current.includes(file) ? file : canonical(file);
+    if (!existsSync(path.join(root, target)) || readFileSync(path.join(root, target), "utf8") !== git("show", `${base}:${file}`)) problems.push(`${file}: deployed migrations are immutable; add a new migration`);
   }
   const names = new Set<string>();
   for (const file of current) {
+    if (!file.startsWith("packages/")) problems.push(`${file}: retired migration path; use packages/<owner>/migrations`);
     const name = path.basename(file);
     if (names.has(name)) problems.push(`${file}: two migrations are named ${name}`);
     names.add(name);
-    if (before.has(file)) continue;
+    if (historical.has(canonical(file))) continue;
     if (!/^\d{4}_[a-z0-9_]+\.sql$/.test(name) || Number(name.slice(0, 4)) < FIRST_ONLINE_MIGRATION) {
       problems.push(`${file}: new migrations start at ${String(FIRST_ONLINE_MIGRATION).padStart(4, "0")} and use NNNN_name.sql`);
       continue;

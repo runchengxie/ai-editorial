@@ -154,7 +154,7 @@ Nearly everything to change is in the [`configs/site/`](../configs/site) and [`c
 | `configs/industry/selection.ts` | Selection thresholds |
 | `configs/site/models.ts` | Which model each step uses by default (optional: otherwise every step uses the one in `.env`) |
 | `configs/site/brand/`, `configs/site/pages/`, `configs/site/public/`, `configs/site/changelog.json` | Icons and logo, terms of use and privacy notice, files served from the site root such as `robots.txt`, the changelog |
-| `modules/` | Features the framework doesn't have and only your site needs, as modules; see “模块” in [Architecture](architecture.md#模块) |
+| `packages/` | Features the framework doesn't have and only your site needs, as modules; see “模块” in [Architecture](architecture.md#模块) |
 
 What is most worth your time is the scoring rubric (`configs/industry/prompts/selection-score.md`) and the thresholds: take one or two hundred items you labelled yourself, run them through `scripts/eval-selection.ts`, see how accurately it selects, and go back and adjust. How to do it is in [Selection and calibration](selection.md).
 

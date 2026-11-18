@@ -3,8 +3,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".react-router/types/**/*",
-    "../../modules/*/web.tsx",
-    "../../modules/*/web/**/*",
+    "../../packages/*/web.tsx",
+    "../../packages/*/web/**/*",
     "../../configs/site/**/*.tsx"
   ],
   "compilerOptions": {

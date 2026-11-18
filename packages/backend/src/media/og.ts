@@ -1,4 +1,4 @@
-// 1200×630 share images. satori lays out text with Noto Sans SC (assets/og-fonts) and emits glyphs
+// 1200×630 share images. satori lays out text with Noto Sans SC (packages/backend/assets/og-fonts) and emits glyphs
 // as paths, so rasterising with sharp needs no system fonts. Output is cached on disk by content.
 import { readdirSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
@@ -26,11 +26,11 @@ export interface OgCard {
 
 let fontsPromise: Promise<Array<{ name: string; data: Buffer; weight: 400 | 700; style: "normal" }>> | null = null;
 
-const FONT_DIR = path.join(REPO_ROOT, "assets/og-fonts");
+const FONT_DIR = path.join(REPO_ROOT, "packages/backend/assets/og-fonts");
 
 /**
  * Fonts a site adds beside Noto Sans SC for the characters its subset lacks (traditional and Japanese
- * kanji, kana, Hangul, accented Latin): `<name>-400.ttf` and `<name>-700.ttf` in assets/og-fonts. satori
+ * kanji, kana, Hangul, accented Latin): `<name>-400.ttf` and `<name>-700.ttf` in packages/backend/assets/og-fonts. satori
  * takes a glyph the first font has no outline for from the next one, so they come after Noto Sans SC.
  */
 export function fallbackFontFiles(files: string[]): string[] {

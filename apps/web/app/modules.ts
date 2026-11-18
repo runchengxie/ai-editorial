@@ -1,4 +1,4 @@
-// What a module's web.tsx (modules/<name>/web.tsx) may add to the engine's pages: navigation entries and
+// What a module's web.tsx (packages/<name>/web.tsx) may add to the engine's pages: navigation entries and
 // the parts of a few pages that leave room for them. Its own pages come from its module.ts (routes.ts).
 // The site's list is read through site-modules.ts.
 //
@@ -107,7 +107,7 @@ export interface TopicPagePart {
 export type AccountPlace = "me" | "sidebar" | "starred" | "album";
 
 export interface WebModule {
-  /** Its folder under modules/. */
+  /** Its folder under packages/. */
   name: string;
   /** The reader's account, from a module that offers one, drawn where the place asks (before hydration: signed out). */
   account?: ComponentType<{ place: AccountPlace }>;

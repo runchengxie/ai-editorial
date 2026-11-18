@@ -1,8 +1,8 @@
 import {readFile,writeFile} from 'node:fs/promises';import path from 'node:path';import {execFile} from 'node:child_process';import {promisify} from 'node:util';import {createHash} from 'node:crypto';
 import {beijingWeekday,beijingDate} from '@aihot/contracts/time';import {closeDb} from '@aihot/backend/db';
-import {generateIssue} from '../../modules/editorial-magazine/backend/run.ts';import {periodFor} from '../../modules/editorial-magazine/backend/compose.ts';
-import {publishSnapshot} from '../../modules/editorial-magazine/backend/publish.ts';
-import {loadLibrary} from '../../modules/editorial-magazine/backend/library.ts';
+import {generateIssue} from '../../packages/editorial-magazine/backend/run.ts';import {periodFor} from '../../packages/editorial-magazine/backend/compose.ts';
+import {publishSnapshot} from '../../packages/editorial-magazine/backend/publish.ts';
+import {loadLibrary} from '../../packages/editorial-magazine/backend/library.ts';
 process.umask(0o077);const exec=promisify(execFile),args=process.argv.slice(2);
 const root=process.env.MAGAZINE_DATA_DIR;if(!root||!path.isAbsolute(root))throw new Error('MAGAZINE_DATA_DIR must be an absolute stable data directory');
 const repoRoot=path.resolve(import.meta.dirname,'../..');if(root===repoRoot||root.startsWith(repoRoot+path.sep))throw new Error('Magazine data must be outside source');

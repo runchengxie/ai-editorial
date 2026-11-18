@@ -4,7 +4,7 @@
 
 Open reproducible issues and focused PRs against [runchengxie/ai-editorial](https://github.com/runchengxie/ai-editorial). Discuss substantial product or architecture changes before implementation. AIHOT's discussions and metrics describe upstream, not support commitments for this fork.
 
-Read [repository instructions](../AGENTS.md) and the relevant docs. Keep industry rules in `configs/industry/`, branding/site configuration in `configs/site/`, and fork-specific functionality in `modules/`. Preserve package names and public contracts when reorganizing paths. Shared machine credentials and production state stay outside Git.
+Read [repository instructions](../AGENTS.md) and the relevant docs. Keep industry rules in `configs/industry/`, branding/site configuration in `configs/site/`, and fork-specific functionality in `packages/`. Preserve package names and public contracts when reorganizing paths. Shared machine credentials and production state stay outside Git.
 
 Use a task branch/worktree and an isolated test database. Run the applicable type, standalone, backend, browser, build, migration and smoke checks listed in `AGENTS.md`; report actual results and environmental limits. Tests never use real paid providers or production data. Documentation changes should verify links, commands and current behavior without adding low-value tests.
 

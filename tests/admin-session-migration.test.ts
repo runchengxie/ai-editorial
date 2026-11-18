@@ -8,7 +8,7 @@ import { after, test } from "node:test";
 import { REPO_ROOT } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 
-const dir = path.join(REPO_ROOT, "database/migrations");
+const dir = path.join(REPO_ROOT, "packages/backend/migrations");
 const files = readdirSync(dir).filter((file) => file.endsWith(".sql")).sort();
 const binding = files.find((file) => file.endsWith("_admin_session_binding.sql"))!;
 const migration = readFileSync(path.join(dir, binding), "utf8");

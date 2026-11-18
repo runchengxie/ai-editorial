@@ -3,7 +3,7 @@ import type { ModulePage } from "@aihot/contracts/modules";
 import { MODULES } from "@aihot/site/modules";
 
 /** A module's route module, from the app directory. */
-const file = (module: string, path: string) => `../../../modules/${module}/${path}`;
+const file = (module: string, path: string) => `../../../packages/${module}/${path}`;
 const page = (module: string, p: ModulePage) => route(p.gray ? `preview/${p.path}` : p.admin ? `admin/${p.path}` : p.path, file(module, p.file), p.id ? { id: p.id } : {});
 
 /** The site's modules' pages, after the engine's; admin pages go into the back office's shell. */

@@ -108,7 +108,7 @@ jobs:
           cd "$RUNNER_TEMP/magazine-runtime"
           npm ci --omit=dev --no-audit --no-fund
           npm audit --omit=dev --audit-level=high
-          node --input-type=module -e "await import('./modules/editorial-magazine/backend/run.ts');const {closeDb}=await import('@aihot/backend/db');await closeDb();console.log('Production-only magazine imports passed')"
+          node --input-type=module -e "await import('./packages/editorial-magazine/backend/run.ts');const {closeDb}=await import('@aihot/backend/db');await closeDb();console.log('Production-only magazine imports passed')"
       - name: Verify source catalog seeding without containers
         run: |
           node scripts/seed.ts

@@ -12,7 +12,7 @@ Codex is invoked non-interactively with the existing local ChatGPT login, read-o
 
 Calls use the existing PostgreSQL receipts and `codex-cli` budget. Initial deployment allows2/minute,3/hour,3per rolling24hours, and preserves operator changes. The same persisted evidence packet yields the same logical request and reuses a received answer. An uncertain CLI outcome stops that issue, including a changed-input attempt, until operator review. No immediate retry is performed. Narrative anchors must match cited evidence; numeric claims must be supported by those quotes or the cited source's title/exact product identifiers, with value-preserving million/billion↔万/亿 conversion. This is a sanity/traceability check, not semantic fact verification or human review. Unsupported output is not published.
 
-`modules/editorial-magazine` owns the implementation. Raw packets, quote anchors and CLI diagnostics stay under DATA_ROOT/ai-editorial/magazine and PostgreSQL. Only the projected public library is published. Source-linked prose is paraphrased; screenshots and artwork from the reference article are not copied. Dates in outlook require exact dated source evidence, retain planned wording, and may extend at most365days beyond the issue period.
+`packages/editorial-magazine` owns the implementation. Raw packets, quote anchors and CLI diagnostics stay under DATA_ROOT/ai-editorial/magazine and PostgreSQL. Only the projected public library is published. Source-linked prose is paraphrased; screenshots and artwork from the reference article are not copied. Dates in outlook require exact dated source evidence, retain planned wording, and may extend at most365days beyond the issue period.
 
 ## Manual evaluation (automation paused)
 

@@ -4,7 +4,7 @@
 
 可复现问题及范围明确的PR提交到 [runchengxie/ai-editorial](https://github.com/runchengxie/ai-editorial)。较大的产品或架构变化先讨论用途与方案。AIHOT的讨论区和运行指标属于上游，不是本分支的支持承诺。
 
-阅读[仓库指引](../AGENTS.md)及相关文档。行业规则放在 `configs/industry/`，品牌和站点配置放在 `configs/site/`，本分支功能放在 `modules/`。目录调整应保留包名和公开契约。机器凭据与生产状态保存在Git之外。
+阅读[仓库指引](../AGENTS.md)及相关文档。行业规则放在 `configs/industry/`，品牌和站点配置放在 `configs/site/`，本分支功能放在 `packages/`。目录调整应保留包名和公开契约。机器凭据与生产状态保存在Git之外。
 
 使用任务分支、worktree和独立测试库。按 `AGENTS.md` 运行受影响的类型、独立测试、后台、浏览器、构建、迁移与冒烟检查，报告实际结果和环境限制。测试不访问真实付费服务或生产数据。文档修改验证链接、命令及当前行为，不为凑数量添加测试。
 

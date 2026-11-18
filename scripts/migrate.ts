@@ -28,11 +28,11 @@ async function waitForBackupDump(session: postgres.ReservedSql, waitMs: number, 
 /** `backupWaitMs`: how long to wait for a running backup dump before each migration (none by default). */
 export async function runMigrations(sql: postgres.Sql, root: string, { backupWaitMs = 0 } = {}): Promise<number> {
   const sqlFiles = (dir: string) => existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".sql")).map((name) => ({ name, file: path.join(dir, name) })) : [];
-  const modules = path.join(root, "modules");
-  const migrations = [
-    ...sqlFiles(path.join(root, "database/migrations")),
-    ...(existsSync(modules) ? readdirSync(modules).flatMap((name) => sqlFiles(path.join(modules, name, "migrations"))) : []),
-  ].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+  const packages = path.join(root, "packages");
+  const migrations = existsSync(packages) ? readdirSync(packages, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .flatMap((entry) => sqlFiles(path.join(packages, entry.name, "migrations"))) : [];
+  migrations.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
   for (const [i, migration] of migrations.entries()) {
     if (migrations[i + 1]?.name === migration.name) throw new Error(`two migrations are named ${migration.name}: ${migration.file} and ${migrations[i + 1].file}`);
   }

@@ -5,11 +5,11 @@ import {createHash} from 'node:crypto';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {successfulMainCheck} from './checks.ts';
-import {packetSchema} from '../../modules/editorial-magazine/contracts.ts';
+import {packetSchema} from '../../packages/editorial-magazine/contracts.ts';
 import {pilotMarkdown} from './pilot-render.ts';
-import {codexJson} from '../../modules/editorial-magazine/backend/codex.ts';
-import {composePrompt} from '../../modules/editorial-magazine/backend/prompt.ts';
-import {commitIssueResponse} from '../../modules/editorial-magazine/backend/run.ts';
+import {codexJson} from '../../packages/editorial-magazine/backend/codex.ts';
+import {composePrompt} from '../../packages/editorial-magazine/backend/prompt.ts';
+import {commitIssueResponse} from '../../packages/editorial-magazine/backend/run.ts';
 import {closeDb} from '@aihot/backend/db';
 
 const args=process.argv.slice(2);

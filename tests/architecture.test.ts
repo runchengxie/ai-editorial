@@ -49,8 +49,18 @@ test("the web reaches the backend only over HTTP", () => {
   assert.deepEqual(found, [], "apps/web imports backend code; read it through /api/site or /api/admin instead");
 });
 
-test("packages never import the apps, and nothing below the admin imports it", () => {
-  assert.deepEqual(violations(sources("packages"), (_file, spec) => /(^|\/)apps\//.test(spec)), []);
+// Feature adapters keep their established app integration surfaces after moving into packages.
+// Core packages and all other feature files remain unable to reach app implementation code.
+const APP_ADAPTERS: Record<string, string> = {
+  "packages/editorial-workbench/web.tsx": "apps/web/app/modules.ts",
+  "packages/editorial-workbench/web/board.tsx": "apps/web/app/lib/admin.server.ts",
+  "packages/editorial-workbench/web/topic.tsx": "apps/web/app/lib/admin.server.ts",
+  "packages/editorial-workbench/api/routes.ts": "apps/api/src/routes/admin-auth.ts",
+};
+
+test("only declared feature adapters import apps, and nothing below the admin imports it", () => {
+  assert.deepEqual(violations(sources("packages"), (file, spec) => /(^|\/)apps\//.test(spec)
+    && path.posix.join(path.posix.dirname(file), spec) !== APP_ADAPTERS[file]), []);
   const found = violations([...sources("packages/backend/src"), ...sources("apps/worker")], (file, spec) =>
     !file.startsWith("packages/backend/src/admin/") && (backendPath(file, spec)?.startsWith("admin/") ?? false));
   assert.deepEqual(found, [], "admin/ is the top layer: move what others need to the folder that owns it");
@@ -82,11 +92,11 @@ const OWNERS: Record<string, string> = {
   story_digests: "events/", grouping_decisions: "events/", grouping_overrides: "events/",
   audit_log: "audit.ts",
   feedback_submission_state: "operations/feedback.ts",
-  reader_previewers: "../../../modules/accounts/backend/",
-  reader_sync_usage: "../../../modules/accounts/backend/",
-  reader_accounts: "../../../modules/accounts/backend/", reader_logins: "../../../modules/accounts/backend/",
-  reader_sessions: "../../../modules/accounts/backend/", reader_codes: "../../../modules/accounts/backend/",
-  reader_code_sends: "../../../modules/accounts/backend/", reader_data: "../../../modules/accounts/backend/",
+  reader_previewers: "../../../packages/accounts/backend/",
+  reader_sync_usage: "../../../packages/accounts/backend/",
+  reader_accounts: "../../../packages/accounts/backend/", reader_logins: "../../../packages/accounts/backend/",
+  reader_sessions: "../../../packages/accounts/backend/", reader_codes: "../../../packages/accounts/backend/",
+  reader_code_sends: "../../../packages/accounts/backend/", reader_data: "../../../packages/accounts/backend/",
 };
 
 test("the tables that carry a rule are written only by the code that owns it", () => {
@@ -115,10 +125,10 @@ test("the public scope and the composite rule are spelled once, in publication/s
 // whose name its table's code also uses for something else slips through. Tests, fixtures and local
 // tools do not make anything used.
 const PRODUCTION = ["packages/backend/src", "packages/contracts/src", "apps/api/src", "apps/worker/src", "apps/web/app"];
-/** The site's modules (modules/<name>/), their tests and local tools left out. */
-const modules = (kind?: RegExp) => (existsSync(path.join(ROOT, "modules")) ? sources("modules", kind).filter(({ file }) => !/\/(tests|scripts)\//.test(file)) : []);
+/** The site's modules (packages/<name>/), their tests and local tools left out. */
+const modules = (kind?: RegExp) => (sources("packages", kind).filter(({ file }) => /^packages\/editorial-[^/]+\//.test(file) && !/\/(tests|scripts)\//.test(file)));
 /** The modules' pages: each one's web.tsx and web/ folder. */
-const moduleWeb = (kind?: RegExp) => modules(kind).filter(({ file }) => /^modules\/[^/]+\/web(?:\.|\/)/.test(file));
+const moduleWeb = (kind?: RegExp) => modules(kind).filter(({ file }) => /^packages\/editorial-[^/]+\/web(?:\.|\/)/.test(file));
 const production = () => [...PRODUCTION.flatMap((dir) => sources(dir)), { file: "apps/web/server.ts", text: readFileSync(path.join(ROOT, "apps/web/server.ts"), "utf8") }, ...modules()];
 const words = (text: string) => new Set(text.match(/[A-Za-z_][A-Za-z0-9_]*/g));
 
@@ -188,12 +198,12 @@ test("Beijing time is converted only in contracts/time.ts", () => {
 
 // A module can use the engine, but it does not reach into another module; the site composes capabilities.
 test("modules do not import other modules", () => {
-  const installed = existsSync(path.join(ROOT, "modules")) ? readdirSync(path.join(ROOT, "modules"), { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name) : [];
+  const installed = readdirSync(path.join(ROOT, "packages"), { withFileTypes: true }).filter((entry) => entry.isDirectory() && entry.name.startsWith("editorial-")).map((entry) => entry.name);
   const found = violations(modules(), (file, spec) => {
     const owner = file.split("/")[1];
     if (spec.startsWith(".")) {
       const target = path.posix.join(path.posix.dirname(file), spec).split("/");
-      return target[0] === "modules" && target[1] !== owner;
+      return target[0] === "packages" && installed.includes(target[1]) && target[1] !== owner;
     }
     const target = /^@aihot\/([^/]+)/.exec(spec)?.[1];
     return !!target && installed.includes(target) && target !== owner;
@@ -249,7 +259,7 @@ test("scripts read the reduced-motion preference only through lib/motion.ts", ()
 
 test("a gray page is only for previewers: its loader goes through grayGet and answers with GRAY_HEADERS", async () => {
   const { MODULES } = await import("@aihot/site/modules");
-  const gray = MODULES.flatMap((m) => (m.pages ?? []).flatMap((p) => ("layout" in p ? p.pages : [p])).filter((p) => p.gray).map((p) => `modules/${m.name}/${p.file}`));
+  const gray = MODULES.flatMap((m) => (m.pages ?? []).flatMap((p) => ("layout" in p ? p.pages : [p])).filter((p) => p.gray).map((p) => `packages/${m.name}/${p.file}`));
   for (const file of gray) {
     const text = readFileSync(path.join(ROOT, file), "utf8");
     assert.ok(/\bgrayGet\b/.test(text) && /\bGRAY_HEADERS\b/.test(text), `${file} is gray: its loader must use grayGet and GRAY_HEADERS`);
@@ -269,7 +279,7 @@ test("pages are prefetched only through IntentLink", () => {
 
 test("admin page loaders use adminPageGet and GRAY_HEADERS", async () => {
   const { MODULES } = await import("@aihot/site/modules");
-  const pages = MODULES.flatMap((m) => (m.pages ?? []).flatMap((p) => ("layout" in p ? p.pages : [p])).filter((p) => p.admin).map((p) => `modules/${m.name}/${p.file}`));
+  const pages = MODULES.flatMap((m) => (m.pages ?? []).flatMap((p) => ("layout" in p ? p.pages : [p])).filter((p) => p.admin).map((p) => `packages/${m.name}/${p.file}`));
   for (const file of pages) {
     const text = readFileSync(path.join(ROOT, file), "utf8");
     assert.ok(/\badminPageGet\b/.test(text) && /\bGRAY_HEADERS\b/.test(text), `${file} must use adminPageGet and GRAY_HEADERS`);

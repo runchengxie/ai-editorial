@@ -19,7 +19,7 @@ flowchart LR
 | worker | `apps/worker/` | pg-boss 任务队列和定时任务：抓信源、调模型、归组、热度、日报、告警、清理 |
 | web | `apps/web/` | React Router 服务端渲染的网页。只通过 HTTP 读 api，不碰数据库 |
 
-业务代码都在 `packages/backend/`，前后端共用的类型和常量在 `packages/contracts/`。这个站自己的名字、文案、品牌和页面在 `configs/site/`，行业的分类、信源、提示词和门槛在 `configs/industry/`，只属于这个站的功能在 `modules/`（见下文“模块”）。
+业务代码都在 `packages/backend/`，前后端共用的类型和常量在 `packages/contracts/`。这个站自己的名字、文案、品牌和页面在 `configs/site/`，行业的分类、信源、提示词和门槛在 `configs/industry/`，只属于这个站的功能在 `packages/`（见下文“模块”）。
 
 ## 几条不变的规则
 
@@ -43,7 +43,7 @@ flowchart LR
 |---|---|
 | `configs/site/` | 这个站自己的：站名文案、每一步的模型、品牌与 Logo、条款页、网站根目录的四个固定文件（`public/`，替换占位符后发布）、更新日志，以及启用哪些模块（`configs/site/modules/`） |
 | `configs/industry/` | 行业包：分类标签、主题、示范信源、提示词、门槛 |
-| `modules/` | 只属于这个站的功能，一个功能一个文件夹（见下文“模块”）；框架本身不带模块 |
+| `packages/` | 只属于这个站的功能，一个功能一个文件夹（见下文“模块”）；框架本身不带模块 |
 | `packages/backend/src/sources/` | 六种信源的读取器，抓取调度（`collect.ts`） |
 | `packages/backend/src/content/` | 资料入库、判重、正文提取和清洗 |
 | `packages/backend/src/editorial/` | 判断与写作：`analyze.ts`（流程）、`prompts.ts`（读提示词）、`models.ts`（每一步用哪个模型） |
@@ -55,20 +55,20 @@ flowchart LR
 | `packages/backend/src/operations/` | 告警、备份、清理、IndexNow、百度推送 |
 | `packages/backend/src/admin/` | 后台接口 |
 | `apps/web/app/routes/` | 每个页面一个文件，路由表在 `apps/web/app/routes.ts` |
-| `database/migrations/` | 数据库迁移，按完整文件名排序执行和记账 |
+| `packages/backend/migrations/` | 数据库迁移，按完整文件名排序执行和记账 |
 | `scripts/` | 初始化、迁移、种子数据、评测、检查脚本 |
 | `tests/` | 后端测试（数据库名必须以 `_test` 或 `_ci` 结尾，见下文） |
 
 ## 模块
 
-框架里没有、只有你这个站要的功能（比如一个专门的榜单或监控页），做成模块：一个功能一个文件夹 `modules/<名字>/`，是一个名为 `@aihot/<名字>` 的 npm 包，装着它自己的后端、接口、页面、样式、数据库迁移和测试。
+框架里没有、只有你这个站要的功能（比如一个专门的榜单或监控页），做成模块：一个功能一个文件夹 `packages/<名字>/`，是一个名为 `@aihot/<名字>` 的 npm 包，装着它自己的后端、接口、页面、样式、数据库迁移和测试。
 
 | 文件 | 内容 |
 |---|---|
 | `module.ts` | 它的地址：页面、跳转、交给 api 处理的路径（类型见 `packages/contracts/src/modules.ts`） |
 | `server.ts` | 它接进后端的插口：接口、定时任务、队列、事件回调、后台页面的数据等（`packages/backend/src/modules.ts`，每个插口注明读它的文件） |
 | `web.tsx` | 它接进网页的插口：页面、导航项、主题页与后台的部件等（`apps/web/app/modules.ts`）；只在某一页出现的部件给出加载函数，随那一页的代码加载 |
-| `migrations/` | 它自己的表，和 `database/migrations/` 一起按文件名排序执行 |
+| `migrations/` | 它自己的表，和 `packages/backend/migrations/` 一起按文件名排序执行 |
 | `tests/` | 它的测试，`npm test` 一起跑 |
 | 其他文件 | 它自己的图片等静态文件也放在模块文件夹里：在 `server.ts` 的 `http` 插口里注册路由，用 `apps/api/src/routes/static.ts` 的 `sendFile` 发出（类型、ETag、缓存头和 404 都由它处理，文件名自己校验），地址写进 `module.ts` 的 `apiPaths` |
 

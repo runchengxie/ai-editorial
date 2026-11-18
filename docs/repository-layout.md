@@ -7,14 +7,13 @@ The engine is a monorepo, so executable apps and reusable packages have separate
 | Directory | Owner |
 | --- | --- |
 | `apps/` | API, background worker and internal dynamic web application |
-| `packages/` | Shared contracts and backend implementation |
-| `modules/` | Fork-specific features, including workbench and magazine |
+| `packages/` | Shared contracts, backend and editorial feature packages |
 | `configs/` | Shared TypeScript options and typed `site/` and `industry/` workspaces |
 | `scripts/` | Development, collection, evaluation and operational commands |
 | `tests/` | Cross-module, contract and integration checks; module-local tests stay with their module |
 | `docs/` | Explanations, setup, operations and retained design records |
-| `database/` | Immutable released migrations and new schema changes |
-| `assets/` | Licensed shared resources |
+| `packages/backend/migrations/` | Immutable released engine migrations |
+| `packages/backend/assets/og-fonts/` | Licensed server-side sharing fonts |
 
 Conventional root entry files remain discoverable: README, AGENTS, CONTRIBUTING, SECURITY, LICENSE/NOTICE, npm manifests/lock, `.gitignore`. Runtime prompt and policy Markdown stays in the configuration packages because the application loads it. Credentials are outside Git under `CONFIG_ROOT`; generated files and runtime data are under `DATA_ROOT`.
 
@@ -29,3 +28,7 @@ This source move does not relocate production data, reconfigure or install the i
 ## Documentation website
 
 The engine's own GitHub Pages hosts the MkDocs manual and preserves the public `editions.json`/`latest.json` v1 endpoints, dated redirects and RSS migration notice. A single manual-only workflow publishes the combined artifact. See [manual website operations](manual-site.md). The news reader remains in `ai-editorial-pages`.
+
+## Package path migration
+
+`modules/editorial-*` moved to `packages/editorial-*`; npm package names and public artifacts are unchanged. Engine SQL moved from `database/migrations/` to `packages/backend/migrations/`, and fonts from `assets/og-fonts/` to `packages/backend/assets/og-fonts/`. SQL filenames, bytes and `schema_migrations.name` identities remain unchanged; moving files does not require a database migration. Migration checks compare the established old/new paths and still reject edits, deletions and duplicate names. Run `npm ci` to rebuild workspace links. External scripts using old paths must update; no compatibility links are installed. The retired `README.en.md` forwarding file was removed; use `README.md` or `docs/upstream-guide.md`. Root npm manifests remain required. Existing immutable worker releases keep their original layout until a separately authorized upgrade.

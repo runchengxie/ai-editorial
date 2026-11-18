@@ -1,8 +1,8 @@
 // Free evidence inspection only: never imports model generation or publication.
 import {mkdir,mkdtemp,readFile,writeFile,realpath} from 'node:fs/promises';
 import path from 'node:path';
-import {collectPacket} from '../../modules/editorial-magazine/backend/evidence.ts';
-import type {Packet} from '../../modules/editorial-magazine/contracts.ts';
+import {collectPacket} from '../../packages/editorial-magazine/backend/evidence.ts';
+import type {Packet} from '../../packages/editorial-magazine/contracts.ts';
 import {closeDb} from '@aihot/backend/db';
 
 const args=process.argv.slice(2);
@@ -33,7 +33,7 @@ if(args.includes('--help')){
  const pack=JSON.parse(await readFile(path.join(repo,'configs/industry/sources.json'),'utf8'));
  const summaries=[];
  for(const selected of kind==='both'?['daily','weekly']: [kind]){
-  const discoveries:import('../../modules/editorial-magazine/backend/evidence.ts').DiscoveryCheck[]=[];
+  const discoveries:import('../../packages/editorial-magazine/backend/evidence.ts').DiscoveryCheck[]=[];
   const packet=await collectPacket(selected as Packet['kind'],pack,now,{onDiscovery:c=>discoveries.push(c)});
   await writeFile(path.join(output,`${selected}.packet.json`),JSON.stringify(packet,null,2)+'\n',{mode:0o600});
   const audiences:Record<string,number>={},levels:Record<string,number>={};

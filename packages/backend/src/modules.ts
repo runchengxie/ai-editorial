@@ -1,4 +1,4 @@
-// The backend's sockets for modules (modules/<name>/server.ts). The api and worker processes install the
+// The backend's sockets for modules (packages/<name>/server.ts). The api and worker processes install the
 // site's list when they start (configs/site/modules/server.ts); the engine reads the sockets when it needs them and
 // never imports a module, so it runs the same with none installed: the open-source edition, and the
 // engine's own tests. Each socket names the engine file that reads it.
@@ -167,7 +167,7 @@ export interface Previewer {
 }
 
 export interface ServerModule {
-  /** Its folder under modules/. */
+  /** Its folder under packages/. */
   name: string;
   /** Who besides the engine's admin may open gray pages (ModulePage.gray) and read their data (admin/preview.ts). */
   preview?: (cookieHeader: string | undefined) => Promise<Previewer | null>;

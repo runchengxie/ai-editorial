@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "./site/modules/index.ts",
+    "./site/modules/server.ts",
+    "../packages/editorial-*/*.ts",
+    "../packages/editorial-*/backend/**/*.ts",
+    "../packages/editorial-*/api/**/*.ts",
+    "../packages/editorial-*/scripts/**/*.ts",
+    "../packages/editorial-*/tests/**/*.ts"
+  ]
+}

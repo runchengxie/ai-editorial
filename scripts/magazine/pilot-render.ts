@@ -1,4 +1,4 @@
-import type {Issue,Block} from '../../modules/editorial-magazine/contracts.ts';
+import type {Issue,Block} from '../../packages/editorial-magazine/contracts.ts';
 
 export function pilotMarkdown(issue:Issue,locale:'en'|'zh'):string{
  const text=(b:Block)=>b[locale],lines=[`# ${text(issue.title)}`,'',`${issue.start} – ${issue.end}`,'',text(issue.lead),''];
