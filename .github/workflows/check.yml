@@ -55,11 +55,14 @@ jobs:
       - name: Use the primary Ubuntu package mirror
         # Regional EC2 package downloads delayed main browser environment setup.
         run: |
-          for source in /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
+          found=false
+          for source in /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources /etc/apt/mirrors/ubuntu.list /etc/apt/mirrors/ubuntu-security.list; do
             if [ -f "$source" ]; then
-              sudo sed -i -E 's@https?://[a-z0-9.-]+\.ec2\.archive\.ubuntu\.com/ubuntu/?@https://archive.ubuntu.com/ubuntu/@g' "$source"
+              sudo sed -i -E 's@https?://([a-z0-9.-]+\.)?archive\.ubuntu\.com/ubuntu/?@https://archive.ubuntu.com/ubuntu/@g' "$source"
+              if grep -Fq "https://archive.ubuntu.com/ubuntu/" "$source"; then found=true; fi
             fi
           done
+          test "$found" = true
       - name: PostgreSQL backup tools
         # 恢复测试需要与 PostgreSQL 17 服务匹配的客户端，不能依赖 runner 的默认版本。
         run: |
