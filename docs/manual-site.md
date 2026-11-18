@@ -2,13 +2,13 @@
 
 [简体中文](manual-site.zh-CN.md)
 
-The pinned MkDocs version is **1.6.1**, listed in the [official release notes](https://www.mkdocs.org/about/release-notes/#version-161-2024-08-30). Build settings follow the [official configuration reference](https://www.mkdocs.org/user-guide/configuration/).
+The build pins MkDocs **1.6.1** and [Material for MkDocs **9.8.1**](https://pypi.org/project/mkdocs-material/9.8.1/). MkDocs 1.6.1 is listed in the [official release notes](https://www.mkdocs.org/about/release-notes/#version-161-2024-08-30). Build settings follow the [official configuration reference](https://www.mkdocs.org/user-guide/configuration/).
 
-The [engine manual](https://runchengxie.github.io/ai-editorial/) uses MkDocs' standard theme. The [news reader](https://runchengxie.github.io/ai-editorial-pages/) remains an independent application. English is the manual's default; Chinese pages are available from navigation and reciprocal links.
+The [engine manual](https://runchengxie.github.io/ai-editorial/) uses Material for MkDocs, matching Finance Video Studio’s sidebar navigation, back-to-top control and system fonts. The header theme control cycles through system preference, light and dark mode, and remembers the selection. The [news reader](https://runchengxie.github.io/ai-editorial-pages/) remains an independent application. English is the manual's default; Chinese pages are available from navigation and reciprocal links.
 
 ## Build locally
 
-Use a Python virtual environment outside the checkout and install `configs/requirements-docs.txt`. Run:
+Use Python 3.11 or newer with a virtual environment outside the checkout and install `configs/requirements-docs.txt`. Run:
 
 ```sh
 python -B scripts/docs/build.py --state /path/to/successful-public-state --out /tmp/editorial-manual-site

@@ -1,2 +1,3 @@
-# Standard MkDocs theme; no third-party theme or publication plugin.
+# Manual build engine and Material theme; no publication plugin.
 mkdocs==1.6.1
+mkdocs-material==9.8.1

@@ -27,21 +27,27 @@ export function planBodyReads(rows:ListingCandidate[],kind:Packet['kind']):Set<s
  });return reads;
 }
 export function sourceRelevant(r:ListingCandidate):boolean{const text=r.c.title+' '+(r.c.excerpt??'')+' '+(r.c.bodyText??'').slice(0,2000);return !TOPIC_FILTERED_SOURCES.has(r.source.id)||MAGAZINE_TOPICS.test(text)||(FINANCIAL_EDITORIAL_SOURCES.has(r.source.id)&&FINANCIAL_WORKFLOW_TOPICS.test(text));}
-export function selectCandidates(rows:ListingCandidate[],kind:Packet['kind']):ListingCandidate[]{
- const sorted=rows.filter(r=>publicUrl(r.c.url)&&sourceRelevant(r))
+export interface SelectionStats{input:number;invalidUrl:number;irrelevant:number;eligible:number;selected:number;duplicateUrl:number;duplicateEvent:number;sourceCap:number;publisherCap:number;laneCap:number;capacity:number;}
+export function selectCandidates(rows:ListingCandidate[],kind:Packet['kind'],onStats?:(stats:SelectionStats)=>void):ListingCandidate[]{
+ const stats:SelectionStats={input:rows.length,invalidUrl:0,irrelevant:0,eligible:0,selected:0,duplicateUrl:0,duplicateEvent:0,sourceCap:0,publisherCap:0,laneCap:0,capacity:0};
+ const sorted=rows.filter(r=>{if(!publicUrl(r.c.url)){stats.invalidUrl++;return false;}if(!sourceRelevant(r)){stats.irrelevant++;return false;}stats.eligible++;return true;})
   .sort((a,b)=>(b.source.tier==='T1'?1:0)-(a.source.tier==='T1'?1:0)||(b.c.publishedAt?.getTime()??0)-(a.c.publishedAt?.getTime()??0)||a.c.url.localeCompare(b.c.url)||a.source.id.localeCompare(b.source.id));
  const groups={finance:[]as ListingCandidate[],development:[]as ListingCandidate[],general:[]as ListingCandidate[],research:[]as ListingCandidate[],community:[]as ListingCandidate[]};
  for(const row of sorted)groups[RESEARCH_SOURCES.has(row.source.id)?'research':COMMUNITY_SOURCES.has(row.source.id)?'community':sourceAudience(row)].push(row);
  const selected:ListingCandidate[]=[],urls=new Set<string>(),events=new Set<string>(),counts=new Map<string,number>(),publishers=new Map<string,number>();
  const cycle=['finance','development','development','general','research','community']as const,limit=kind==='daily'?30:60,laneCounts={research:0,community:0};
  while(selected.length<limit&&Object.values(groups).some(g=>g.length))for(const group of cycle){
-  if((group==='research'||group==='community')&&laneCounts[group]>=(kind==='daily'?2:3)){groups[group].length=0;continue;}
+  if((group==='research'||group==='community')&&laneCounts[group]>=(kind==='daily'?2:3)){stats.laneCap+=groups[group].length;groups[group].length=0;continue;}
   const queue=groups[group];while(queue.length&&selected.length<limit){
    const row=queue.shift()!,url=publicUrl(row.c.url)!;const title=row.c.title.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');const event=title.length>=36?title:url;
    const location=new URL(url);const publisher=row.source.owner_entity_id||(location.hostname==='github.com'?'github:'+location.pathname.split('/')[1].toLowerCase():location.hostname.replace(/^www\./,''));
-   if(urls.has(url)||events.has(event)||(counts.get(row.source.id)??0)>=(kind==='daily'?2:3)||(publishers.get(publisher)??0)>=(kind==='daily'?4:6))continue;
+   if(urls.has(url)){stats.duplicateUrl++;continue;}
+   if(events.has(event)){stats.duplicateEvent++;continue;}
+   if((counts.get(row.source.id)??0)>=(kind==='daily'?2:3)){stats.sourceCap++;continue;}
+   if((publishers.get(publisher)??0)>=(kind==='daily'?4:6)){stats.publisherCap++;continue;}
    selected.push(row);if(group==='research'||group==='community')laneCounts[group]++;urls.add(url);events.add(event);counts.set(row.source.id,(counts.get(row.source.id)??0)+1);publishers.set(publisher,(publishers.get(publisher)??0)+1);break;
   }
  }
+ stats.selected=selected.length;stats.capacity=Object.values(groups).reduce((n,g)=>n+g.length,0);onStats?.(stats);
  return selected;
 }

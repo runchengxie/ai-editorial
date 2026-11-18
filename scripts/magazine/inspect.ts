@@ -34,12 +34,16 @@ if(args.includes('--help')){
  const summaries=[];
  for(const selected of kind==='both'?['daily','weekly']: [kind]){
   const discoveries:import('../../packages/editorial-magazine/backend/evidence.ts').DiscoveryCheck[]=[];
-  const packet=await collectPacket(selected as Packet['kind'],pack,now,{onDiscovery:c=>discoveries.push(c)});
+  let collection:import('../../packages/editorial-magazine/backend/evidence.ts').CollectionReport|undefined;
+  let packet:Packet;
+  try{packet=await collectPacket(selected as Packet['kind'],pack,now,{onDiscovery:c=>discoveries.push(c),onReport:r=>{collection=r;}});}
+  catch(error){if(collection)await writeFile(path.join(output,`${selected}.collection.json`),JSON.stringify(collection,null,2)+'\n',{mode:0o600});throw error;}
+  await writeFile(path.join(output,`${selected}.collection.json`),JSON.stringify(collection,null,2)+'\n',{mode:0o600});
   await writeFile(path.join(output,`${selected}.packet.json`),JSON.stringify(packet,null,2)+'\n',{mode:0o600});
   const audiences:Record<string,number>={},levels:Record<string,number>={};
   for(const e of packet.evidence){audiences[e.audience]=(audiences[e.audience]??0)+1;levels[e.level]=(levels[e.level]??0)+1;}
   summaries.push({kind:selected,start:packet.start,end:packet.end,coverageStart:packet.coverageStart,coverageEnd:packet.coverageEnd,
-   candidates:packet.evidence.length,sources:new Set(packet.evidence.map(e=>e.source)).size,audiences,levels,discoveries,
+   collection,candidates:packet.evidence.length,sources:new Set(packet.evidence.map(e=>e.source)).size,audiences,levels,discoveries,
    textCharacters:packet.evidence.reduce((sum,e)=>sum+e.text.length,0),items:packet.evidence.map(({id,title,url,source,publishedAt,audience,level,text})=>({id,title,url,source,publishedAt,audience,level,textCharacters:text.length}))});
  }
  const summary={inspectedAt:new Date().toISOString(),modelCalls:0,published:false,output,editions:summaries};

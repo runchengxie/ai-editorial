@@ -12,7 +12,7 @@ Back up the database using a matching `pg_dump`, restore it into an isolated tes
 
 ## Migration 0169
 
-The 18 November rehearsal backed up the database, restored it, dropped `selected_ledger.visible_at` on the isolated copy and proved a full restore recovered the old schema. The ledger had zero rows, and all four receipts/attempts were preserved. The column's only recorded dependencies were its default, NOT NULL constraint and index. Production remains unchanged until the approved installation executes migration 0169. The operator separately approved this deletion and runtime upgrade after the rehearsal; retained task evidence identifies the backup and checksums.
+The 18 November rehearsal backed up the database, restored it, dropped `selected_ledger.visible_at` on the isolated copy and proved a full restore recovered the old schema. The ledger had zero rows, and all four receipts/attempts were preserved. The column's only recorded dependencies were its default, NOT NULL constraint and index. The operator separately approved the deletion and runtime upgrade after rehearsal. Installation on 18 November applied migration 0169; the column/index are now absent and all four historical receipts/attempts were preserved. Retained task evidence identifies the backups and checksums. Later directory-only releases do not require this migration to run again.
 
 Once applied, old code that still expects this column cannot be restored alone. A rollback must coordinate the previous immutable release, private configuration/units and full database restoration while generation remains stopped. Never restore an old receipt ledger over new calls; investigate any activity after the backup before a rollback.
 

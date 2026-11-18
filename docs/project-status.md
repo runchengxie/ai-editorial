@@ -1,6 +1,22 @@
-# Delivery status and closure audit
+# Delivery status
 
 [简体中文](project-status.zh-CN.md)
+
+## Current verified baseline, 19 November 2026
+
+- Engine main is `64c3e75f1541c361e79fc92aaabff7545cdc015b` after PR17. Both PR and exact-main checks passed: 329 standalone, 69 browser and 1214 backend checks, type/build, migration safety, manual preservation and smoke gates.
+- The engine Pages already hosts the MkDocs manual; `ai-editorial-pages` remains the independent news reader. The latest deployed manual predates PR17's directory documentation. This task prepares a Material theme and a documentation-only refresh.
+- The installed worker baseline is `ddad38c48ccf5ef3861d6a8e90735bf5f2d6d6e2`. Migration0169 was applied on18November with backup/recovery evidence; do not repeat the historical deletion as a new migration. Updating the checked release is separate from source integration.
+- The reader renderer is `f2ccc365ab778d46cf620f87ff8669188ac8cee3`; its existing v2 asset is `ec79fdf5805283b270bcffc5ee60d719d59a65c738e1706e6942c66c448add24`, produced from `cd2aab9`. Source paths and a new manual do not relabel or regenerate that content.
+- The19November free inspection returned26 daily items from18feeds (2finance/12development/12general), and51 weekly items from28feeds (5/29/17). The weekly period remains9–15November, the most recent complete week. These are evidence counts, not generated stories. New private generation and acceptance results are retained separately; public content is unchanged until explicit publication.
+- The previously reported development advisory was withdrawn; full and production-only npm audits now report zero findings without changing dependencies. See [security evidence](dependency-security.md).
+- Automation stays paused. No membership/account/payment feature or public dynamic-workbench deployment is delivered.
+
+[Magazine operations and diagnostics](magazine.md) describe collection funnel and private acceptance commands. [Runtime upgrade](runtime-upgrade.md) describes checked-release installation. Actual final deployment, installed revision and draft acceptance are recorded in the external task report; task-local source presence does not prove adoption.
+
+## Historical audit snapshot, 18 November 2026
+
+The following retained record describes the earlier audit's starting state and work. Its old revisions, unapplied-migration state and proposed MkDocs work are historical, not the current status above.
 
 This 18 November2026 snapshot separates source integration, published content, installed runtime and consumer adoption. The audit covers the engine's editorial/magazine/static-data paths, configuration layout, repository instructions, current documentation, quality gates and the independent reader. It is not a renewed function-by-function audit of the inherited engine.
 

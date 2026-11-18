@@ -2,13 +2,13 @@
 
 [English](manual-site.md)
 
-固定使用 MkDocs **1.6.1**，版本记录见[官方发布说明](https://www.mkdocs.org/about/release-notes/#version-161-2024-08-30)，构建配置依据[官方配置参考](https://www.mkdocs.org/user-guide/configuration/)。
+固定使用 MkDocs **1.6.1** 和 [Material for MkDocs **9.8.1**](https://pypi.org/project/mkdocs-material/9.8.1/)，版本记录见[官方发布说明](https://www.mkdocs.org/about/release-notes/#version-161-2024-08-30)，构建配置依据[官方配置参考](https://www.mkdocs.org/user-guide/configuration/)。
 
-[引擎手册](https://runchengxie.github.io/ai-editorial/)采用 MkDocs 标准主题。[新闻读者网站](https://runchengxie.github.io/ai-editorial-pages/)仍是独立应用。手册默认显示英文，可通过导航和页面顶部链接切换到中文。
+[引擎手册](https://runchengxie.github.io/ai-editorial/)采用 Material for MkDocs 主题，与 Finance Video Studio 保持相同的侧边导航、返回顶部按钮和系统字体设置。页眉的主题按钮依次切换跟随系统、浅色和深色模式，并保存选择。[新闻读者网站](https://runchengxie.github.io/ai-editorial-pages/)仍是独立应用。手册默认显示英文，可通过导航和页面顶部链接切换到中文。
 
 ## 本地构建
 
-在检出目录之外创建 Python 虚拟环境，安装 `configs/requirements-docs.txt`，然后运行：
+使用 Python 3.11 或更新版本，在检出目录之外创建 Python 虚拟环境，安装 `configs/requirements-docs.txt`，然后运行：
 
 ```sh
 python -B scripts/docs/build.py --state /path/to/successful-public-state --out /tmp/editorial-manual-site

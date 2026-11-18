@@ -53,3 +53,12 @@ test('short feed summaries beyond the feature window receive only a bounded numb
  assert.equal(planBodyReads(rows,'daily').size,16);
  rows[1].source.id='rss-arxiv-targeted';rows[21].c.bodyText='An already available original body';const guarded=planBodyReads(rows,'weekly');assert.equal(guarded.has(rows[1].c.url),false);assert.equal(guarded.has(rows[21].c.url),false);
 });
+
+
+test('selection diagnostics account for every eligible candidate without changing selection',()=>{
+ const rows=Array.from({length:80},(_,i)=>({source:{id:'source-'+i,name:'Source '+i,tier:'T1',kind:'rss',config:{}},c:{url:'https://publisher'+i+'.example/'+i,title:'AI workflow update number '+i,publishedAt:new Date('2026-11-17T10:00:00Z')}}));
+ let stats:import('../backend/selection.ts').SelectionStats|undefined;
+ const plain=selectCandidates(rows,'daily'),observed=selectCandidates(rows,'daily',s=>{stats=s;});
+ assert.deepEqual(observed,plain);assert.equal(stats?.selected,30);assert.equal(stats?.capacity,50);
+ assert.equal(stats!.eligible,stats!.selected+stats!.duplicateUrl+stats!.duplicateEvent+stats!.sourceCap+stats!.publisherCap+stats!.laneCap+stats!.capacity);
+});
