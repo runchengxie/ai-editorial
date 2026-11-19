@@ -2,7 +2,7 @@
 
 [简体中文](editorial-sources.zh-CN.md)
 
-The source pack now configures **84 sources:79 enabled and5 paused**. `configs/industry/sources.json` is authoritative for the magazine worker. The broader research/engineering expansion adds nine free feeds to the prior75/70 pack. Counts describe configured defaults, not guaranteed daily output. Verification:2026-11-18.
+The source pack configures 86 sources, with 81 enabled and 5 paused. `configs/industry/sources.json` is authoritative for the magazine worker. The broader research/engineering expansion adds nine free feeds to the prior75/70 pack. Counts describe configured defaults, not guaranteed daily output. Verification date 2026-11-19.
 
 ## Coverage and discovery
 
@@ -30,7 +30,7 @@ The five Chinese bridges initially returned403 in discovery probes, but later pa
 
 Captured public responses were replayed with external network disabled through the real RSS/HTML/JSON parsers. GitHub release captures used the existing designated CLI account after anonymous requests were rate-limited. All66 enabled sources except one transient failure produced dated entries. On the same captured corpus, the old magazine selection chose8 daily/16 weekly candidates; expanded selection chose30 daily from20 sources and60 weekly from33 sources. These are listing-level measurements, not guarantees of article-body extraction, factual accuracy or final prose counts. The obsolete Mistral URL is excluded from baseline selection and counted only after replacement. Full captures, comparisons and validation records live under DATA_ROOT/ai-editorial/evaluations/source-expansion-20261118, outside Git.
 
-New source first-import limits remain2/source. The configured79-source default therefore has a158-entry initial ceiling for the generic continuous collector; later runs have no such daily cap. The magazine instead selects at most30/60 candidates and bounds private text per item. It uses one Codex call per generated issue and preserves the existing3-call rolling24h budget; longer packets consume more subscription quota per call. See [magazine operations](magazine.md).
+New source first-import limits remain2/source. The configured81-source default therefore has a162-entry initial ceiling for the generic continuous collector; later runs have no such daily cap. The magazine instead selects at most30/60 candidates and bounds private text per item. It uses one Codex call per generated issue and preserves the existing3-call rolling24h budget; longer packets consume more subscription quota per call. See [magazine operations](magazine.md).
 
 ## Apply
 
@@ -44,7 +44,7 @@ Version-only titles from the two financial filing tools are classified as financ
 
 ## Broader research and engineering coverage
 
-The next source expansion adds nine free feeds, bringing the pack to **84 configured sources,79 enabled and5 paused**:
+The 18 November expansion added nine free feeds, bringing that snapshot to84 configured sources,79 enabled and5 paused.
 
 | Source | Role and limits |
 | --- | --- |
@@ -63,3 +63,22 @@ Research/community lanes are capped at2 each daily and3 each weekly, within exis
 The 9–15November replay combined a prior51-item packet with new verified materials into64 unique evidence items; the selector retained60. Four LangChain items were excluded because their original dates were in August/October despite fresh RSS dates. A new NoLBERT earnings-call paper, a trading-agent benchmark, document-embedding research and engineering case studies added useful depth. Native collection yielded11 usable items from five of the nine new feeds; the initial guarded listing check succeeded for six, with transient HN/LangChain/Google failures. Captured public responses and native results are separate evidence, not a claim that all feeds are continuously healthy. Netflix's article page returned403; its public RSS body was used without bypassing that response.
 
 The local acceptance edition expands the saved8-feature/16-brief draft to12 features/25 briefs, citing45 articles from28 named feeds. This was an editorial expansion of saved evidence, **not a new Codex generation**; new prompt targets remain to be tested on a future budget-authorized run. Evidence/number/schema and bilingual reader/browser checks are recorded under `DATA_ROOT/ai-editorial/evaluations/broader-news-20261118`. It was manually published on18November; scheduled generation stays disabled. See [project status](project-status.md) for artifact and deployment evidence.
+
+
+## Reliability checks on 19 November 2026
+
+The five investigated feeds require separate listing, date and body checks. The existing magazine environment has no `EGRESS_PROXY_URL`. Direct guarded reads timed out for Google Research, Hugging Face, Import AI and Google Developers. Microsoft Research returned 10 dated entries. The same native URLs returned HTTP 200 through the host’s existing system proxy in a separate curl diagnostic. A command-local test of the guarded egress route returned connection resets for the four failing hosts. Source URLs remain unchanged. No proxy settings or credentials were changed.
+
+Captured public responses passed through the actual RSS parser on a local fixture server. Google Research yielded 100 dated entries, Hugging Face 913 and Import AI 20. Import AI supplied 20 feed bodies. Google Developers yielded 20 entries without original publication dates. Its bounded article-date verification remains required. These results establish valid native feeds and isolate network failures. They do not establish successful live article extraction from the four failing hosts.
+
+Run `node scripts/magazine/probe.ts --help` for bounded source diagnostics. The default checks the five investigated feeds and one article per source through guarded readers with `paidFallback: false`. It reports nested transport error codes, dated-entry counts and extracted-body lengths. It makes no model calls and does not publish. Redirect its JSON output to an external evaluation directory. It uses existing application egress settings and does not inherit the system proxy automatically.
+
+## Structured financial disclosure sources
+
+The [SEC Office of Structured Disclosure announcements](https://www.sec.gov/structureddata/article/announcement.rss) feed adds targeted notices about EDGAR, Inline XBRL, validation and financial-reporting taxonomies. The live guarded reader returned 25 dated entries and extracted 726 characters from the latest staff guidance on viewer rendering. The [SEC developer resources](https://www.sec.gov/about/developer-resources) describe submissions and extracted XBRL JSON APIs for further reporting. Broad company-filing feeds are excluded from this source addition.
+
+[XBRL International news](https://www.xbrl.org/news/feed/) adds reporting-standard and machine-readable financial-data material. Its native news feed returned HTTP 200 through the existing system proxy and replay yielded 10 dated entries with 9 feed bodies. The latest entries were dated 16 November. The homepage feed contained older posts, so the news archive feed is configured. Direct guarded access still timed out in this check. Topic filtering retains financial-data or AI workflow signals, with the usual source and publisher caps. The source is enabled for future reachable reads without claiming continuous availability.
+
+EDGAR, iXBRL, GAAP/IFRS taxonomy and earnings-call workflows can enter the finance lane. Earnings-call material still requires an original dated research or engineering source. This change adds no transcript subscription and makes no claim of complete free transcript coverage. The public source catalogs, [SEC structured-data guidance](https://www.sec.gov/data-research/structured-data) and existing filing-tool releases support further investigation. Raw captures and probe JSON remain outside Git under the source-reliability evaluation directory or `/tmp`.
+
+Magazine and diagnostic body reads set `includeCover: false`, so cover validation does not add database queries or auxiliary page reads. Ordinary article collection keeps its existing cover behavior.

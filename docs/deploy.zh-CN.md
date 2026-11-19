@@ -10,7 +10,7 @@
 
 ## 本机刊物任务
 
-使用Node.js 24.22.2或更新版本，以及明确配置的PostgreSQL运行环境。源码版本和运行数据放DATA_ROOT，私密设置放CONFIG_ROOT。按[刊物运维](magazine.zh-CN.md)和[升级说明](runtime-upgrade.zh-CN.md)操作。用户浏览网页不会调用本机任务；安装不启用定时器，生成和发布仍是分开的明确操作。
+使用Node.js 24.22.2或更新版本，以及明确配置的PostgreSQL运行环境。源码版本和运行数据放DATA_ROOT，私密设置放CONFIG_ROOT。按[刊物运维](magazine.zh-CN.md)和[升级说明](runtime-upgrade.zh-CN.md)操作。用户浏览网页不会调用本机任务。安装不启用定时器，生成和发布仍是分开的明确操作。
 
 ## 升级与迁移安全
 
@@ -22,4 +22,4 @@ GitHub Pages为静态站提供HTTPS，也可通过设置配置自定义域名。
 
 ## 历史升级记录
 
-[上游部署与升级历史](history/upstream-deployment.zh-CN.md)保留旧引擎改动，不是当前支持的容器操作步骤。安装、CI和运维命令以本分支当前文档为准。仓库已关闭GitHub模板标记，仍保留上游历史以便选择性同步。
+[上游部署与升级历史](history/upstream-deployment.zh-CN.md)保留旧引擎改动。当前容器操作请按本分支文档执行。安装、CI和运维命令以本分支当前文档为准。仓库已关闭GitHub模板标记，仍保留上游历史以便选择性同步。

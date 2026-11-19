@@ -2,7 +2,7 @@
 
 [简体中文](manual-site.zh-CN.md)
 
-The build pins MkDocs **1.6.1** and [Material for MkDocs **9.8.1**](https://pypi.org/project/mkdocs-material/9.8.1/). MkDocs 1.6.1 is listed in the [official release notes](https://www.mkdocs.org/about/release-notes/#version-161-2024-08-30). Build settings follow the [official configuration reference](https://www.mkdocs.org/user-guide/configuration/).
+The build pins MkDocs 1.6.1 and [Material for MkDocs 9.8.1](https://pypi.org/project/mkdocs-material/9.8.1/). MkDocs 1.6.1 is listed in the [official release notes](https://www.mkdocs.org/about/release-notes/#version-161-2024-08-30). Build settings follow the [official configuration reference](https://www.mkdocs.org/user-guide/configuration/).
 
 The [engine manual](https://runchengxie.github.io/ai-editorial/) uses Material for MkDocs, matching Finance Video Studio’s sidebar navigation, back-to-top control and system fonts. The header theme control cycles through system preference, light and dark mode, and remembers the selection. The [news reader](https://runchengxie.github.io/ai-editorial-pages/) remains an independent application. English is the manual's default; Chinese pages are available from navigation and reciprocal links.
 
@@ -20,7 +20,7 @@ Only the pages named in `configs/mkdocs.yml` and `docs/manual/` are included. Li
 
 ## Publish manually
 
-After successful checks on the exact main revision, manually dispatch **Daily Data** with mode **docs** (the default). It restores the most recent successful `daily-public-state` artifact and builds the manual around that data without collecting sources. Mode **refresh** explicitly collects free listings first, then builds the same combined site. Neither option enables a schedule or calls a model.
+After successful checks on the exact main revision, manually dispatch Daily Data with mode docs (the default). It restores the most recent successful `daily-public-state` artifact and builds the manual around that data without collecting sources. Mode refresh explicitly collects free listings first, then builds the same combined site. Neither option enables a schedule or calls a model.
 
 One workflow and concurrency group own Pages. Do not use `mkdocs gh-deploy`, add another Pages publisher, or upload a plain documentation build: that would remove public data. The combined artifact preserves existing JSON bytes, dated reader redirects and the RSS migration notice. The root index becomes this manual; `zh-CN.html` remains a compatibility redirect to the reader.
 

@@ -34,7 +34,7 @@ export async function collectPacket(kind:Packet['kind'],pack:{sources:any[]},now
     const links=candidates.filter(c=>publicUrl(c.url)&&sourceRelevant({source,c})).slice(0,maximum);
     for(let i=0;i<links.length;i+=3){const verified=await Promise.all(links.slice(i,i+3).map(async(c):Promise<Candidate|null>=>{
      if(c.listingDatesOriginal)return c;
-     let body;try{body=await extractFromUrl(c.url,`magazine-discovery:${source.id}`,{}, {paidFallback:false});}catch{}
+     let body;try{body=await extractFromUrl(c.url,`magazine-discovery:${source.id}`,{}, {paidFallback:false,includeCover:false});}catch{}
      const original=body?.publishedAt??null,status=!original||!body?.text?'unverified':original.getTime()<earliest||original.getTime()>=latest?'outside_window':'verified';
      report.discoveries[status]++;opts.onDiscovery?.({sourceId:source.id,url:c.url,listedAt:c.publishedAt?.toISOString()??null,originalPublishedAt:original?.toISOString()??null,status});
      return status==='verified'?{...c,publishedAt:original,publicationTime:body!.publicationTime??original!.toISOString(),bodyText:body!.text,bodyStatus:'ok'}:null;
@@ -55,7 +55,7 @@ export async function collectPacket(kind:Packet['kind'],pack:{sources:any[]},now
  for(let start=0;start<selected.length;start+=3)await Promise.all(selected.slice(start,start+3).map(async({source,c})=>{
   const research=RESEARCH_SOURCES.has(source.id);
   let text=(research?c.excerpt||c.bodyText:c.bodyText||c.excerpt)||'',level:Evidence['level']=!research&&c.bodyText?'article':'feed';const index=selected.findIndex(r=>r.c.url===c.url),limit=evidenceTextLimit(kind,index);
-  if(pageReads.has(c.url))try{report.stages.bodyReadAttempts++;const body=await extractFromUrl(c.url,`magazine:${source.id}`,{}, {paidFallback:false});if(!body?.text)report.stages.bodyReadFailures++;if(body?.text&&body.text.length>text.length){text=body.text;level='article';}}catch{report.stages.bodyReadFailures++;}
+  if(pageReads.has(c.url))try{report.stages.bodyReadAttempts++;const body=await extractFromUrl(c.url,`magazine:${source.id}`,{}, {paidFallback:false,includeCover:false});if(!body?.text)report.stages.bodyReadFailures++;if(body?.text&&body.text.length>text.length){text=body.text;level='article';}}catch{report.stages.bodyReadFailures++;}
   text=text.replace(/\s+/g,' ').trim().slice(0,limit);if(text.length<160){report.stages.insufficientText++;return;}
   const url=publicUrl(c.url)!;evidence.push({id:'ev-'+createHash('sha256').update(url).digest('hex').slice(0,16),url,title:c.title,source:source.name,publishedAt:c.publishedAt!.toISOString(),text,level,audience:sourceAudience({source,c})});
  }));

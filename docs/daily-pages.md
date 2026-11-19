@@ -4,11 +4,11 @@
 
 The reading website and RSS now belong to [ai-editorial-pages](https://github.com/runchengxie/ai-editorial-pages), at [the new website](https://runchengxie.github.io/ai-editorial-pages/). This repository owns free-source collection, ranking, the private workbench and the [public v1 data contract](daily-brief-v1.md). The inherited dynamic app is not the public static reader.
 
-The same workflow now defaults to documentation-only mode; choose **refresh** explicitly to collect sources. It publishes the manual with preserved v1 state. See [manual website operations](manual-site.md).
+The same workflow now defaults to documentation-only mode; choose refresh explicitly to collect sources. It publishes the manual with preserved v1 state. See [manual website operations](manual-site.md).
 
 ## Producer operations
 
-`Daily Data` (`.github/workflows/daily-pages.yml`) collects enabled free RSS/HTML sources only by explicit manual dispatch on main with mode **refresh**. Scheduled collection is paused; the workflow has no cron trigger. Every run requires successful push checks on the exact main revision. The existing workflow filename, concurrency group and `daily-public-state` artifact name are retained to preserve real publication history. Successful source-code checks do not publish data automatically; this permits provider-first migration without switching the old website early.
+`Daily Data` (`.github/workflows/daily-pages.yml`) collects enabled free RSS/HTML sources only by explicit manual dispatch on main with mode refresh. Scheduled collection is paused; the workflow has no cron trigger. Every run requires successful push checks on the exact main revision. The existing workflow filename, concurrency group and `daily-public-state` artifact name are retained to preserve real publication history. Successful source-code checks do not publish data automatically; this permits provider-first migration without switching the old website early.
 
 `node scripts/daily-brief/build.ts --out <external-directory>` writes `editions.json`, `latest.json`, minimal redirects for the old home/language/archive URLs and an RSS migration notice linking the new feed. It contains no reader templates, CSS or locale catalogs. New website/RSS development happens only in the reader repository. Never publish `--fixture` output.
 

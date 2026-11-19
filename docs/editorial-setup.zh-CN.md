@@ -1,8 +1,8 @@
-# 内部采编工作台：本地运行
+# 内部采编工作台本地运行
 
 [English](editorial-setup.md)
 
-需要 Node.js 24.22.2 或更新版本，以及 PostgreSQL 17 或更新版本。第一版仅供内部使用：API、网页和数据库都绑定本机回环地址，或对所有入口设置统一身份验证。上游的匿名网页、RSS、API、MCP 仍然存在，仅有后台登录不代表整个站点已私有化。
+需要 Node.js 24.22.2 或更新版本，以及 PostgreSQL 17 或更新版本。第一版仅供内部使用，API、网页和数据库都绑定本机回环地址，或对所有入口设置统一身份验证。上游的匿名网页、RSS、API、MCP 仍然存在，仅有后台登录不代表整个站点已私有化。
 
 ## 数据和配置
 
@@ -22,7 +22,7 @@ npx playwright install chromium webkit
 npm run test:web
 ```
 
-备份测试需要与服务端主版本匹配的 PostgreSQL 客户端，并将其加入 PATH。API 使用 `node apps/api/src/main.ts` 启动；网页在 apps/web 内运行 `node server.ts`。API_HOST、WEB_HOST 设为 127.0.0.1，并选择未占用的任务专用端口。随后执行 `node scripts/smoke.ts --base <本地网页地址>`。
+备份测试需要与服务端主版本匹配的 PostgreSQL 客户端，并将其加入 PATH。API 使用 `node apps/api/src/main.ts` 启动。网页在 apps/web 内运行 `node server.ts`。API_HOST、WEB_HOST 设为 127.0.0.1，并选择未占用的任务专用端口。随后执行 `node scripts/smoke.ts --base <本地网页地址>`。
 
 仅调试界面时可设置 DEV_AUTH_ROLE=admin，不能将它用于外部可访问的服务。日常使用优先配置管理员密码。确定性的草稿资料包不需要模型密钥。
 

@@ -2162,6 +2162,52 @@
       "site_fulltext": false,
       "syndicate_fulltext": false,
       "enabled": true
+    },
+    {
+      "id": "rss-sec-structured-disclosure",
+      "name": "SEC Office of Structured Disclosure",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.sec.gov/structureddata/article/announcement.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "官方",
+        "财报"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "rss-xbrl-international",
+      "name": "XBRL International News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.xbrl.org/news/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "官方",
+        "财报"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
     }
   ]
 }

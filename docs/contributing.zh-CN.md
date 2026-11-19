@@ -2,7 +2,7 @@
 
 [English](contributing.md)
 
-可复现问题及范围明确的PR提交到 [runchengxie/ai-editorial](https://github.com/runchengxie/ai-editorial)。较大的产品或架构变化先讨论用途与方案。AIHOT的讨论区和运行指标属于上游，不是本分支的支持承诺。
+可复现问题及范围明确的PR提交到 [runchengxie/ai-editorial](https://github.com/runchengxie/ai-editorial)。较大的产品或架构变化先讨论用途与方案。本分支的支持范围以本仓库文档为准。AIHOT的讨论区和运行指标由上游维护。
 
 阅读[仓库指引](../AGENTS.md)及相关文档。行业规则放在 `configs/industry/`，品牌和站点配置放在 `configs/site/`，本分支功能放在 `packages/`。目录调整应保留包名和公开契约。机器凭据与生产状态保存在Git之外。
 

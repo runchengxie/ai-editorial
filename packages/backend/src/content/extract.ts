@@ -795,7 +795,7 @@ export function readableDocument(document: Doc, url: string, rules: PageRules = 
   return { html: clean, text, images, via: "readability", ...date, cover: hasPicture(clean) ? null : declared };
 }
 
-export async function extractFromUrl(url: string, subject: string, rules: PageRules = {}, opts: { paidFallback?: boolean } = {}): Promise<ExtractedBody | null> {
+export async function extractFromUrl(url: string, subject: string, rules: PageRules = {}, opts: { paidFallback?: boolean; includeCover?: boolean } = {}): Promise<ExtractedBody | null> {
   if (isVideoPageUrl(url)) return null;
   const target = new URL(url);
   if (rules.bodyUrlSuffix) target.pathname += rules.bodyUrlSuffix;
@@ -819,7 +819,7 @@ export async function extractFromUrl(url: string, subject: string, rules: PageRu
     // fall through to Jina
   }
   // Outside the page's read: a failure of the store while checking the cover is no unreadable page.
-  if (read) return { ...read.body, cover: await articleCover(read.body.cover ?? null, url, read.pageUrl) };
+  if (read) return { ...read.body, cover: opts.includeCover === false ? null : await articleCover(read.body.cover ?? null, url, read.pageUrl) };
   if (opts.paidFallback === false) return null;
   try {
     // The rendered text carries none of the page's metadata, so a body read this way has no cover.

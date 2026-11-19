@@ -80,3 +80,59 @@ test('pilot acceptance drafts include every dated outlook in both languages',asy
  const {pilotMarkdown}=await import('../../../scripts/magazine/pilot-render.ts');const issue=projectIssue(sampleDraft(),samplePacket());issue.outlook=[{date:'2026-11-20',text:issue.lead}];
  for(const locale of ['en','zh'] as const)assert.ok(pilotMarkdown(issue,locale).includes('2026-11-20'));
 });
+
+test('quoted token capacities translate decimal K and Chinese units without licensing unrelated numbers',()=>{
+ const packet=samplePacket();const quote='The context window supports 256K tokens.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'上下文窗口支持25.6万 tokens。',anchors:[{id:'ev-one',quote}]}];
+ assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const zh of ['上下文窗口支持26万 tokens。','共有256个客户。','上下文窗口支持256 tokens。']){draft.briefs[0].zh=zh;assert.throws(()=>projectIssue(draft,packet),/number/);}
+});
+test('quoted calendar months translate without borrowing arbitrary numbers or changing dates',()=>{
+ const packet=samplePacket();const quote='Preview starts in January; availability starts October 21, 2026.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'预览于1月开始，2026年10月21日开放。',anchors:[{id:'ev-one',quote}]}];
+ assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const zh of ['预览于2月开始，2026年10月21日开放。','预览于1月开始，2026年10月22日开放。','共有1个客户。']){draft.briefs[0].zh=zh;assert.throws(()=>projectIssue(draft,packet),/number/);}
+});
+test('body-only spaced product versions require an exact product-name anchor',()=>{
+ const packet=samplePacket();packet.evidence[0].text+=' Gemini Decision 1 is available.';const draft=sampleDraft();
+ draft.briefs=[{en:'Gemini Decision 1 is available.',zh:'Gemini Decision 1 已开放。',anchors:draft.title.anchors}];assert.throws(()=>projectIssue(draft,packet),/number/);
+ draft.briefs[0].anchors=[{id:'ev-one',quote:'Gemini Decision 1 is available.'}];assert.doesNotThrow(()=>projectIssue(draft,packet));
+});
+test('body identifier support cannot license its numeric component as a separate metric',()=>{
+ const packet=samplePacket();packet.evidence[0].text+=' Sample-N0.5-Flash is available.';const draft=sampleDraft();
+ draft.briefs=[{en:'Sample-N0.5-Flash has 0.5 million users.',zh:'Sample-N0.5-Flash 已开放。',anchors:draft.title.anchors}];assert.throws(()=>projectIssue(draft,packet),/number/);
+ draft.briefs[0].en='Sample-N0.5-Flash has 0.5 users.';assert.throws(()=>projectIssue(draft,packet),/number/);
+});
+
+test('currency units and exact identifier names cannot borrow a matching numeric value',()=>{
+ const packet=samplePacket();const quote='The price is $20 and the metric is 9.9 percent.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'价格为20美元，指标为9.9%。',anchors:[{id:'ev-one',quote}]}];assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const en of ['The price is €20.','Tools9.9 is available.','Fake-Model9.9 is available.','x20 is available.','The metric is 20%.']){draft.briefs[0].en=en;assert.throws(()=>projectIssue(draft,packet),/number/);}
+});
+test('month-year translations preserve each paired date, including spaced Chinese dates',()=>{
+ const packet=samplePacket();const quote='The test runs from January 2025 to October 2026, using calls from 2024.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'测试覆盖2025 年 1 月至2026 年 10 月，使用2024年的电话会。',anchors:[{id:'ev-one',quote}]}];assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const zh of ['测试覆盖2024年1月至2026年10月。','测试覆盖2025年10月至2026年1月。']){draft.briefs[0].zh=zh;assert.throws(()=>projectIssue(draft,packet),/number/);}
+});
+test('modal may cannot support an invented calendar month or require a month in ordinary prose',()=>{
+ const packet=samplePacket();const quote='The feature may change after review.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'该功能将在5月变更。',anchors:[{id:'ev-one',quote}]}];assert.throws(()=>projectIssue(draft,packet),/number/);
+ draft.briefs[0].zh='审查后，该功能可能变更。';assert.doesNotThrow(()=>projectIssue(draft,packet));
+ const mayQuote='May change after review.';packet.evidence[0].text+=' '+mayQuote;draft.briefs[0]={en:mayQuote,zh:'该功能将在5月变更。',anchors:[{id:'ev-one',quote:mayQuote}]};assert.throws(()=>projectIssue(draft,packet),/number/);
+ const calendar='The feature will change in May.';packet.evidence[0].text+=' '+calendar;draft.briefs[0]={en:calendar,zh:'该功能将在5月变更。',anchors:[{id:'ev-one',quote:calendar}]};assert.doesNotThrow(()=>projectIssue(draft,packet));
+});
+test('attached currency codes are typed quantities, never body-only product identifiers',()=>{
+ const packet=samplePacket();const quote='The price is USD10 and the fee is 5USD.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'价格为10美元，费用为5美元。',anchors:[{id:'ev-one',quote}]}];assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const en of ['The price is EUR10.','The fee is 5EUR.','The price is USD11.']){draft.briefs[0].en=en;assert.throws(()=>projectIssue(draft,packet),/number/);}
+ draft.briefs[0]={en:'The price is USD10.',zh:'价格为10美元。',anchors:draft.title.anchors};assert.throws(()=>projectIssue(draft,packet),/number/);
+});
+test('scaled attached currency amounts cannot bypass numeric support through body identifiers',()=>{
+ for(const amount of ['USD10thousand','USD10million','USD10billion','USD10trillion','USD1,000','USD1,000million','USD10.5million','USD10.5billion']){
+  const packet=samplePacket();const quote=`The price is ${amount}.`;packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+  draft.briefs=[{en:quote,zh:'已公布价格。',anchors:draft.title.anchors}];assert.throws(()=>projectIssue(draft,packet),/number/,amount);
+  draft.briefs[0].anchors=[{id:'ev-one',quote}];assert.doesNotThrow(()=>projectIssue(draft,packet),amount);
+  draft.briefs[0].en=quote.replace('USD','EUR');assert.throws(()=>projectIssue(draft,packet),/number/,amount);
+  draft.briefs[0].en=quote.replace(/\d/,'2');assert.throws(()=>projectIssue(draft,packet),/number/,amount);
+ }
+});

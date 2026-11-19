@@ -2,17 +2,17 @@
 
 [简体中文](project-status.zh-CN.md)
 
-## Current verified baseline, 19 November 2026
+## Last completed delivery
 
-- Engine main is `64c3e75f1541c361e79fc92aaabff7545cdc015b` after PR17. Both PR and exact-main checks passed: 329 standalone, 69 browser and 1214 backend checks, type/build, migration safety, manual preservation and smoke gates.
-- The engine Pages already hosts the MkDocs manual; `ai-editorial-pages` remains the independent news reader. The latest deployed manual predates PR17's directory documentation. This task prepares a Material theme and a documentation-only refresh.
-- The installed worker baseline is `ddad38c48ccf5ef3861d6a8e90735bf5f2d6d6e2`. Migration0169 was applied on18November with backup/recovery evidence; do not repeat the historical deletion as a new migration. Updating the checked release is separate from source integration.
-- The reader renderer is `f2ccc365ab778d46cf620f87ff8669188ac8cee3`; its existing v2 asset is `ec79fdf5805283b270bcffc5ee60d719d59a65c738e1706e6942c66c448add24`, produced from `cd2aab9`. Source paths and a new manual do not relabel or regenerate that content.
-- The19November free inspection returned26 daily items from18feeds (2finance/12development/12general), and51 weekly items from28feeds (5/29/17). The weekly period remains9–15November, the most recent complete week. These are evidence counts, not generated stories. New private generation and acceptance results are retained separately; public content is unchanged until explicit publication.
-- The previously reported development advisory was withdrawn; full and production-only npm audits now report zero findings without changing dependencies. See [security evidence](dependency-security.md).
-- Automation stays paused. No membership/account/payment feature or public dynamic-workbench deployment is delivered.
+PR18 completed the Material manual and private quality diagnostics on19November2026. Its source and installed worker revision is `a68a06a3ab7d143fde9f5c6c2cf805f3e31870a1`. Exact-main checks passed336 standalone,69 browser and1221 backend tests. The [manual](https://runchengxie.github.io/ai-editorial/) supports system/light/dark modes. The independent [reader](https://runchengxie.github.io/ai-editorial-pages/) serves news.
 
-[Magazine operations and diagnostics](magazine.md) describe collection funnel and private acceptance commands. [Runtime upgrade](runtime-upgrade.md) describes checked-release installation. Actual final deployment, installed revision and draft acceptance are recorded in the external task report; task-local source presence does not prove adoption.
+The delivery retained the existing public v2 asset `ec79fdf5805283b270bcffc5ee60d719d59a65c738e1706e6942c66c448add24`, produced from `cd2aab9`; the reader renderer was `f2ccc365ab778d46cf620f87ff8669188ac8cee3`. Its manual-only publication preserved all8 captured v1 compatibility files byte-for-byte.
+
+Private acceptance produced7 features/13 briefs for the daily and10/21 for the weekly. The weekly original failed strict numeric/citation checks; a separate source-anchored variant passed without another model call. The report retained that failure. The daily brief target remains15–20, and direct filing material needs more coverage. The two calls brought the historical receipt count to6. The rolling-day budget was restored to3, the timer stayed disabled and the generation service inactive.
+
+Migration0169 was applied on18November with a verified backup/restore. The19November upgrade had zero pending migrations and preserved all receipt contents. Full/runtime npm audits and the Material Python environment reported zero findings. The picomatch advisory had been withdrawn, and dependency versions stayed unchanged.
+
+Current deployment and release identity come from successful workflow runs, reader `build.json`, the public manifest and the private worker configuration. [Magazine operations](magazine.md) explains the manual commands and diagnostics. [Runtime upgrade](runtime-upgrade.md) explains release installation. The retained task reports under the external evaluations directory record exact revisions and adoption checks.
 
 ## Historical audit snapshot, 18 November 2026
 
