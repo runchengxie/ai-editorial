@@ -136,3 +136,26 @@ test('scaled attached currency amounts cannot bypass numeric support through bod
   draft.briefs[0].en=quote.replace(/\d/,'2');assert.throws(()=>projectIssue(draft,packet),/number/,amount);
  }
 });
+test('hyphenated parameter counts translate scale without accepting changed values or product identifiers',()=>{
+ const packet=samplePacket();const quote='A compact, 9-billion-parameter model.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:'The model has 9 billion parameters.',zh:'该模型有90 亿参数。',anchors:[{id:'ev-one',quote}]}];assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const en of ['The model has 9 million parameters.','The model has 10 billion parameters.','The model serves 9 billion users.','The metric is 9 billion.']){draft.briefs[0].en=en;assert.throws(()=>projectIssue(draft,packet),/number/);}
+ draft.briefs[0].en='The model has 9 billion parameters.';draft.briefs[0].zh='该模型有90亿个参数。';assert.doesNotThrow(()=>projectIssue(draft,packet));
+ draft.briefs[0].zh='该模型服务90亿个用户。';assert.throws(()=>projectIssue(draft,packet),/number/);
+ for(const source of ['Model-9-billion-parameter is available.','A -9-billion-parameter model.']){packet.evidence[0].text+=' '+source;draft.briefs[0]={en:'The model has 9 billion parameters.',zh:'模型已发布。',anchors:[{id:'ev-one',quote:source}]};assert.throws(()=>projectIssue(draft,packet),/number/);}
+});
+test('hyphenated currency scales remain quoted quantities rather than body identifiers',()=>{
+ const packet=samplePacket();const quote='The price is USD10-million.';packet.evidence[0].text+=' '+quote;const draft=sampleDraft();
+ draft.briefs=[{en:quote,zh:'价格已公布。',anchors:draft.title.anchors}];assert.throws(()=>projectIssue(draft,packet),/number/);
+ draft.briefs[0].anchors=[{id:'ev-one',quote}];draft.briefs[0].zh='价格为1000万美元。';assert.doesNotThrow(()=>projectIssue(draft,packet));
+ for(const en of ['The price is USD10-billion.','The price is EUR10-million.','The price is USD11-million.']){draft.briefs[0].en=en;assert.throws(()=>projectIssue(draft,packet),/number/);}
+});
+
+test('parameter normalization never starts inside a product-prefixed or monetary quantity',()=>{
+ const packet=samplePacket();const draft=sampleDraft();
+ for(const quote of ['Model-1,009-billion-parameter is available.','A $9-billion-parameter model.','A €9-billion-parameter model.']){
+  packet.evidence[0].text+=' '+quote;draft.briefs=[{en:'The model has 9 billion parameters.',zh:'模型已发布。',anchors:[{id:'ev-one',quote}]}];assert.throws(()=>projectIssue(draft,packet),/number/,quote);
+ }
+ const quote='A 1,009-billion-parameter model.';packet.evidence[0].text+=' '+quote;draft.briefs=[{en:'The model has 1009 billion parameters.',zh:'该模型有10090亿参数。',anchors:[{id:'ev-one',quote}]}];assert.doesNotThrow(()=>projectIssue(draft,packet));
+ draft.briefs[0].en='The model has 9 billion parameters.';assert.throws(()=>projectIssue(draft,packet),/number/);
+});

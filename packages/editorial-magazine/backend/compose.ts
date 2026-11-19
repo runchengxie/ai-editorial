@@ -19,7 +19,8 @@ function numbers(text:string):string[]{
  const typed:string[]=[];
  const take=(key:string)=>{typed.push(key);return ' ';};
  const date=(y:string,m:string,d:string)=>`date:${y}-${String(Number(m)).padStart(2,'0')}-${String(Number(d)).padStart(2,'0')}`;
- let rest=text.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g,(_,y,m,d)=>take(date(y,m,d)))
+ // Normalize only the explicit numeric adjective, never a signed count or a product-name segment.
+ let rest=text.replace(/(?<![A-Za-z0-9_.,$€£¥+−-])(\d+(?:[.,]\d+)*)-(thousand|million|billion|trillion)-parameters?\b/gi,'$1 $2 parameters').replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g,(_,y,m,d)=>take(date(y,m,d)))
   .replace(/(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/g,(_,y,m,d)=>take(date(y,m,d)));
  // Bare names need calendar context; modal 'may' (including sentence-start 'May') is not a date.
  const englishMonths=months.join('|');
@@ -29,11 +30,12 @@ function numbers(text:string):string[]{
   .replace(/(\d{1,2})\s*月\s*(\d{1,2})\s*日/g,(_,m,d)=>take(`month-day:${Number(m)}-${Number(d)}`))
   .replace(new RegExp(`\\b(${englishMonths})\\b`,'g'),(m,_,offset,input)=>/\b(?:in|from|through|during|until|by|since|before|after|of)\s+$/i.test(input.slice(0,offset))?take(`month:${months.indexOf(m)+1}`):m)
   .replace(/(\d{1,2})\s*月/g,(_,m)=>take(`month:${Number(m)}`));
+ rest=rest.replace(/(?<![A-Za-z0-9_.,$€£¥+−-])(\d+(?:[.,]\d+)*)\s*(thousand|million|billion|trillion|万|亿|千|百)?\s*(?:parameters?\b|(?:个\s*)?参数)/gi,(_,n,unit)=>take(`parameters:${scalarNumbers(n+' '+(unit??''))[0]}`));
  rest=rest.replace(/(\d+(?:[.,]\d+)*)\s*(K|thousand|million|billion|万|亿|千)?\s*(?:tokens?\b|词元|令牌)/gi,(_,n,unit)=>take(`tokens:${scalarNumbers(n+' '+(unit?.toLowerCase()==='k'?'thousand':unit??''))[0]}`));
  const currency=(unit:string)=>({USD:'USD',dollars:'USD',dollar:'USD','美元':'USD','$':'USD',EUR:'EUR',euros:'EUR',euro:'EUR','欧元':'EUR','€':'EUR',GBP:'GBP','英镑':'GBP','£':'GBP',CNY:'CNY',RMB:'CNY','人民币':'CNY','元':'CNY','¥':'¥'}[unit.toUpperCase()]??({dollars:'USD',dollar:'USD',euros:'EUR',euro:'EUR'}[unit.toLowerCase()])??unit);
- const amount='\\d+(?:[.,]\\d+)*(?:\\s*(?:(?:thousand|million|billion|trillion)\\b|万|亿|千|百))?';
- rest=rest.replace(new RegExp(`(USD|EUR|GBP|CNY|RMB|[$€£¥])\\s*(${amount})`,'gi'),(_,unit,n)=>take(`currency:${currency(unit)}:${scalarNumbers(n)[0]}`))
-  .replace(new RegExp(`(${amount})\\s*(USD\\b|EUR\\b|GBP\\b|CNY\\b|RMB\\b|dollars?\\b|euros?\\b|美元|欧元|英镑|人民币|元)`,'gi'),(_,n,unit)=>take(`currency:${currency(unit)}:${scalarNumbers(n)[0]}`));
+ const amount='\\d+(?:[.,]\\d+)*(?:\\s*-?\\s*(?:(?:thousand|million|billion|trillion)\\b|万|亿|千|百))?';
+ rest=rest.replace(new RegExp(`(USD|EUR|GBP|CNY|RMB|[$€£¥])\\s*(${amount})`,'gi'),(_,unit,n)=>take(`currency:${currency(unit)}:${scalarNumbers(n.replace(/-\s*(?=thousand|million|billion|trillion|万|亿|千|百)/i,' '))[0]}`))
+  .replace(new RegExp(`(${amount})\\s*(USD\\b|EUR\\b|GBP\\b|CNY\\b|RMB\\b|dollars?\\b|euros?\\b|美元|欧元|英镑|人民币|元)`,'gi'),(_,n,unit)=>take(`currency:${currency(unit)}:${scalarNumbers(n.replace(/-\s*(?=thousand|million|billion|trillion|万|亿|千|百)/i,' '))[0]}`));
  return [...typed,...scalarNumbers(rest)];
 }
 export function projectIssue(input:unknown,packet:Packet):Issue{
@@ -43,7 +45,7 @@ export function projectIssue(input:unknown,packet:Packet):Issue{
   const cited=raw.anchors.map(a=>lookup.get(a.id)!);
   // Body-only identifier support applies to that exact name, never to its component numbers.
   const identifier=/[A-Za-z][A-Za-z0-9]*(?:[-.][A-Za-z0-9]+)*/g;
-  const currencyQuantity=(term:string)=>/^(?:USD|EUR|GBP|CNY|RMB)\d+(?:[.,]\d+)*(?:thousand|million|billion|trillion)?$/i.test(term);
+  const currencyQuantity=(term:string)=>/^(?:USD|EUR|GBP|CNY|RMB)\d+(?:[.,]\d+)*(?:-?(?:thousand|million|billion|trillion))?$/i.test(term);
   const sourceIdentifiers=new Set(cited.flatMap(e=>(e.text+' '+e.title).match(identifier)??[]));
   const prose=(raw.en+' '+raw.zh).replace(identifier,(term,offset,input)=>{
    if(!/\d/.test(term)||currencyQuantity(term))return term;
