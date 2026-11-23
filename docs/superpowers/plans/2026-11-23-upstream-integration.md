@@ -33,7 +33,7 @@
 
 ## Final local validation
 
-- Full backend suite: 1250 passed, zero failures/skips (final run; confirm runner summary).
+- Full backend suite: 1251 passed, zero failures/skips (final runner summary).
 - Typecheck and dynamic web build passed.
 - Standalone: 356 passed; browser suite: 69 passed on Chromium and WebKit.
 - Focused recovery/alerts/translation/Jina/ordinal suite: 69 passed.

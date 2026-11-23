@@ -388,8 +388,8 @@ export async function markStalePendingReceipts(): Promise<number> {
 }
 
 /**
- * An unknown receipt that still has to be released (by ops.recover once, then by an operator:
- * operations/recover.ts). A primary its backup continued stays unknown for billing only.
+ * An unknown receipt that still needs operator review and authorized release
+ * (operations/recover.ts). A primary its backup continued stays unknown for billing only.
  */
 export function awaitingRelease(receipt: ReturnType<typeof sql> = sql`receipts`) {
   return sql`(${receipt}.status = 'unknown' AND ${receipt}.request->>'fallbackReceiptId' IS NULL)`;
