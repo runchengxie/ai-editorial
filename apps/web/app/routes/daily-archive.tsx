@@ -4,7 +4,7 @@ import type { ReportIndexEntry, ReportIndexResponse } from "@aihot/contracts/sit
 import { SITE, withSubject } from "@aihot/site";
 import { apiGet, cachedPage } from "../lib/api.server";
 import { pageReuse } from "../lib/page-reuse";
-import { archiveLd, pageMeta } from "../lib/seo";
+import { archiveLd, breadcrumbLd, pageMeta } from "../lib/seo";
 import { beijingDate } from "@aihot/contracts/time";
 import { weekdayShort } from "../lib/format";
 import { ReportLayout } from "../features/report/ReportLayout";
@@ -24,7 +24,20 @@ export async function loader({ request }: { request: Request }) {
 
 export function meta({ loaderData }: { loaderData?: { index: ReportIndexEntry[] } }) {
   const entries = (loaderData?.index ?? []).map((e: ReportIndexEntry) => ({ path: `/daily/${e.key}`, name: e.title ? `${e.key} · ${e.title}` : `${SITE.name} 日报 · ${e.key}` }));
-  return pageMeta({ title: `${withSubject("日报")} · 历史存档`, description: `${SITE.name} 历史日报，按日期归档。`, path: "/daily/archive", image: "/og/pages/daily.png", jsonLd: archiveLd("/daily/archive", `${SITE.name} 日报 · 历史存档`, entries) });
+  return pageMeta({
+    title: `${withSubject("日报")} · 历史存档`,
+    description: `${SITE.name} 历史日报，按日期归档。`,
+    path: "/daily/archive",
+    image: "/og/pages/daily.png",
+    jsonLd: [
+      archiveLd("/daily/archive", `${SITE.name} 日报 · 历史存档`, entries),
+      breadcrumbLd([
+        { name: SITE.name, path: "/" },
+        { name: withSubject("日报"), path: "/daily" },
+        { name: "历史存档", path: "/daily/archive" },
+      ]),
+    ],
+  });
 }
 
 export default function DailyArchive() {
@@ -34,7 +47,7 @@ export default function DailyArchive() {
     <ReportLayout kind="daily" index={index} current={null} today={today} back={{ to: "/daily", label: "日报" }} title="日报合订本">
       <div className="@container">
         <header className="pt-5 lg:pt-0">
-          <div className="flex items-center justify-between gap-4 text-[12px] text-ink-4">
+          <div className="flex items-center justify-between gap-4 text-ui-caption text-ink-4">
             <span>{`${SITE.name} · ${withSubject("日报")}`}</span>
             <span>
               共 <span className="num">{index[0]?.issueNumber ?? 0}</span> 期
@@ -54,13 +67,13 @@ export default function DailyArchive() {
               {(e, cell) => (
                 <IntentLink viewTransition key={e.key} to={`/daily/${e.key}`} className={`group flex gap-4 py-4 ${cell}`}>
                   <span className="flex w-9 shrink-0 flex-col items-center">
-                    <span className="num text-[24px] font-black leading-none tracking-[-0.03em] text-ink transition-colors group-hover:text-accent">{e.key.slice(8, 10)}</span>
-                    <span className="mt-1.5 text-[10.5px] leading-none text-ink-4">{weekdayShort(e.key)}</span>
+                    <span className="num text-ui-heading-lg font-black leading-none tracking-[-0.03em] text-ink transition-colors group-hover:text-accent">{e.key.slice(8, 10)}</span>
+                    <span className="mt-1.5 text-ui-micro-8 leading-none text-ink-4">{weekdayShort(e.key)}</span>
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[15px] font-bold leading-[1.55] text-ink transition-colors group-hover:text-accent">{e.title ?? `${withSubject("日报")} ${e.key}`}</span>
+                    <span className="block text-ui-body font-bold leading-[1.55] text-ink transition-colors group-hover:text-accent">{e.title ?? `${withSubject("日报")} ${e.key}`}</span>
                     {!!e.count && (
-                      <span className="mt-1 block text-[12px] text-ink-4">
+                      <span className="mt-1 block text-ui-caption text-ink-4">
                         <span className="num">{e.count}</span>{` ${ENTRIES_UNIT}`}
                       </span>
                     )}

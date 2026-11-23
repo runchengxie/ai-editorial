@@ -2,7 +2,7 @@
 // button on phones), the phone bar of 精选 and 全部, and search.
 import { useEffect, useRef, useState } from "react";
 import { Form, Link, useNavigation, useSearchParams } from "react-router";
-import { CATEGORY_KEYS, CATEGORY_LABELS, CHANNEL_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
+import { CATEGORY_KEYS, CATEGORY_LABELS, CHANNEL_LABELS, displayTag, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
 import { SITE } from "@aihot/site";
 import { IconClose, IconFilter, IconSearch } from "../../components/icons";
 import { PillTabs } from "../../components/ui/Tabs";
@@ -30,10 +30,15 @@ function hrefWith(base: string, params: URLSearchParams, patch: Record<string, s
  * choice then shows as none.
  */
 function filterOptions(base: string, params: URLSearchParams, noneLabel: string) {
+  const option = (key: string, label: string, patch: Record<string, string | null>) => {
+    const to = hrefWith(base, params, patch);
+    // Filtered feed views are noindex; keep crawler focus on the unfiltered list.
+    return { key, label, to, rel: to.includes("?") ? "nofollow" : undefined };
+  };
   return [
-    { key: "all", label: noneLabel, to: hrefWith(base, params, { category: null, channel: null }) },
-    { key: "firstParty", label: CHANNEL_LABELS.firstParty, to: hrefWith(base, params, { category: null, channel: "firstParty" }) },
-    ...CATEGORY_KEYS.map((k) => ({ key: k, label: CATEGORY_LABELS[k], to: hrefWith(base, params, { category: k, channel: null }) })),
+    option("all", noneLabel, { category: null, channel: null }),
+    option("firstParty", CHANNEL_LABELS.firstParty, { category: null, channel: "firstParty" }),
+    ...CATEGORY_KEYS.map((k) => option(k, CATEGORY_LABELS[k], { category: k, channel: null })),
   ];
 }
 
@@ -54,7 +59,10 @@ export function CategoryTabs({ base, category, channel = "all", layoutId, classN
 export function FeedBar({ base, category, channel }: { base: "/" | "/all"; category: CategoryKey | null; channel: ChannelKey }) {
   const [params] = useSearchParams();
   const [sheet, setSheet] = useState(false);
-  const scope = (to: string) => hrefWith(to, params, { q: null, tab: null, search: null });
+  const scope = (to: string) => {
+    const href = hrefWith(to, params, { q: null, tab: null, search: null });
+    return { to: href, rel: href.includes("?") ? "nofollow" : undefined };
+  };
   const filtered = filterKey(category, channel) !== "all";
   return (
     <>
@@ -71,8 +79,8 @@ export function FeedBar({ base, category, channel }: { base: "/" | "/all"; categ
             label="看精选或全部"
             active={base === "/" ? "featured" : "all"}
             items={[
-              { key: "featured", label: "精选", to: scope("/"), resetScroll: true, prefetchOnPress: true },
-              { key: "all", label: "全部", to: scope("/all"), resetScroll: true, prefetchOnPress: true },
+              { key: "featured", label: "精选", ...scope("/"), resetScroll: true, prefetchOnPress: true },
+              { key: "all", label: "全部", ...scope("/all"), resetScroll: true, prefetchOnPress: true },
             ]}
           />
         }
@@ -103,6 +111,7 @@ function FilterSheet({ open, onClose, base, active }: { open: boolean; onClose: 
             <li key={o.key}>
               <Link
                 to={o.to}
+                rel={o.rel}
                 onClick={onClose}
                 aria-current={on ? "true" : undefined}
                 className={`-mx-2 rounded-tile px-2 ${sheetChoice(on)}`}
@@ -122,19 +131,22 @@ function FilterSheet({ open, onClose, base, active }: { open: boolean; onClose: 
 export function ActiveFilters({ base, category, channel, tag }: { base: string; category: CategoryKey | null; channel: ChannelKey; tag: string | null }) {
   const [params] = useSearchParams();
   const label = channel === "firstParty" ? CHANNEL_LABELS.firstParty : category ? CATEGORY_LABELS[category] : null;
+  const shownTag = tag ? displayTag(tag) : null;
   if (!label && !tag) return null;
-  const chip = "inline-flex min-h-11 max-w-full items-center gap-1 rounded-full bg-accent-soft pl-3 pr-2 text-[13px] font-medium text-accent transition-opacity active:opacity-60";
+  const chip = "inline-flex min-h-11 max-w-full items-center gap-1 rounded-full bg-accent-soft pl-3 pr-2 text-ui-label font-medium text-accent transition-opacity active:opacity-60";
+  const clearFilter = hrefWith(base, params, { category: null, channel: null });
+  const clearTag = hrefWith(base, params, { tag: null });
   return (
     <div className="flex flex-wrap gap-2 pb-3 pt-1 lg:hidden">
       {label && (
-        <Link to={hrefWith(base, params, { category: null, channel: null })} aria-label={`取消筛选：${label}`} className={chip}>
+        <Link to={clearFilter} rel={clearFilter.includes("?") ? "nofollow" : undefined} aria-label={`取消筛选：${label}`} className={chip}>
           只看{label}
           <IconClose size={14} strokeWidth={2} />
         </Link>
       )}
       {tag && (
-        <Link to={hrefWith(base, params, { tag: null })} aria-label={`取消标签：${tag}`} className={chip}>
-          <span className="truncate">#{tag}</span>
+        <Link to={clearTag} rel={clearTag.includes("?") ? "nofollow" : undefined} aria-label={shownTag ? `取消标签：${shownTag}` : "取消标签筛选"} className={chip}>
+          <span className="truncate">{shownTag ? `#${shownTag}` : "标签筛选"}</span>
           <IconClose size={14} strokeWidth={2} className="shrink-0" />
         </Link>
       )}
@@ -190,7 +202,7 @@ export function SearchField({ defaultValue = "", keep = {} }: { defaultValue?: s
         placeholder="搜索标题、摘要…"
         maxLength={200}
         autoComplete="off"
-        className="h-[42px] w-full rounded-full bg-well pl-10 pr-10 text-[16px] text-ink outline-none ring-1 ring-inset ring-line-soft transition-[background-color,box-shadow] placeholder:text-ink-4 hover:ring-line-strong focus:bg-surface focus:shadow-[0_0_0_3px_var(--accent-soft)] focus:ring-accent sm:text-[14px]"
+        className="h-[42px] w-full rounded-full bg-well pl-10 pr-10 text-ui-body-lg text-ink outline-none ring-1 ring-inset ring-line-soft transition-[background-color,box-shadow] placeholder:text-ink-4 hover:ring-line-strong focus:bg-surface focus:shadow-[0_0_0_3px_var(--accent-soft)] focus:ring-accent sm:text-ui-body-sm"
       />
       {value ? (
         <button
@@ -205,7 +217,7 @@ export function SearchField({ defaultValue = "", keep = {} }: { defaultValue?: s
           <IconClose size={13} />
         </button>
       ) : (
-        <kbd className="mono pointer-events-none absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-mark border border-line-strong bg-surface px-1.5 text-[10.5px] leading-4 text-ink-4 lg:block">/</kbd>
+        <kbd className="mono pointer-events-none absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-mark border border-line-strong bg-surface px-1.5 text-ui-micro-8 leading-4 text-ink-4 lg:block">/</kbd>
       )}
     </Form>
   );

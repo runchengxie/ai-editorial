@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, redirect, useLoaderData, useNavigation, useSearchParams } from "react-router";
 import type { Route } from "./+types/all";
 import type { PoolResponse } from "@aihot/contracts/site";
+import { displayTag } from "@aihot/contracts/taxonomy";
 import { SEO_TITLES, SITE, subjectAfter } from "@aihot/site";
 import { beijingTime } from "@aihot/contracts/time";
 import { cachedPage, loadOr404 } from "../lib/api.server";
@@ -84,7 +85,8 @@ export default function AllPage() {
     else sp.delete("tab");
     return `/all?${sp}`;
   };
-  const title = f.q ? `搜索“${f.q}”` : f.tag ? `#${f.tag}` : null;
+  const shownTag = f.tag ? displayTag(f.tag) : null;
+  const title = f.q ? `搜索“${f.q}”` : f.tag ? (shownTag ? `#${shownTag}` : "标签筛选") : null;
   const updated = beijingTime(data.freshness);
   // Searches are remembered in this browser for the phone search (listed in the privacy notice).
   useEffect(() => {
@@ -102,7 +104,7 @@ export default function AllPage() {
         <PhoneBar
           back={{ to: "/all", label: "全部" }}
           center={
-            <button type="button" onClick={(event) => openSearch(f.q ?? "", event.currentTarget)} className="flex h-11 min-w-0 max-w-full items-center gap-2 rounded-full bg-well px-3.5 text-[15px] text-ink ring-1 ring-inset ring-line-soft">
+            <button type="button" onClick={(event) => openSearch(f.q ?? "", event.currentTarget)} className="flex h-11 min-w-0 max-w-full items-center gap-2 rounded-full bg-well px-3.5 text-ui-body text-ink ring-1 ring-inset ring-line-soft">
               <IconSearch size={16} className="shrink-0 text-ink-4" />
               <span className="truncate">{f.q}</span>
             </button>
@@ -114,12 +116,10 @@ export default function AllPage() {
       <ActiveFilters base="/all" category={f.category} channel={f.channel} tag={f.tag} />
 
       {/* Desktop, as on 精选: the title, then one filter row with the search field aligned on the right. */}
-      <div className="hidden lg:block">
-        <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">{title ?? ALL_TITLE}</h1>
-        <div className="mb-5 mt-4 flex items-center justify-between gap-4">
-          <CategoryTabs base="/all" category={f.category} channel={f.channel} layoutId="all-cat-desk" className="min-w-0" />
-          <SearchField defaultValue={f.q ?? ""} keep={keep} />
-        </div>
+      <h1 className="sr-only lg:not-sr-only lg:text-ui-heading-lg lg:font-semibold lg:leading-[1.3] lg:text-ink">{title ?? ALL_TITLE}</h1>
+      <div className="mb-5 mt-4 hidden items-center justify-between gap-4 lg:flex">
+        <CategoryTabs base="/all" category={f.category} channel={f.channel} layoutId="all-cat-desk" className="min-w-0" />
+        <SearchField defaultValue={f.q ?? ""} keep={keep} />
       </div>
 
       {f.q && (
@@ -131,7 +131,7 @@ export default function AllPage() {
             active={f.tab}
             items={(["time", "relevance"] as const).map((t) => ({ key: t, label: t === "time" ? "按时间（搜标题和摘要）" : "按相关度（含正文）", to: searchTabHref(t) }))}
           />
-          <span className="text-[12px] text-ink-4">
+          <span className="text-ui-caption text-ink-4">
             找到 <span className="num">{data.total >= 2000 ? "2000+" : data.total}</span> 条 · 更新于 <span className="num">{updated}</span>
           </span>
         </div>
@@ -144,7 +144,7 @@ export default function AllPage() {
               title="没有找到相关内容"
               action={
                 f.q && f.tab === "time" ? (
-                  <Link to={searchTabHref("relevance")} className="text-[13px] font-medium text-accent hover:underline">
+                  <Link to={searchTabHref("relevance")} className="text-ui-label font-medium text-accent hover:underline">
                     试试“按相关度”，连正文一起搜
                   </Link>
                 ) : undefined
@@ -154,11 +154,11 @@ export default function AllPage() {
             </EmptyState>
           </div>
         ) : (
-          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} />
+          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} tagTopics={data.tagTopics} />
         )}
       </div>
       <Pagination page={data.page} pageCount={data.pageCount} href={(p) => pageHref(params, p)} />
-      {data.page >= 50 && <p className="mt-4 text-center text-[12px] text-ink-4">最多提供 50 页，更早的内容请使用搜索或主题页。</p>}
+      {data.page >= 50 && <p className="mt-4 text-center text-ui-caption text-ink-4">最多提供 50 页，更早的内容请使用搜索或主题页。</p>}
     </div>
   );
 }

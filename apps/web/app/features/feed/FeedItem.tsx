@@ -7,7 +7,7 @@ import { shortAddresses } from "@aihot/contracts/addresses";
 import { Link } from "react-router";
 import { IntentLink } from "../../components/ui/IntentLink";
 import type { GroupInfo, FeedItemSummary, TimelineFilters } from "@aihot/contracts/site";
-import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
+import { CATEGORY_LABELS, displayTag } from "@aihot/contracts/taxonomy";
 import { ITEM_COPY } from "@aihot/site";
 import { SameEventBadge, SelectedBadge } from "../../components/ui/Badge";
 import { ScoreLabel } from "../../components/ui/Score";
@@ -25,25 +25,39 @@ export interface FeedItemProps {
   onOpen?: (id: string) => void;
   /** Show category and tags under the text (全部动态, topics, search). */
   showTags?: boolean;
+  /** Tags that belong to a topic page: those link to /topics/<slug> instead of a noindex filter. */
+  tagTopics?: Record<string, string>;
+  /** Current topic page's slug, so cards there do not repeat a self-link tag. */
+  currentTopicSlug?: string;
   /** The time the item sits at in its list; phones show it in the source line (desktop: on the rail). */
   at?: string;
 }
 
-export const FeedItem = memo(function FeedItem({ item, group, filters, read = false, onOpen, showTags = false, at }: FeedItemProps) {
+export const FeedItem = memo(function FeedItem({ item, group, filters, read = false, onOpen, showTags = false, tagTopics, currentTopicSlug, at }: FeedItemProps) {
   const isX = item.channel === "x" && !!item.x;
   const open = () => {
     rememberPreview(item);
     onOpen?.(item.id);
   };
   const showSources = !!group && (group.additionalSourceCount > 0 || group.reportCount > 1);
-  const tags = showTags ? item.tags.slice(0, 3) : [];
+  const tags = showTags
+    ? item.tags
+        .flatMap((t) => {
+          if (currentTopicSlug && tagTopics?.[t] === currentTopicSlug) return [];
+          const label = displayTag(t);
+          if (!label) return [];
+          const slug = tagTopics?.[t];
+          return [{ tag: t, label, to: slug ? `/topics/${slug}` : `/all?tag=${encodeURIComponent(t)}`, nofollow: !slug }];
+        })
+        .slice(0, 3)
+    : [];
 
   return (
     <article className="relative min-w-0 lg:card lg:card-hover lg:px-[18px] lg:pb-[14px] lg:pt-[15px]" data-item-id={item.id}>
-      <header className="flex min-h-[22px] items-center gap-1.5 text-[12.5px] leading-[18px] text-ink-4 lg:min-h-[18px] lg:gap-2">
+      <header className="flex min-h-[22px] items-center gap-1.5 text-ui-caption-lg leading-[18px] text-ink-4 lg:min-h-[18px] lg:gap-2">
         <SourceLine item={item} className="text-ink-4" />
         {at && (
-          <time dateTime={at} className="mono shrink-0 text-[12px] lg:hidden">
+          <time dateTime={at} className="mono shrink-0 text-ui-caption lg:hidden">
             · {beijingTime(at)}
           </time>
         )}
@@ -66,19 +80,19 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
       </header>
 
       {isX ? (
-        item.summary ? <p className={`mt-1.5 whitespace-pre-line text-[15px] leading-[1.75] line-clamp-5 lg:mt-2 lg:line-clamp-4 ${readTone(read, "text-ink")}`}>
+        item.summary ? <p className={`mt-1.5 whitespace-pre-line text-ui-body leading-[1.75] line-clamp-5 lg:mt-2 lg:line-clamp-4 ${readTone(read, "text-ink")}`}>
           <IntentLink viewTransition to={`/items/${item.id}`} onClick={open} className="after:absolute after:inset-0 after:content-['']">
             {shortAddresses(item.summary)}
           </IntentLink>
         </p> : <IntentLink viewTransition to={`/items/${item.id}`} onClick={open} aria-label={`查看 ${item.x!.authorName} 的帖子`} className="absolute inset-0" />
       ) : (
         <>
-          <h3 className={`mt-1.5 line-clamp-2 text-[17px] font-[650] leading-[1.5] lg:mt-2 lg:line-clamp-none lg:leading-[1.55] ${readTone(read, "text-ink")}`}>
+          <h3 className={`mt-1.5 line-clamp-2 text-ui-subheading-sm font-[650] leading-[1.5] lg:mt-2 lg:line-clamp-none lg:leading-[1.55] ${readTone(read, "text-ink")}`}>
             <IntentLink viewTransition to={`/items/${item.id}`} onClick={open} className="after:absolute after:inset-0 after:content-['']">
               {item.title}
             </IntentLink>
           </h3>
-          {item.summary && <p className="mt-1 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:mt-2 lg:line-clamp-3 lg:text-[15px] lg:leading-[1.75]">{shortAddresses(item.summary)}</p>}
+          {item.summary && <p className="mt-1 line-clamp-2 text-ui-body-sm-plus leading-[1.7] text-ink-3 lg:mt-2 lg:line-clamp-3 lg:text-ui-body lg:leading-[1.75]">{shortAddresses(item.summary)}</p>}
         </>
       )}
 
@@ -86,22 +100,22 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
       {isX && item.x!.quoted?.text && <QuotedLine quoted={item.x!.quoted} />}
 
       {(tags.length > 0 || (showTags && item.category)) && (
-        <div className="relative z-10 mt-2 hidden flex-wrap gap-x-2.5 gap-y-1 text-[12px] text-ink-4 lg:flex">
+        <div className="relative z-10 mt-2 hidden flex-wrap gap-x-2.5 gap-y-1 text-ui-caption text-ink-4 lg:flex">
           {showTags && item.category && (
-            <Link to={`/all?category=${item.category}`} className="hover:text-accent">
+            <Link to={`/all?category=${item.category}`} rel="nofollow" className="hover:text-accent">
               {CATEGORY_LABELS[item.category]}
             </Link>
           )}
-          {tags.map((t) => (
-            <Link key={t} to={`/all?tag=${encodeURIComponent(t)}`} className="hover:text-accent">
-              #{t}
+          {tags.map(({ tag, label, to, nofollow }) => (
+            <Link key={tag} to={to} rel={nofollow ? "nofollow" : undefined} className="hover:text-accent">
+              #{label}
             </Link>
           ))}
         </div>
       )}
 
       {item.sameEvent && (
-        <p className="relative z-10 mt-2 line-clamp-1 text-[12.5px] text-ink-4">
+        <p className="relative z-10 mt-2 line-clamp-1 text-ui-caption-lg text-ink-4">
           同一件事，精选收录的是
           <Link viewTransition to={`/items/${item.sameEvent.id}`} className="text-ink-3 transition-colors hover:text-accent">
             《{item.sameEvent.title}》
@@ -116,7 +130,7 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
 
       {item.reason && (
         <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
-          <p className="line-clamp-1 text-[13px] leading-[1.65] text-note lg:line-clamp-none lg:leading-[1.75]">{`${ITEM_COPY.reasonLabel}：`}{item.reason}</p>
+          <p className="line-clamp-1 text-ui-label leading-[1.65] text-note lg:line-clamp-none lg:leading-[1.75]">{`${ITEM_COPY.reasonLabel}：`}{item.reason}</p>
         </div>
       )}
 

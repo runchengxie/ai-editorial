@@ -1,10 +1,10 @@
 import { useLoaderData } from "react-router";
 import type { Route } from "./+types/report-latest";
 import { REPORT_NAMES, reportDateLabel, type ReportLatestPage } from "@aihot/contracts/site";
-import { REPORTS, SEO_TITLES, subjectAfter, withSubject } from "@aihot/site";
-import { cachedPage, loadOr404 } from "../lib/api.server";
+import { REPORTS, SEO_TITLES, SITE, subjectAfter, withSubject } from "@aihot/site";
+import { cachedPage, loadOr404, pagePathname } from "../lib/api.server";
 import { pageReuse } from "../lib/page-reuse";
-import { pageMeta, reportDescription, reportLd } from "../lib/seo";
+import { breadcrumbLd, pageMeta, reportDescription, reportLd } from "../lib/seo";
 import { beijingDate } from "@aihot/contracts/time";
 import { EmptyState } from "../components/ui/Page";
 import { ReportLayout } from "../features/report/ReportLayout";
@@ -17,7 +17,7 @@ export { pageHeaders as headers } from "../lib/api.server";
 export const { clientLoader, shouldRevalidate } = pageReuse<typeof loader>();
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const kind = kindFromPath(new URL(request.url).pathname);
+  const kind = kindFromPath(pagePathname(request));
   const { index, report } = await loadOr404<ReportLatestPage>(`/api/site/reports/${kind}/latest-page`, { signal: request.signal });
   return cachedPage(600, { kind, report, index, today: beijingDate(Date.now()) });
 }
@@ -35,7 +35,10 @@ export function meta({ loaderData }: Route.MetaArgs) {
     path,
     image: `/og/pages/${kind}.png`,
     // The latest issue, described at this page's own address (its canonical).
-    jsonLd: report ? reportLd(report, path, description) : undefined,
+    jsonLd: [
+      ...(report ? [reportLd(report, path, description)] : []),
+      breadcrumbLd([{ name: SITE.name, path: "/" }, { name: withSubject(REPORT_NAMES[kind]), path }]),
+    ],
   }), feedLink(kind)];
 }
 

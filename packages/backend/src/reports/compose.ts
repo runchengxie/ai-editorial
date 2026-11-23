@@ -16,7 +16,7 @@ import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import { emit } from "../modules.ts";
-import { arrangeDaily, candidates, dailyEdition, dailyPicks, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
+import { arrangeDaily, candidates, dailyEdition, dailyPicks, periodEntries, sectionKeyOf, SECTIONS, type Candidate, type EditionEntry } from "./edition.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
@@ -110,8 +110,8 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
     leadItemId: lead?.entry.itemId ?? null,
     highlights: [...highlights, ...picks.map((p) => p.itemId)],
     ...(picks.length ? { picks } : {}),
-    sections: SECTION_ORDER
-      .map((label) => ({ label, items: issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry) }))
+    sections: SECTIONS
+      .map((s) => ({ key: s.key, label: s.label, items: issue.main.filter((e) => sectionKeyOf(e.category) === s.key).map((e) => e.entry) }))
       .filter((s) => s.items.length > 0),
     flashes: issue.flashes.map((e) => e.entry),
     metrics: dailyMetrics(issue.main),
@@ -217,8 +217,8 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
     throw new Error(`${kind} ${key}: no daily entries in the period`);
   }
   const selected = await candidates(start, end);
-  const groups = SECTION_ORDER
-    .map((label) => ({ label, items: top.filter((e) => sectionOf(e.category) === label) }))
+  const groups = SECTIONS
+    .map((s) => ({ key: s.key, label: s.label, items: top.filter((e) => sectionKeyOf(e.category) === s.key) }))
     .filter((g) => g.items.length > 0);
   const corpus = [`${startDate} ${endDateInclusive}`, ...top.map((e) => `${e.title} ${e.summary}`)].join("\n");
   const model = await modelFor("report");
@@ -253,7 +253,7 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
     leadItemId: lead.itemId,
     highlights: top.slice(1, 4).map((e) => e.itemId),
     overview,
-    themes: groups.map((g) => ({ heading: g.label, summary: intro(g), storyRefs: g.items.map(({ category: _c, factKey: _f, ...e }) => e) })),
+    themes: groups.map((g) => ({ key: g.key, heading: g.label, summary: intro(g), storyRefs: g.items.map(({ category: _c, factKey: _f, ...e }) => e) })),
     storyOrder: top.map((e) => e.itemId),
     metrics: { totalStories: top.length, selectedCount: selected.length, reportsCovered: issues },
     generator: { version: REPORT_VERSION, model, written: overview !== null },

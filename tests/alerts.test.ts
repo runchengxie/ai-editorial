@@ -109,6 +109,32 @@ test("many sources failing within the hour is announced while the rest still col
     assert.equal((await fetching(resumed))?.key, "content.fetch", "resumed: the others fetched first prove nothing about these");
     await run(ids.slice(0, 60), "ok", -538);
     assert.equal(await fetching(resumed), undefined, "a source whose next fetch worked no longer counts");
+    // A provider that answers with errors is its own outage, told once and then daily (2026-11-21 SocialData).
+    await sql`INSERT INTO fetch_runs (source_id, started_at, finished_at, status, error)
+      SELECT id, ${new Date(resumed)}, ${new Date(resumed)}, 'failed', 'socialdata HTTP 500: {"status":"error"}' FROM unnest(${ids.slice(0, 60)}::text[]) id`;
+    const covered = ids[0]!;
+    const unrelated = ids[60]!;
+    await run([unrelated], "failed", -9 * 60);
+    await sql`UPDATE sources SET health = 'failing', fail_count = 5 WHERE id IN ${sql([covered, unrelated])}`;
+    const outage = await fetching(resumed + 60_000);
+    assert.equal(outage?.level, "today");
+    assert.equal(outage?.owner, "only");
+    assert.match(outage!.title, /^SocialData 出故障/);
+    const followUps = async (at: number) => (await collectFindings(at)).filter(f => f.level === "later").map(f => f.key);
+    const duringOutage = await followUps(resumed + 60_000);
+    assert.ok(!duringOutage.includes(`sources.failing.${covered}`), "the provider outage already covers this source");
+    assert.ok(duringOutage.includes(`sources.failing.${unrelated}`), "the independent timeout still needs its own follow-up");
+    // 50 failing, one of them the provider's: the way out is what fails, still hourly.
+    await sql`INSERT INTO fetch_runs (source_id, started_at, finished_at, status, error)
+      SELECT id, ${new Date(resumed + 90_000)}, ${new Date(resumed + 90_000)}, 'failed', 'Client network socket disconnected before secure TLS connection was established' FROM unnest(${ids.slice(0, 49)}::text[]) id`;
+    await run(ids.slice(50, 60), "ok", -(9 * 60 + 1.5));
+    await run([unrelated], "ok", -(9 * 60 + 1.5));
+    assert.equal((await fetching(resumed + 100_000))?.level, "now");
+    assert.ok((await followUps(resumed + 100_000)).includes(`sources.failing.${covered}`), "a different failure is visible after the provider outage");
+    // A refused key is ours to fix: hourly, as any failure of the way out.
+    await sql`INSERT INTO fetch_runs (source_id, started_at, finished_at, status, error)
+      SELECT id, ${new Date(resumed + 120_000)}, ${new Date(resumed + 120_000)}, 'failed', 'socialdata HTTP 401: {"message":"Unauthenticated."}' FROM unnest(${ids.slice(0, 60)}::text[]) id`;
+    assert.equal((await fetching(resumed + 180_000))?.level, "now");
   } finally {
     await sql`DELETE FROM sources WHERE id IN ${sql(ids)}`;
     process.env.COLLECT_ENABLED = "false";
@@ -297,8 +323,9 @@ test("selected identity delays show reader impact, recovery state and the affect
       VALUES('group-alert-receipt','deepseek','event_identity','article:group-alert-failed','unknown') RETURNING id`;
     await sql`UPDATE articles SET grouping_receipt_id=${receipt!.id} WHERE id='group-alert-failed'`;
     warning = await finding();
-    assert.match(warning!.heals!, /自动/);
-    assert.match(warning!.heals!, /30 分钟/);
+    assert.match(warning!.heals!, /人工|处理后/);
+    assert.doesNotMatch(warning!.heals!, /自动放行|30 分钟/);
+    assert.equal((await runsOverview()).grouping.items.find((item) => item.articleId === "group-alert-failed")?.recovery, "manual");
     await sql`INSERT INTO receipt_attempts(receipt_id,service,attempt,status,error)
       VALUES(${receipt!.id},'deepseek',1,'failed','自动放行：结果未知超过 30 分钟，未核对是否计费')`;
     warning = await finding();

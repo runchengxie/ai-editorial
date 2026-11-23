@@ -76,16 +76,16 @@ test("a listing read whose outcome is unknown is not sent again; each later fetc
   assert.equal(next.status, "ok", next.error ?? "");
   assert.equal(next.created, 1);
   assert.equal(hits, 2);
-  assert.deepEqual((await receipts()).map((r) => r.status), ["unknown", "received"], "the unknown receipt is left to ops.recover");
+  assert.deepEqual((await receipts()).map((r) => r.status), ["unknown", "received"], "the unknown receipt is left for operator review");
 
-  // ops.recover releases it once and nothing sends it again; the fetch after a received page reads the
+  // Recovery leaves the uncertain request blocked; the fetch after a received page reads the
   // listing afresh instead of that page.
   await autoReleaseUnknownReceipts(Date.now() + 31 * 60_000);
   const again = await collectSource(SOURCE, { force: true });
   assert.equal(again.status, "ok", again.error ?? "");
   assert.equal(again.created, 1);
   assert.equal(hits, 3);
-  assert.deepEqual((await receipts()).map((r) => [r.status, r.attempts]), [["failed", 1], ["received", 1], ["received", 1]]);
+  assert.deepEqual((await receipts()).map((r) => [r.status, r.attempts]), [["unknown", 1], ["received", 1], ["received", 1]]);
 });
 
 test("a listing parsed with selectors is read from Jina as rendered HTML, dates included", async () => {

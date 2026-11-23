@@ -25,7 +25,7 @@ async function article() {
       bodyText: "An announced tool, not independently tested.",
       bodyStatus: "ok",
       via: "fetch",
-      publishedAt: new Date(),
+      publishedAt: new Date(Date.now() - 60_000),
     })
   ).articleId;
 }

@@ -88,7 +88,7 @@ test("inputs are validated and module never exposes a public endpoint", async ()
       bodyText: "Test",
       bodyStatus: "ok",
       via: "fetch",
-      publishedAt: new Date(),
+      publishedAt: new Date(Date.now() - 60_000),
     })
   ).articleId;
   const created = await app.inject({

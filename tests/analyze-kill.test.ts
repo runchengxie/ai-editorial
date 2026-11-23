@@ -1,3 +1,4 @@
+import { pollFor } from "./poll.ts";
 // A hard-killed analysis must distinguish a lost paid answer from one already saved.
 // These are real processes and PostgreSQL transactions with a local model protocol substitute;
 // they do not test provider quality, machine power loss, or a browser journey.
@@ -5,13 +6,12 @@ import { gate, pointModels, stub, tag } from "./setup.ts";
 import { analysisStep, SELECTING_SCORE, type AnalysisStep } from "./analysis-steps.ts";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { setTimeout as delay } from "node:timers/promises";
 import { after, before, test } from "node:test";
 import { sql, closeDb } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { markStalePendingReceipts } from "@aihot/backend/providers/receipts";
-import { autoReleaseUnknownReceipts } from "@aihot/backend/operations/recover";
+import { autoReleaseUnknownReceipts, releaseReceipt } from "@aihot/backend/operations/recover";
 
 const T = tag();
 const SOURCE = `test-analyze-kill-${T}`;
@@ -71,11 +71,7 @@ function worker(articleId: string) {
 }
 
 async function until(check: () => Promise<boolean>, label: string) {
-  const deadline = Date.now() + 15_000;
-  while (!(await check())) {
-    if (Date.now() > deadline) assert.fail(`timeout waiting for ${label}`);
-    await delay(20);
-  }
+  await pollFor(check, label, 15_000);
 }
 
 async function finish(articleId: string) {
@@ -96,7 +92,7 @@ async function article(scenario: string) {
   const { articleId } = await upsertMaterial({
     sourceId: SOURCE, url: `https://example.org/analyze-kill-${T}/${scenario}`, title: `AI model release ${T} ${scenario}`,
     bodyText: `An AI lab released a new model with benchmarks and prices. ${T} ${scenario} ` + "The release explains model capabilities and evaluation results. ".repeat(10),
-    bodyStatus: "ok", language: "en", via: "fetch", publishedAt: new Date(),
+    bodyStatus: "ok", language: "en", via: "fetch", publishedAt: new Date(Date.now() - 60_000),
   });
   return articleId;
 }
@@ -114,7 +110,7 @@ after(async () => {
   await closeDb();
 });
 
-test("SIGKILL after the provider accepted a request leaves an unknown outcome, released only once", async () => {
+test("SIGKILL after the provider accepted a request leaves an unknown outcome until authorized recovery", async () => {
   calls = [];
   const articleId = await article("lost");
   const subject = `article:${articleId}@1`;
@@ -144,9 +140,12 @@ test("SIGKILL after the provider accepted a request leaves an unknown outcome, r
   assert.equal(await markStalePendingReceipts(), 1);
   assert.equal(await status(), "unknown");
   assert.equal((await finish(articleId)).result?.state, "unknown-receipt");
-  assert.equal((await autoReleaseUnknownReceipts()).released, 0, "unknown waits another 30 minutes");
+  assert.equal((await autoReleaseUnknownReceipts()).released, 0, "unknown requires operator review");
   await sql`UPDATE receipts SET updated_at=now()-interval '31 minutes' WHERE subject=${subject}`;
-  assert.equal((await autoReleaseUnknownReceipts()).released, 1);
+  assert.equal((await autoReleaseUnknownReceipts()).released, 0);
+  assert.equal(await status(), "unknown");
+  const [receipt] = await sql<{ id: number }[]>`SELECT id FROM receipts WHERE subject=${subject} AND status='unknown'`;
+  await releaseReceipt(receipt!.id, { billed: null, note: "operator reviewed lost local-stub response" }, "test");
   assert.equal(await status(), "failed");
 
   await loseAnswer();
@@ -155,7 +154,7 @@ test("SIGKILL after the provider accepted a request leaves an unknown outcome, r
   await sql`UPDATE receipts SET updated_at=now()-interval '31 minutes' WHERE subject=${subject}`;
   assert.equal((await autoReleaseUnknownReceipts()).released, 0, "the second lost answer waits for an admin");
   assert.equal((await finish(articleId)).result?.state, "unknown-receipt");
-  assert.deepEqual(calls, ["prefilter", "prefilter"], "only one automatic repeat was sent");
+  assert.deepEqual(calls, ["prefilter", "prefilter"], "only one authorized repeat was sent");
   const attempts = await sql`SELECT a.status FROM receipt_attempts a JOIN receipts r ON r.id=a.receipt_id WHERE r.subject=${subject} ORDER BY a.attempt`;
   assert.deepEqual(attempts.map((a) => a.status), ["failed", "unknown"]);
   assert.equal((await sql`SELECT 1 FROM analyses WHERE article_id=${articleId}`).length, 0);

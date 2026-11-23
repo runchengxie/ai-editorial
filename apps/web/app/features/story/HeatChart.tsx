@@ -63,7 +63,7 @@ function timeTicks(t0: number, t1: number): Array<{ t: number; label: string; wi
 function Stat({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="min-w-0">
-      <dt className="text-[12px] text-ink-4">{label}</dt>
+      <dt className="text-ui-caption text-ink-4">{label}</dt>
       <dd className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">{children}</dd>
     </div>
   );
@@ -121,7 +121,7 @@ export function HeatChart({ points: all }: { points: HeatPoint[] }) {
     return { seen, last, peak, change, ticks, x, y, line, area, labels: timeTicks(t0, t1) };
   }, [series]);
   if (!geometry) {
-    return <p className="rounded-tile bg-bg-sunk px-4 py-8 text-center text-[13px] text-ink-4">还没有足够的连续观测数据，暂不绘制趋势。</p>;
+    return <p className="rounded-tile bg-bg-sunk px-4 py-8 text-center text-ui-label text-ink-4">数据还在积累中，暂时画不出趋势。</p>;
   }
   const { seen, last, peak, change, ticks, x, y, line, area, labels } = geometry;
   const cur = active !== null ? seen[active] : null;
@@ -139,15 +139,15 @@ export function HeatChart({ points: all }: { points: HeatPoint[] }) {
     <div>
       <div className="flex flex-col-reverse gap-4 sm:flex-row sm:items-start sm:justify-between">
         <dl className="grid grid-cols-3 gap-x-5 sm:flex sm:gap-x-10">
-          <Stat label="可比范围当前">
-            <span className="mono text-[22px] font-semibold leading-none tracking-[-0.02em] text-ink">{Math.round(last.p!.heat)}</span>
+          <Stat label="最新观测">
+            <span className="mono text-ui-heading-lg-sm font-semibold leading-none tracking-[-0.02em] text-ink">{Math.round(last.p!.heat)}</span>
           </Stat>
-          <Stat label="可比范围峰值">
-            <span className="mono text-[22px] font-semibold leading-none tracking-[-0.02em] text-ink">{Math.round(peak.p!.heat)}</span>
-            <span className="num text-[12px] text-ink-4">{monthDayTime(new Date(peak.t).toISOString())}</span>
+          <Stat label="区间峰值">
+            <span className="mono text-ui-heading-lg-sm font-semibold leading-none tracking-[-0.02em] text-ink">{Math.round(peak.p!.heat)}</span>
+            <span className="num text-ui-caption text-ink-4">{monthDayTime(new Date(peak.t).toISOString())}</span>
           </Stat>
           <Stat label="近 24 小时变化">
-            <span className={`mono text-[22px] font-semibold leading-none tracking-[-0.02em] ${change === null ? "text-ink-4" : change > 0 ? "text-hot" : "text-ink"}`}>
+            <span className={`mono text-ui-heading-lg-sm font-semibold leading-none tracking-[-0.02em] ${change === null ? "text-ink-4" : change > 0 ? "text-hot" : "text-ink"}`}>
               {change === null ? "–" : `${change > 0 ? "+" : ""}${change}%`}
             </span>
           </Stat>
@@ -170,14 +170,14 @@ export function HeatChart({ points: all }: { points: HeatPoint[] }) {
 
       <div className="relative mt-6 h-[176px] pl-9 sm:h-[216px] lg:h-[236px]">
         {ticks.map((v) => (
-          <span key={v} className="num absolute left-0 w-7 -translate-y-1/2 text-right text-[11px] leading-none text-ink-4" style={{ top: `${y(v)}%` }} aria-hidden="true">
+          <span key={v} className="num absolute left-0 w-7 -translate-y-1/2 text-right text-ui-caption-sm leading-none text-ink-4" style={{ top: `${y(v)}%` }} aria-hidden="true">
             {v}
           </span>
         ))}
         <div
           className="relative size-full touch-pan-y select-none rounded-mark outline-offset-4"
           role="img"
-          aria-label={`热度走势：当前 ${Math.round(last.p!.heat)}，峰值 ${Math.round(peak.p!.heat)}`}
+          aria-label={`热度走势：最新观测 ${Math.round(last.p!.heat)}，峰值 ${Math.round(peak.p!.heat)}`}
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === "ArrowRight") setActive((a) => Math.min(seen.length - 1, a === null ? seen.length - 1 : a + 1));
@@ -218,7 +218,7 @@ export function HeatChart({ points: all }: { points: HeatPoint[] }) {
           )}
           {cur && (
             <div
-              className="pointer-events-none absolute top-0 z-10 whitespace-nowrap rounded-control border border-line bg-raised px-2.5 py-1.5 text-[12px] shadow-[var(--shadow-pop)]"
+              className="pointer-events-none absolute top-0 z-10 whitespace-nowrap rounded-control border border-line bg-raised px-2.5 py-1.5 text-ui-caption shadow-[var(--shadow-pop)]"
               style={x(cur.t) > 55 ? { right: `calc(${100 - x(cur.t)}% + 10px)` } : { left: `calc(${x(cur.t)}% + 10px)` }}
             >
               <div className="num text-ink-4">{monthDayTime(new Date(cur.t).toISOString())}</div>
@@ -237,7 +237,7 @@ export function HeatChart({ points: all }: { points: HeatPoint[] }) {
           return (
             <span
               key={t}
-              className={`num absolute whitespace-nowrap text-[11px] leading-none text-ink-4 ${left < 6 ? "" : left > 94 ? "-translate-x-full" : "-translate-x-1/2"} ${wide ? "max-sm:hidden" : ""}`}
+              className={`num absolute whitespace-nowrap text-ui-caption-sm leading-none text-ink-4 ${left < 6 ? "" : left > 94 ? "-translate-x-full" : "-translate-x-1/2"} ${wide ? "max-sm:hidden" : ""}`}
               style={{ left: `${left}%` }}
             >
               {label}
@@ -245,8 +245,8 @@ export function HeatChart({ points: all }: { points: HeatPoint[] }) {
           );
         })}
       </div>
-      <p className="mt-4 text-[12px] leading-relaxed text-ink-4">
-        趋势仅比较持续完整观测到的相同主体，范围可能小于当前热度统计。移动指针或点击图表查看每小时热度；键盘可用左右方向键切换。
+      <p className="mt-4 text-ui-caption leading-relaxed text-ink-4">
+        曲线仅统计同一批持续追踪的来源，数值可能与实时总热度不同。悬停或点击图表可看每小时变化，键盘左右键也可切换。
       </p>
     </div>
   );

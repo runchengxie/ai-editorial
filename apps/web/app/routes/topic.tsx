@@ -64,7 +64,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
   const { topic, page } = data;
   const parts = partsOf(data);
   const path = page > 1 ? `/topics/${topic.slug}/page/${page}` : `/topics/${topic.slug}`;
-  const text = page > 1 ? `${topic.name}的精选归档第 ${page} 页。${topic.definition}` : description(data, parts);
+  const text = page > 1 ? `${topic.name} 精选归档（第 ${page} 页）。${topic.definition}` : description(data, parts);
   const crumbs = breadcrumbLd([{ name: SITE.name, path: "/" }, ...UP.crumbs, { name: topic.name, path: `/topics/${topic.slug}` }]);
   return pageMeta({
     title: page > 1
@@ -73,7 +73,9 @@ export function meta({ loaderData }: Route.MetaArgs) {
     description: text,
     path,
     image: `/og/topics/${topic.slug}.png`,
-    noindex: !topic.indexable,
+    // The first page stands in search for the topic; archive pages (/page/2+) shift reports along, and
+    // their links stay followed so every report is still reached (aligned with /all?page=2+).
+    noindex: !topic.indexable || page > 1,
     jsonLd: page > 1
       ? crumbs
       : [
@@ -99,21 +101,21 @@ export default function TopicRoute() {
   return (
     <div className="pb-6">
       <PhoneBar back={{ to: UP.to, label: UP.back }} title={topic.name} />
-      <Link to={UP.to} className="hidden items-center gap-1.5 py-2 text-[13px] text-ink-3 transition-colors hover:text-accent lg:inline-flex">
+      <Link to={UP.to} className="hidden items-center gap-1.5 py-2 text-ui-label text-ink-3 transition-colors hover:text-accent lg:inline-flex">
         <IconArrowLeft size={14} /> 返回{UP.back}
       </Link>
       <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-5 pt-3 lg:pt-1">
         <div className="min-w-0 max-w-[760px]">
-          <p className="text-[12px] font-semibold tracking-[0.08em] text-accent">{topic.groupName}</p>
-          <h1 data-page-title="" className="mt-1.5 flex items-center gap-3 text-[24px] font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-[26px]">
+          <p className="text-ui-caption font-semibold tracking-[0.08em] text-accent">{topic.groupName}</p>
+          <h1 data-page-title="" className="mt-1.5 flex items-center gap-3 text-ui-heading-lg font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-ui-title-2">
             {topic.brand && <BrandMark brand={topic.brand} size={34} />}
             <span>
               {topic.name}{" "}
               <span className="whitespace-nowrap font-semibold text-ink-4">最新动态</span>
             </span>
           </h1>
-          <p className="mt-1.5 text-pretty text-[13.5px] leading-relaxed text-ink-3">{topic.definition}</p>
-          <p className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-4">
+          <p className="mt-1.5 text-pretty text-ui-label-lg leading-relaxed text-ink-3">{topic.definition}</p>
+          <p className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-ui-caption-lg text-ink-4">
             <span>
               <span className="num font-semibold text-ink-2">{topic.total.toLocaleString("zh-CN")}</span>{` ${REPORTS.metricUnits.selectedCount}`}
             </span>
@@ -125,7 +127,7 @@ export default function TopicRoute() {
             </span>
           </p>
         </div>
-        <div className="flex items-center gap-4 text-[12px] text-ink-4">
+        <div className="flex items-center gap-4 text-ui-caption text-ink-4">
           {topic.latest && (
             <span>
               <time dateTime={topic.latest.at} className="num">{monthDayTime(topic.latest.at)}</time> 更新
@@ -146,7 +148,7 @@ export default function TopicRoute() {
           <EmptyState title="这个主题暂时还没有精选内容" />
         </div>
       ) : (
-        <DayList items={items} headerAside={<span className="num whitespace-nowrap">第 {first}–{last} 条<span className="hidden sm:inline"> · 共 {topic.total.toLocaleString("zh-CN")} 条</span></span>} />
+        <DayList items={items} tagTopics={data.tagTopics} currentTopicSlug={topic.slug} headerAside={<span className="num whitespace-nowrap">第 {first}–{last} 条<span className="hidden sm:inline"> · 共 {topic.total.toLocaleString("zh-CN")} 条</span></span>} />
       )}
       <Pagination page={page} pageCount={pageCount} href={href} />
     </div>

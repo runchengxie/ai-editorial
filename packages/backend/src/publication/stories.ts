@@ -88,7 +88,7 @@ function reportView(r: ReportRow): StoryReportView {
     id: r.id,
     title: r.title,
     summary: r.summary,
-    source: { name: publicSourceName(r.source_name), firstParty: r.first_party },
+    source: { id: r.source_id, name: publicSourceName(r.source_name), firstParty: r.first_party },
     publishedAt: r.at.toISOString(),
     selected: r.selected,
   };
@@ -168,7 +168,7 @@ export async function loadStoryDetail(storyId: number, now = new Date()): Promis
   const latestAt = latest.at;
   // Without a digest or a summary of its own, the story opens with its first development's representative report.
   const origin = developments[developments.length - 1]?.representative;
-  const excerpt = !text.digest && !text.summary && origin?.summary ? { text: origin.summary, sourceName: publicSourceName(origin.source_name) } : null;
+  const excerpt = !text.digest && !text.summary && origin?.summary ? { itemId: origin.id, text: origin.summary, sourceId: origin.source_id, sourceName: publicSourceName(origin.source_name) } : null;
   return {
     publicId: s.public_id,
     title: s.title,
@@ -236,7 +236,7 @@ async function queryHotCovers({ entries }: HotRanking) {
       SELECT m FROM jsonb_array_elements(coalesce(a.media, '[]'::jsonb)) m
       WHERE m->>'kind' = 'image' AND coalesce((m->>'width')::numeric, 800) >= 480 LIMIT 1
     ) img
-    WHERE p.story_id = ANY(${ids}::bigint[]) AND ${listedCondition(at)} AND p.body_mode <> 'summary' AND NOT p.suppress_original
+    WHERE p.story_id = ANY(${ids}::bigint[]) AND ${listedCondition(at)} AND p.body_mode <> 'summary'
     ORDER BY p.story_id, (p.article_id::text = ANY(${reps}::text[])) DESC, p.first_party DESC, p.selected DESC, coalesce(p.score, 0) DESC, p.article_id`;
   const covers = new Map(rows.map((c) => [Number(c.story_id), { url: c.m.url, width: typeof c.m.width === "number" ? c.m.width : null, height: typeof c.m.height === "number" ? c.m.height : null }]));
   return covers;
@@ -296,6 +296,7 @@ export async function v1HotTopics() {
     return {
       rank: e.rank,
       id: e.representativeItemId ?? e.storyPublicId,
+      storyPublicId: e.storyPublicId,
       title: e.title,
       source: { name: e.representativeSource ?? e.sourceNames[0] ?? SITE.name },
       links,
@@ -340,7 +341,7 @@ export async function v1Story(storyId: number) {
         id: r.id,
         title: r.title,
         summary: r.summary,
-        source: { name: r.source_name, firstParty: r.first_party },
+        source: { id: r.source_id, name: r.source_name, firstParty: r.first_party },
         publishedAt: r.at.toISOString(),
         links: { aihot: itemUrl(r.id), original: r.url },
       })),

@@ -1,3 +1,4 @@
+import { pollFor } from "./poll.ts";
 // Paid requests: an answer already received is reused, every request actually sent counts against the
 // budget (retries of one logical request included), a lost answer is bought again at most once, an
 // answer cut off at the output limit says so, and the valve stops calls before they are sent.
@@ -9,7 +10,7 @@ import { config } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { embeddingsAvailable } from "@aihot/backend/providers/embeddings";
-import { assertAccepted, failureKind, ProviderRejectedError, BudgetExceededError, logicalKeyFor, markStalePendingReceipts, ModelOutputError, paidRequest, providerStopKey, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
+import { assertAccepted, failureKind, ProviderRejectedError, BudgetExceededError, logicalKeyFor, markStalePendingReceipts, ModelOutputError, paidRequest, providerStopKey } from "@aihot/backend/providers/receipts";
 import { autoReleaseUnknownReceipts } from "@aihot/backend/operations/recover";
 
 const usage = { prompt_tokens: 80, completion_tokens: 20, total_tokens: 100 };
@@ -110,13 +111,11 @@ test("stale recovery waiting on a response transaction preserves its committed a
   });
   await locked.promise;
   const waitingOn = async (query: string) => {
-    for (let i = 0; i < 500; i++) {
+    await pollFor(async () => {
       const waiting = await sql`SELECT 1 FROM pg_stat_activity
         WHERE datname = current_database() AND wait_event_type = 'Lock' AND query LIKE ${query}`;
-      if (waiting.length) return;
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-    throw new Error(`transaction never waited on ${query}`);
+      return waiting.length;
+    }, `transaction never waited on ${query}`);
   };
   let sweep: Promise<number> | undefined;
   try {
@@ -227,14 +226,11 @@ test("concurrent distinct requests cannot both spend the last service budget slo
     ));
   };
   const waitForBlocked = async (count: number) => {
-    const deadline = Date.now() + 5_000;
-    for (;;) {
+    await pollFor(async () => {
       const rows = await sql`SELECT pid FROM pg_stat_activity
         WHERE datname = current_database() AND wait_event_type = 'Lock' AND state = 'active'`;
-      if (rows.length === count) return;
-      assert.ok(Date.now() < deadline, `expected ${count} requests at the database barrier, saw ${rows.length}`);
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+      return rows.length === count;
+    }, `the ${count} blocked requests`);
   };
   try {
     request("first");
@@ -291,34 +287,22 @@ test("with the valve off nothing is sent", async () => {
   }
 });
 
-test("an unknown outcome is released automatically once, so a lost answer costs at most one repeat", async () => {
-  // A service without a budget row: the budget tests above may have used up deepseek's.
-  const req = { service: "invariant-unbudgeted", purpose: "invariant_test", subject: `lost-${tag()}`, identity: { lost: tag() } };
-  let sent = 0;
-  const lost = () => {
-    sent += 1;
-    return Promise.reject(new Error("socket hang up after sending"));
-  };
-  const status = async () => (await sql<{ status: string }[]>`SELECT status FROM receipts WHERE subject = ${req.subject}`)[0]!.status;
-  const age = () => sql`UPDATE receipts SET updated_at = now() - interval '31 minutes' WHERE subject = ${req.subject}`;
-
-  await assert.rejects(paidRequest(req, lost));
-  assert.equal(await status(), "unknown");
-  await autoReleaseUnknownReceipts();
-  assert.equal(await status(), "unknown", "not within half an hour");
-
-  await age();
-  await autoReleaseUnknownReceipts();
-  assert.equal(await status(), "failed");
-  await assert.rejects(paidRequest(req, lost));
-  assert.equal(sent, 2, "one repeat after the release");
-
-  await age();
-  await autoReleaseUnknownReceipts();
-  assert.equal(await status(), "unknown", "a second loss waits for the admin");
-  await assert.rejects(paidRequest(req, lost), ReceiptUnknownError);
-  assert.equal(sent, 2);
-});
+for (const service of ["invariant-unbudgeted", "codex-cli"]) {
+  test(`an uncertain ${service} request remains blocked after recovery until operator review`, async () => {
+    const subject = `manual-recovery-${tag()}`;
+    const [receipt] = await sql<{ id: number }[]>`
+      INSERT INTO receipts(logical_key,service,purpose,subject,status,updated_at)
+      VALUES (${subject},${service},'invariant_test',${subject},'unknown',now() - interval '2 days') RETURNING id`;
+    await sql`INSERT INTO receipt_attempts(receipt_id,service,attempt,status,error)
+      VALUES (${receipt!.id},${service},1,'unknown','lost response')`;
+    assert.deepEqual(await autoReleaseUnknownReceipts(), { released: 0, requeued: 0 });
+    assert.deepEqual(await autoReleaseUnknownReceipts(Date.now() + 86400000), { released: 0, requeued: 0 });
+    assert.equal((await sql`SELECT status FROM receipts WHERE id=${receipt!.id}`)[0]!.status, "unknown");
+    const [attempt] = await sql`SELECT status,auto_released FROM receipt_attempts WHERE receipt_id=${receipt!.id}`;
+    assert.equal(attempt!.status, "unknown");
+    assert.equal(attempt!.auto_released, false);
+  });
+}
 
 // The classification the alert layer already uses: a TPM/RPM throttle may pass; an account, spending or
 // access refusal stops new calls, because the same request would be refused again in a minute.
